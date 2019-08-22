@@ -1,124 +1,147 @@
-import React from 'react';
-import './App.css';
-import {PathLine} from "react-svg-pathline";
-import ReactDOMServer from 'react-dom/server';
+import React from "react";
+import "./App.css";
+// import { PathLine } from "react-svg-pathline";
+// import ReactDOMServer from "react-dom/server";
 class App extends React.Component {
-  componentDidMount(){
-    let x =  document.getElementsByTagName("circle");
-       console.log(x);
-  }
+  isDrawingEdge = false;
+  //   edgeVertex1 = null;
+  //   edgeVertex2 = null;
+  vertices = null;
+  componentDidMount() {}
   constructor(props) {
     super(props);
     this.state = {
-      first_point: {},
-      second_point:{},
-      path :[],
-      count_to_draw:0
+      vertex1: {},
+      vertex2: {},
+      edges: [],
+      graphs: [],
+      edgeVertex1: null,
+      edgeVertex2: null
     };
     this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
   }
-  
-  addClickEventForCircle=()=>{
-    let x =  document.getElementsByTagName("circle");
-       console.log(x);
-       for(let i = 0;i<x.length;i++){
-           x[i].addEventListener("click",()=>{
-               console.log(x[i].attributes.cx);
-               if(this.state.count_to_draw %2 === 0 )
-                { 
-                    this.state.first_point.x = x[i].attributes.cx.value;
-                    this.state.first_point.y = x[i].attributes.cy.value;
-                    this.setState({count_to_draw:this.state.count_to_draw + 1});
-                    return;
-                }
-                if(this.state.count_to_draw %2 === 1)
-                {
-                    this.state.second_point.x = x[i].attributes.cx.value;
-                    this.state.second_point.y = x[i].attributes.cy.value;
-                    this.setState({count_to_draw:this.state.count_to_draw + 1});
-                    const distance_x = this.state.first_point.x - this.state.second_point.x;
-                    const distance_y = this.state.first_point.y - this.state.second_point.y;
-                    const distance = Math.sqrt(distance_x*distance_x + distance_y*distance_y);
-                    let relationship = [
-                        this.state.first_point.x,
-                        this.state.first_point.y,
-                        this.state.second_point.x,
-                        this.state.second_point.y,
-                        distance
-                    ] ;
-                    
-                    this.setState({ path: [...this.state.path, relationship] });
+  drawEdge(vertex1, vertex2) {
+    // const elLine = document.getElementById('node-pathline');
+    // const edges = elLine.getElementsByTagName("line");
+    const x1 = vertex1.getAttributeNS(null, "cx");
+    const y1 = vertex1.getAttributeNS(null, "cy");
+    const x2 = vertex2.getAttributeNS(null, "cx");
+    const y2 = vertex2.getAttributeNS(null, "cy");
+    const deltaX = Math.abs(parseInt(x2) - parseInt(x1));
+    const deltaY = Math.abs(parseInt(y2) - parseInt(y1));
+    const cost = Math.round(
+      Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
+    );
+    const idVertex1 = vertex1.id;
+    const idVertex2 = vertex2.id;
+    const graph = {
+      [idVertex1]: {
+        [idVertex2]: cost
+      }
+    };
+    this.setState({ graphs: [...this.state.graphs, graph] });
 
-                    let SVGnodes = document.getElementById("nodes");
-                    console.log(SVGnodes);
-          
-                    var path = document.createElementNS("http://www.w3.org/2000/svg", "line");
-                    path.setAttributeNS(null, "x1", `${this.state.first_point.x} `);
-                    path.setAttributeNS(null, "y1", `${this.state.first_point.y} `);
-                    path.setAttributeNS(null, "x2", `${this.state.second_point.x} `);
-                    path.setAttributeNS(null, "y2", `${this.state.second_point.y} `);
-                    path.setAttributeNS(null, "stroke", "red");
-                    path.setAttributeNS(null, "stroke-width",  "3");
-                    path.setAttributeNS(null, "fill", "none");
-                    path.setAttributeNS(null, "stroke-dasharray", "5,5");
-                    console.log(path);
-     
-    
-                    SVGnodes.appendChild(path);
-                    return;
-                } 
-            })
-       }
+    //check edge exist
+    const edges = document.getElementsByTagName("line");
+    let edgeExist = false;
+    for (let i = 0; i < edges.length; i++) {
+      if (
+        edges[i].x1.baseVal.value === parseInt(x1) &&
+        edges[i].y1.baseVal.value === parseInt(y1) &&
+        edges[i].x2.baseVal.value === parseInt(x2) &&
+        edges[i].y2.baseVal.value === parseInt(y2)
+      ) {
+        console.log("edges is exist");
+        edgeExist = true;
+        break;
+      }
+    }
+    if (edgeExist) {
+      alert("Edges exist");
+    } else {
+      let SVGnodes = document.getElementById("nodes");
+      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      g.setAttributeNS(null, "id", "node-pathline");
+      let edge = document.createElementNS("http://www.w3.org/2000/svg", "line");
+      edge.setAttributeNS(null, "x1", x1);
+      edge.setAttributeNS(null, "y1", y1);
+      edge.setAttributeNS(null, "x2", x2);
+      edge.setAttributeNS(null, "y2", y2);
+      edge.setAttributeNS(null, "stroke", "red");
+      edge.setAttributeNS(null, "stroke-width", "3");
+      edge.setAttributeNS(null, "fill", "none");
+      edge.setAttributeNS(null, "stroke-dasharray", "5,5");
+      g.appendChild(edge);
+      SVGnodes.appendChild(g);
+    }
   }
-
-  testEffect = ()=>{
-
+  handleMouseClick(e) {
+    const clickTarget = e.target;
+    if (clickTarget.nodeName === "circle") {
+      if (!this.isDrawingEdge) {
+        this.state.edgeVertex1 = clickTarget;
+        this.isDrawingEdge = true;
+      } else if (clickTarget !== this.state.edgeVertex1) {
+        this.state.edgeVertex2 = clickTarget;
+        this.drawEdge(this.state.edgeVertex1, this.state.edgeVertex2);
+        this.state.edgeVertex1 = null;
+        this.state.edgeVertex2 = null;
+        this.isDrawingEdge = false;
+      }
+    }
   }
-  handleFileSelect = (e) => {  
-    var element = document.createElement('div');
+  addClickEventForCircle = () => {
+    const vertices = document.getElementsByTagName("circle");
+    this.vertices = vertices;
+    for (let i = 0; i < this.vertices.length; i++) {
+      vertices[i].addEventListener("click", e => {
+        this.handleMouseClick(e);
+      });
+    }
+  };
+
+  testEffect = () => {};
+  handleFileSelect = e => {
+    var element = document.createElement("div");
     element.innerHTML = '<input type="file">';
     var fileInput = element.firstChild;
 
-    fileInput.addEventListener('change', () =>{
-        var file = fileInput.files[0];
+    fileInput.addEventListener("change", () => {
+      var file = fileInput.files[0];
 
-        if (file.name.match(/\.(txt|svg)$/)) {
-            var reader = new FileReader();
-            reader.readAsText(file);
-            reader.onload = async()=> {
-                const result = await reader.result;
-                
-                if(document.getElementsByTagName("svg").length === 0)
-                {  
-                  const div = document.createElement('div');
-                  div.innerHTML = result.trim();
-                  document.body.appendChild(div);
+      if (file.name.match(/\.(txt|svg)$/)) {
+        var reader = new FileReader();
+        reader.readAsText(file);
+        reader.onload = async () => {
+          const result = await reader.result;
 
-                }
-                else{ 
-                  let oldSVG = document.getElementsByTagName("svg")[0].parentElement;  
-                  const newSVG = document.createElement('div');
-                  newSVG.innerHTML = result.trim();    
-                  oldSVG.parentElement.replaceChild(newSVG,oldSVG);
-                }
-                this.addClickEventForCircle();
-                // this.testEffect();
-            };
-      
-        } else {
-            alert("File not supported, .txt or .svg files only");
-        }
+          if (document.getElementsByTagName("svg").length === 0) {
+            const div = document.createElement("div");
+            div.innerHTML = result.trim();
+            document.body.appendChild(div);
+          } else {
+            let oldSVG = document.getElementsByTagName("svg")[0].parentElement;
+            const newSVG = document.createElement("div");
+            newSVG.innerHTML = result.trim();
+            oldSVG.parentElement.replaceChild(newSVG, oldSVG);
+          }
+          this.addClickEventForCircle();
+          // this.testEffect();
+        };
+      } else {
+        alert("File not supported, .txt or .svg files only");
+      }
     });
-    
+
     fileInput.click();
-  }
-  
+  };
+
   render() {
-    return(
-    <div className="App">  
-      <button onClick={this.handleFileSelect}>button</button>
-    </div>
-    )
+    return (
+      <div className="App">
+        <button onClick={this.handleFileSelect}>button</button>
+      </div>
+    );
   }
 }
 
