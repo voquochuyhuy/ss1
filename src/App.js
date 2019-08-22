@@ -1,11 +1,7 @@
 import React from "react";
 import "./App.css";
-// import { PathLine } from "react-svg-pathline";
-// import ReactDOMServer from "react-dom/server";
 class App extends React.Component {
   isDrawingEdge = false;
-  //   edgeVertex1 = null;
-  //   edgeVertex2 = null;
   vertices = null;
   componentDidMount() {}
   constructor(props) {
@@ -21,6 +17,7 @@ class App extends React.Component {
     this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
   }
   drawEdge(vertex1, vertex2) {
+	  const {graphs}  = this.state
     // const elLine = document.getElementById('node-pathline');
     // const edges = elLine.getElementsByTagName("line");
     const x1 = vertex1.getAttributeNS(null, "cx");
@@ -33,29 +30,29 @@ class App extends React.Component {
       Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
     );
     const idVertex1 = vertex1.id;
-    const idVertex2 = vertex2.id;
-    const graph = {
-      [idVertex1]: {
-        [idVertex2]: cost
-      }
-    };
-    this.setState({ graphs: [...this.state.graphs, graph] });
+	const idVertex2 = vertex2.id;
+	//check idVertex1 is existed in graphs
+	
+	// graphs.forEach()
+	if (graphs[idVertex1]){
+		graphs[idVertex1] = {...graphs[idVertex1], [idVertex2]: cost}
+		this.setState({ graphs });
+	}else {
+		const graph = {
+			[idVertex1]: {
+				[idVertex2]: cost
+			}
+		};
+		this.setState({ graphs: {...graphs, ...graph }});
+	}
+
 
     //check edge exist
     const edges = document.getElementsByTagName("line");
     let edgeExist = false;
-    for (let i = 0; i < edges.length; i++) {
-      if (
-        edges[i].x1.baseVal.value === parseInt(x1) &&
-        edges[i].y1.baseVal.value === parseInt(y1) &&
-        edges[i].x2.baseVal.value === parseInt(x2) &&
-        edges[i].y2.baseVal.value === parseInt(y2)
-      ) {
-        console.log("edges is exist");
-        edgeExist = true;
-        break;
-      }
-    }
+	if(graphs[idVertex2] && graphs[idVertex2][idVertex1]){ 
+		edgeExist = true
+	}
     if (edgeExist) {
       alert("Edges exist");
     } else {
@@ -105,16 +102,13 @@ class App extends React.Component {
     var element = document.createElement("div");
     element.innerHTML = '<input type="file">';
     var fileInput = element.firstChild;
-
     fileInput.addEventListener("change", () => {
       var file = fileInput.files[0];
-
       if (file.name.match(/\.(txt|svg)$/)) {
         var reader = new FileReader();
         reader.readAsText(file);
         reader.onload = async () => {
           const result = await reader.result;
-
           if (document.getElementsByTagName("svg").length === 0) {
             const div = document.createElement("div");
             div.innerHTML = result.trim();
@@ -135,11 +129,24 @@ class App extends React.Component {
 
     fileInput.click();
   };
-
+  handleSaveGraphs = e => {
+    const a = document.createElement("a");
+    document.body.appendChild(a);
+    const data = this.state.graphs;
+    const fileName = "graphs.json";
+    const json = JSON.stringify(data);
+    const blob = new Blob([json], { type: "octet/stream" });
+    const url = window.URL.createObjectURL(blob);
+    a.href = url;
+    a.download = fileName;
+    a.click();
+    window.URL.revokeObjectURL(url);
+  };
   render() {
     return (
       <div className="App">
         <button onClick={this.handleFileSelect}>button</button>
+        <button onClick={this.handleSaveGraphs}>Save graphs</button>
       </div>
     );
   }
