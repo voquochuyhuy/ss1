@@ -56,9 +56,10 @@ class App extends React.Component {
     if (edgeExist) {
       alert("Edges exist");
     } else {
-      let SVGnodes = document.getElementById("nodes");
-      const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      g.setAttributeNS(null, "id", "node-pathline");
+      // let SVGnodes = document.getElementById("nodes");
+      // const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+      // g.setAttributeNS(null, "id", "node-pathline");
+      const node_path = document.getElementById('node-pathline');
       let edge = document.createElementNS("http://www.w3.org/2000/svg", "line");
       edge.setAttributeNS(null, "x1", x1);
       edge.setAttributeNS(null, "y1", y1);
@@ -68,8 +69,8 @@ class App extends React.Component {
       edge.setAttributeNS(null, "stroke-width", "3");
       edge.setAttributeNS(null, "fill", "none");
       edge.setAttributeNS(null, "stroke-dasharray", "5,5");
-      g.appendChild(edge);
-      SVGnodes.appendChild(g);
+      node_path.appendChild(edge);
+      // SVGnodes.appendChild(g);
     }
   }
   handleMouseClick(e) {
@@ -109,6 +110,8 @@ class App extends React.Component {
         reader.readAsText(file);
         reader.onload = async () => {
           const result = await reader.result;
+          const node_pathline = document.createElementNS("http://www.w3.org/2000/svg", "g");
+          node_pathline.setAttributeNS(null, "id", "node-pathline");
           if (document.getElementsByTagName("svg").length === 0) {
             const div = document.createElement("div");
             div.innerHTML = result.trim();
@@ -119,6 +122,14 @@ class App extends React.Component {
             newSVG.innerHTML = result.trim();
             oldSVG.parentElement.replaceChild(newSVG, oldSVG);
           }
+          const nodes = document.getElementById('nodes');
+          nodes.parentElement.appendChild(node_pathline);
+
+          const node_pathline_clone = node_pathline.cloneNode(true);
+          const nodes_clone = nodes.cloneNode(true);
+          console.log(nodes_clone);
+          nodes.replaceWith(node_pathline_clone);
+          node_pathline.replaceWith(nodes_clone);
           this.addClickEventForCircle();
           // this.testEffect();
         };
