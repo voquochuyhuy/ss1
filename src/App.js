@@ -42,11 +42,15 @@ class App extends React.Component {
       //check idVertex1 is existed in graphs
       if (graphs[idVertex1]) {
         graphs[idVertex1] = { ...graphs[idVertex1], [idVertex2]: cost };
+        graphs[idVertex2] = { ...graphs[idVertex2], [idVertex1]: cost };
         this.setState({ graphs });
       } else {
         const graph = {
           [idVertex1]: {
             [idVertex2]: cost
+          },
+          [idVertex2]: {
+            [idVertex1]: cost
           }
         };
         this.setState({ graphs: { ...graphs, ...graph } });
@@ -54,9 +58,9 @@ class App extends React.Component {
 
       //check edge exist
       let edgeExist = false;
-      if (graphs[idVertex2] && graphs[idVertex2][idVertex1]) {
-        edgeExist = true;
-      }
+      // if (graphs[idVertex2] && graphs[idVertex2][idVertex1]) {
+      //   edgeExist = true;
+      // }
       if (edgeExist) {
         alert("Edges exist");
       } else {
@@ -98,7 +102,10 @@ class App extends React.Component {
     reader.onload = e => {
       const graphsStr = e.target.result;
       const graphsJson = JSON.parse(graphsStr);
-      this.setState({ loadedGraphs: graphsJson,route:new Graph({...graphsJson}) });
+      this.setState({
+        loadedGraphs: graphsJson,
+        route: new Graph({ ...graphsJson })
+      });
     };
     reader.readAsText(e.target.files[0]);
   };
@@ -109,17 +116,22 @@ class App extends React.Component {
   }
   drawShortestPath(vertex1, vertex2) {
     const pathArr = this.findShortestPath(vertex1, vertex2);
+    console.log(pathArr);
     let X = [];
     let Y = [];
+    if (!pathArr) {
+      alert("Not found shotest path, check model graphs");
+      return;
+    }
     pathArr.forEach(vertexId => {
       console.log(vertexId);
       X.push(document.getElementById(vertexId).attributes.cx.value);
       Y.push(document.getElementById(vertexId).attributes.cy.value);
     });
     let first_vertex = document.getElementById(pathArr[0]);
-    first_vertex.setAttributeNS(null,"class","highlight-circle");
+    first_vertex.setAttributeNS(null, "class", "highlight-circle");
     let final_vertex = document.getElementById(pathArr[pathArr.length - 1]);
-    final_vertex.setAttributeNS(null,"class","highlight-circle");
+    final_vertex.setAttributeNS(null, "class", "highlight-circle");
     let SVGnodes = document.getElementById("nodes");
     var NoAnimatedPath = document.createElementNS(
       "http://www.w3.org/2000/svg",
@@ -159,28 +171,37 @@ class App extends React.Component {
         } else if (clickTarget !== this.state.edgeVertex1) {
           this.state.edgeVertex2 = clickTarget;
           this.drawEdge(this.state.edgeVertex1, this.state.edgeVertex2);
-          this.state.edgeVertex1 = null;
-          this.state.edgeVertex2 = null;
+          // this.state.edgeVertex1 = null;
+          // this.state.edgeVertex2 = null;
+          this.setState({ edgeVertex1: null, edgeVertex2: null });
           this.isDrawingEdge = false;
         }
       }
     } else if (this.state.feature === "find") {
-      //CHECK 
+      //CHECK
       // let vertex1,vertex2;
       if (!this.isFindingPath) {
         document
           .getElementById("first-vertex")
           .setAttribute("value", e.target.id);
-        this.state.vertex1 = e.target.id;
+        // this.state.vertex1 = e.target.id;
+        this.setState({ vertex1: e.target.id });
         this.isFindingPath = true;
-      } else if (this.isFindingPath) {
+      } else {
+        if (e.target.id === this.state.vertex1) {
+          alert("Vertex cannot connect it self");
+          this.setState({ vertex1: "", vertex2: "" });
+          this.isFindingPath = false;
+          return;
+        }
         document
           .getElementById("second-vertex")
           .setAttribute("value", e.target.id);
-        this.state.vertex2 = e.target.id;
+        // this.state.vertex2 = e.target.id;
+        this.setState({ vertex2: e.target.id });
         this.drawShortestPath(this.state.vertex1, this.state.vertex2);
         this.isFindingPath = false;
-        this.setState({ vertex1: null, vertex2: null });
+        this.setState({ vertex1: "", vertex2: "" });
       }
 
       // document.getElementById('first-vertex');

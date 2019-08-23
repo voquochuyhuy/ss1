@@ -1,0 +1,18 @@
+{
+    "youarehere_NODE": {
+        "L4_PATH_70_NODE": 27
+    },
+    "L4_PATH_70_NODE": {
+        "L4_PATH_69_NODE": 22
+    },
+    "L4_PATH_69_NODE": {
+        "L4_PATH_68_NODE": 17,
+        "L4_PATH_48_NODE": 21
+    },
+    "L4_PATH_68_NODE": {
+        "L4_PATH_48_NODE": 21
+    },
+    "L4_PATH_48_NODE": {
+        "L4_21B_NODE": 16
+    }
+}
