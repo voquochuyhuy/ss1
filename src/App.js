@@ -124,7 +124,7 @@ class App extends React.Component {
       return;
     }
     pathArr.forEach(vertexId => {
-      console.log(vertexId);
+      
       X.push(document.getElementById(vertexId).attributes.cx.value);
       Y.push(document.getElementById(vertexId).attributes.cy.value);
     });
@@ -146,17 +146,22 @@ class App extends React.Component {
     NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
     NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
     NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
+    NoAnimatedPath.setAttributeNS(null, "id", "noAnimation-path");
     SVGnodes.appendChild(NoAnimatedPath);
 
     var animatedPath = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "path"
     );
-    animatedPath.setAttributeNS(null, "d", `${M}`);
-    animatedPath.setAttributeNS(null, "id", "animated-path");
+    animatedPath.setAttributeNS(
+      null,
+      "d",
+      `${M}`
+    );
+    animatedPath.setAttributeNS(null, "id", "animation-path");
     animatedPath.setAttributeNS(null, "stroke-width", "3");
-    animatedPath.setAttributeNS(null, "fill", "transparent");
-    // animatedPath.setAttributeNS(null, "stroke", "red");
+    animatedPath.setAttributeNS(null,"fill","transparent")
+    
     SVGnodes.appendChild(animatedPath);
   }
   /********************END wayFiding*************************/
@@ -178,8 +183,17 @@ class App extends React.Component {
         }
       }
     } else if (this.state.feature === "find") {
-      //CHECK
-      // let vertex1,vertex2;
+      if(document.getElementById('animation-path') !== null)
+      {
+        let noAnimation_Path = document.getElementById('noAnimation-path');
+        noAnimation_Path.parentElement.removeChild(noAnimation_Path);
+        let animated_Path = document.getElementById('animation-path');
+        animated_Path.parentElement.removeChild(animated_Path);
+        let first_vertex = document.getElementById(this.state.vertex1);
+        first_vertex.removeAttribute("class");
+        let final_vertex = document.getElementById(this.state.vertex2);
+        final_vertex.removeAttribute("class");
+      }
       if (!this.isFindingPath) {
         document
           .getElementById("first-vertex")
