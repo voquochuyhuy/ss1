@@ -54,3 +54,7 @@ line {
     stroke-dashoffset: 0;
   }
 }
+.highlight-circle{
+  stroke :red;
+  stroke-width: 2px;
+}
