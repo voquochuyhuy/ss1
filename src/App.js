@@ -17,9 +17,7 @@ class App extends React.Component {
     this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
   }
   drawEdge(vertex1, vertex2) {
-	  const {graphs}  = this.state
-    // const elLine = document.getElementById('node-pathline');
-    // const edges = elLine.getElementsByTagName("line");
+    const { graphs } = this.state;
     const x1 = vertex1.getAttributeNS(null, "cx");
     const y1 = vertex1.getAttributeNS(null, "cy");
     const x2 = vertex2.getAttributeNS(null, "cx");
@@ -30,29 +28,26 @@ class App extends React.Component {
       Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
     );
     const idVertex1 = vertex1.id;
-	const idVertex2 = vertex2.id;
-	//check idVertex1 is existed in graphs
-	
-	// graphs.forEach()
-	if (graphs[idVertex1]){
-		graphs[idVertex1] = {...graphs[idVertex1], [idVertex2]: cost}
-		this.setState({ graphs });
-	}else {
-		const graph = {
-			[idVertex1]: {
-				[idVertex2]: cost
-			}
-		};
-		this.setState({ graphs: {...graphs, ...graph }});
-	}
-
+    const idVertex2 = vertex2.id;
+    //check idVertex1 is existed in graphs
+    // graphs.forEach()
+    if (graphs[idVertex1]) {
+      graphs[idVertex1] = { ...graphs[idVertex1], [idVertex2]: cost };
+      this.setState({ graphs });
+    } else {
+      const graph = {
+        [idVertex1]: {
+          [idVertex2]: cost
+        }
+      };
+      this.setState({ graphs: { ...graphs, ...graph } });
+    }
 
     //check edge exist
-    const edges = document.getElementsByTagName("line");
     let edgeExist = false;
-	if(graphs[idVertex2] && graphs[idVertex2][idVertex1]){ 
-		edgeExist = true
-	}
+    if (graphs[idVertex2] && graphs[idVertex2][idVertex1]) {
+      edgeExist = true;
+    }
     if (edgeExist) {
       alert("Edges exist");
     } else {
