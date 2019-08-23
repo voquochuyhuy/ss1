@@ -46,7 +46,7 @@ line {
   stroke:red;
   stroke-dasharray: 1300;
   stroke-dashoffset: 1300;
-  animation: dash 5s linear forwards;
+  animation: dash 7s linear forwards;
   animation-iteration-count: infinite;
 }
 @keyframes dash {

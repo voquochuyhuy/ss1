@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import pinLogo from "./pin-logo.png";
 const Graph = require("node-dijkstra");
 class App extends React.Component {
   isDrawingEdge = false;
@@ -188,7 +189,14 @@ class App extends React.Component {
     first_vertex.setAttributeNS(null, "class", "highlight-circle");
     let final_vertex = document.getElementById(pathArr[pathArr.length - 1]);
     final_vertex.setAttributeNS(null, "class", "highlight-circle");
+    const pinLogo = document.createElementNS( "http://www.w3.org/2000/svg","image")
+    pinLogo.setAttributeNS('http://www.w3.org/1999/xlink','href',`./pin-logo.png`);
+    pinLogo.setAttributeNS(null,"x",`${final_vertex.attributes.cx.value}`);
+    pinLogo.setAttributeNS(null,"y",`${final_vertex.attributes.cy.value}-10`);
+    pinLogo.setAttributeNS(null,"width",`10`);
+    pinLogo.setAttributeNS(null,"height",`10`);
     let SVGnodes = document.getElementById("nodes");
+    
     var NoAnimatedPath = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "path"
@@ -215,6 +223,7 @@ class App extends React.Component {
     animatedPath.setAttributeNS(null, "fill", "transparent");
 
     SVGnodes.appendChild(animatedPath);
+    SVGnodes.appendChild(pinLogo);
   }
   /********************END wayFiding*************************/
 
@@ -303,12 +312,13 @@ class App extends React.Component {
 	}
   };
 
-  handleFileSelect = e => {
+  handleFileSelect = async e => {
+    
     var element = document.createElement("div");
     element.innerHTML = '<input type="file">';
     var fileInput = element.firstChild;
     fileInput.click();
-    fileInput.addEventListener("change", async () => {
+    await fileInput.addEventListener("change", async () => {
       var file = fileInput.files[0];
       if (file.name.match(/\.(txt|svg)$/)) {
         var reader = new FileReader();
