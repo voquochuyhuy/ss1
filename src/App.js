@@ -22,7 +22,7 @@ class App extends React.Component {
     this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
   }
   OnDrawingEgde = () => {
-    this.setState({ feature: "draw" });
+	this.setState({ feature: "draw" });
   };
   /**@description add two vertex to graphs
    * @returns edgeExisted : if exist edge between them, return false, otherwise, null
@@ -138,7 +138,6 @@ class App extends React.Component {
   }
   /**********************START wayFiding***********************/
   async LoadGraphsFile() {
-    
     const el = await document.createElement("div");
     el.innerHTML = "<input type='file'/>";
     const fileInput = await el.firstChild;
@@ -147,20 +146,22 @@ class App extends React.Component {
     await fileInput.addEventListener("change", e => {
       console.log(".");
       if (fileInput.files[0].name.match(/\.(txt|json)$/)) {
-      this.onFileGraphsChange(e);
+        this.onFileGraphsChange(e);
+      } else {
+        alert(`File not supported, .txt or .json files only`);
       }
-      else  {
-        alert(`File not supported, .txt or .json files only`)
-      }        
     });
   }
   onFileGraphsChange = e => {
     console.log("..");
     const reader = new FileReader();
-    reader.onload = async  e => {
+    reader.onload = async e => {
       const graphsStr = await e.target.result;
       const graphsJson = JSON.parse(graphsStr);
-      this.setState({ loadedGraphs: graphsJson,route:new Graph({...graphsJson}) });
+      this.setState({
+        loadedGraphs: graphsJson,
+        route: new Graph({ ...graphsJson })
+      });
       console.log(graphsJson);
     };
     reader.readAsText(e.target.files[0]);
@@ -233,7 +234,7 @@ class App extends React.Component {
           this.isDrawingEdge = false;
         }
       }
-    } else if (this.state.feature === "find") {
+    } else if (this.state.feature === "find") {		
       if (document.getElementById("animation-path") !== null) {
         let noAnimation_Path = document.getElementById("noAnimation-path");
         noAnimation_Path.parentElement.removeChild(noAnimation_Path);
@@ -292,11 +293,17 @@ class App extends React.Component {
     }
   };
   OnWayFinding = () => {
-    this.setState({ feature: "find" });
+	this.setState({ feature: "find" });
+	const pathNodes = document.getElementsByTagName("circle");
+	for (let i = 0; i < pathNodes.length; i++) {
+	  if (pathNodes[i].id.startsWith("L4_PATH")) {
+		pathNodes[i].setAttributeNS(null, "fill", "transparent");
+		pathNodes[i].setAttributeNS(null, "stroke", "transparent");
+	  }
+	}
   };
 
   handleFileSelect = e => {
-    
     var element = document.createElement("div");
     element.innerHTML = '<input type="file">';
     var fileInput = element.firstChild;
@@ -338,8 +345,6 @@ class App extends React.Component {
         alert("File not supported, .txt or .svg files only");
       }
     });
-
-    
   };
   handleSaveGraphs = e => {
     const a = document.createElement("a");
