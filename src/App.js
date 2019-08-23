@@ -119,6 +119,10 @@ class App extends React.Component {
       X.push(document.getElementById(vertexId).attributes.cx.value);
       Y.push(document.getElementById(vertexId).attributes.cy.value);
     });
+    let first_vertex = document.getElementById(pathArr[0]);
+    first_vertex.setAttributeNS(null,"class","highlight-circle");
+    let final_vertex = document.getElementById(pathArr[pathArr.length - 1]);
+    final_vertex.setAttributeNS(null,"class","highlight-circle");
     let SVGnodes = document.getElementById("nodes");
     var NoAnimatedPath = document.createElementNS(
       "http://www.w3.org/2000/svg",
