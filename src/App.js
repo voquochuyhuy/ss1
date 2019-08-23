@@ -214,7 +214,7 @@ class App extends React.Component {
         this.setState({ vertex2: e.target.id });
         this.drawShortestPath(this.state.vertex1, this.state.vertex2);
         this.isFindingPath = false;
-        this.setState({ vertex1: "", vertex2: "" });
+        
       }
 
       // document.getElementById('first-vertex');
