@@ -16,7 +16,8 @@ class App extends React.Component {
       loadedGraphs: {},
       edgeVertex1: null,
       edgeVertex2: null,
-      feature: ""
+      feature: "",
+      route: null
     };
     this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
   }
@@ -97,17 +98,13 @@ class App extends React.Component {
     reader.onload = e => {
       const graphsStr = e.target.result;
       const graphsJson = JSON.parse(graphsStr);
-      this.setState({ loadedGraphs: graphsJson });
-      console.log("length graphsJson", graphsJson);
+      this.setState({ loadedGraphs: graphsJson,route:new Graph({...graphsJson}) });
     };
     reader.readAsText(e.target.files[0]);
   };
   findShortestPath(vertex1, vertex2) {
-    const route = new Graph({
-      ...this.state.loadedGraphs
-    });
     //vertex1 is id of element's circle vertex1
-    const path = route.path(vertex1, vertex2);
+    const path = this.state.route.path(vertex1, vertex2);
     return path;
   }
   drawShortestPath(vertex1, vertex2) {
@@ -132,14 +129,7 @@ class App extends React.Component {
     for (let i = 1; i < X.length; i++) {
       M += `L ${X[i]} ${Y[i]} `;
     }
-    NoAnimatedPath.setAttributeNS(
-      null,
-      "d",
-      // `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${
-      //   Y[3]
-      // } L ${X[4]} ${Y[4]}`
-      `${M}`
-    );
+    NoAnimatedPath.setAttributeNS(null, "d", `${M}`);
     NoAnimatedPath.setAttributeNS(null, "stroke", "red");
     NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
     NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
