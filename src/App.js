@@ -98,7 +98,60 @@ class App extends React.Component {
     }
   };
 
-  testEffect = () => {};
+  Effect = () => {
+    let X = [];
+    
+    X.push(document.getElementById("L4_24_NODE").attributes.cx.value);
+    X.push(document.getElementById("L4_21B_NODE").attributes.cx.value);
+    X.push(document.getElementById("L4_20_A_NODE").attributes.cx.value);
+    X.push(document.getElementById("L4_19_A_NODE").attributes.cx.value);
+    X.push(document.getElementById("L4_18_A_NODE").attributes.cx.value);
+    X.push(document.getElementById("L4_32_NODE").attributes.cx.value);
+    
+    let Y = [];
+    Y.push(document.getElementById("L4_24_NODE").attributes.cy.value);
+    Y.push(document.getElementById("L4_21B_NODE").attributes.cy.value);
+    Y.push(document.getElementById("L4_20_A_NODE").attributes.cy.value);
+    Y.push(document.getElementById("L4_19_A_NODE").attributes.cy.value);
+    Y.push(document.getElementById("L4_18_A_NODE").attributes.cy.value);
+    Y.push(document.getElementById("L4_32_NODE").attributes.cy.value);
+
+    // console.log(X,Y);
+    let SVGnodes = document.getElementById("nodes");
+    // for(let i = 0;i<5;i++)
+    // {
+    //   var path = document.createElementNS("http://www.w3.org/2000/svg", "line");
+    //   path.setAttributeNS(null, "x1", `${X[i]}`);
+    //   path.setAttributeNS(null, "y1", `${Y[i]}`);
+    //   path.setAttributeNS(null, "x2", `${X[i+1]}`);
+    //   path.setAttributeNS(null, "y2", `${Y[i+1]}`);
+    //   path.setAttributeNS(null, "stroke", "red");
+    //   path.setAttributeNS(null, "stroke-width",  "3");
+    //   path.setAttributeNS(null, "fill", "none");
+    //   path.setAttributeNS(null, "stroke-dasharray", "10");
+    //   SVGnodes.appendChild(path);
+    // }
+      var NoAnimatedPath =  document.createElementNS("http://www.w3.org/2000/svg", "path");
+      NoAnimatedPath.setAttributeNS(null, "d", `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${Y[3]} L ${X[4]} ${Y[4]}`);
+      NoAnimatedPath.setAttributeNS(null, "stroke", "red");
+      NoAnimatedPath.setAttributeNS(null, "stroke-width","3");
+      NoAnimatedPath.setAttributeNS(null, "fill", "none");
+      NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
+      SVGnodes.appendChild(NoAnimatedPath);
+
+      var animatedPath =  document.createElementNS("http://www.w3.org/2000/svg", "path");
+      animatedPath.setAttributeNS(null, "d", `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${Y[3]} L ${X[4]} ${Y[4]}`);
+      animatedPath.setAttributeNS(null, "id", "animated-path");
+      animatedPath.setAttributeNS(null, "stroke-width", "3");
+      // animatedPath.setAttributeNS(null, "stroke", "red");
+      SVGnodes.appendChild(animatedPath);
+  };
+  OnDrawingEgde = ()=>{
+    
+  }
+  OnDeleteEgde = ()=>{
+    
+  }
   handleFileSelect = e => {
     var element = document.createElement("div");
     element.innerHTML = '<input type="file">';
@@ -131,7 +184,7 @@ class App extends React.Component {
           nodes.replaceWith(node_pathline_clone);
           node_pathline.replaceWith(nodes_clone);
           this.addClickEventForCircle();
-          // this.testEffect();
+          this.Effect();
         };
       } else {
         alert("File not supported, .txt or .svg files only");
@@ -158,6 +211,11 @@ class App extends React.Component {
       <div className="App">
         <button onClick={this.handleFileSelect}>button</button>
         <button onClick={this.handleSaveGraphs}>Save graphs</button>
+        <div>
+          {/* <input type="radio" id="draw"  onChange={()=>{this.OnDrawingEgde()}} name="chooseFeature"></input>DRAW <br/>
+          <input type="radio" id="delete" onChange={()=>{this.OnDeleteEgde()}} name="chooseFeature"></input>DELETE <br/> */}
+  
+        </div>
       </div>
     );
   }
