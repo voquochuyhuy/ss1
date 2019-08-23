@@ -44,8 +44,8 @@ line {
 #animation-path {
 
   stroke:red;
-  stroke-dasharray: 1000;
-  stroke-dashoffset: 1000;
+  stroke-dasharray: 1300;
+  stroke-dashoffset: 1300;
   animation: dash 5s linear forwards;
   animation-iteration-count: infinite;
 }

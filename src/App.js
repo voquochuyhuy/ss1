@@ -87,21 +87,27 @@ class App extends React.Component {
   }
   /**********************START wayFiding***********************/
   async LoadGraphsFile() {
-    console.log("???");
-    const el = document.createElement("div");
+    
+    const el = await document.createElement("div");
     el.innerHTML = "<input type='file'/>";
     const fileInput = await el.firstChild;
     await fileInput.click();
+    console.log(el);
     await fileInput.addEventListener("change", e => {
+      console.log(".");
+      if (fileInput.files[0].name.match(/\.(txt|json)$/)) {
       this.onFileGraphsChange(e);
+      }
+      else  {
+        alert(`File not supported, .txt or .json files only`)
+      }        
     });
-    
   }
   onFileGraphsChange = e => {
     console.log("..");
     const reader = new FileReader();
-    reader.onload = e => {
-      const graphsStr = e.target.result;
+    reader.onload = async  e => {
+      const graphsStr = await e.target.result;
       const graphsJson = JSON.parse(graphsStr);
       this.setState({ loadedGraphs: graphsJson,route:new Graph({...graphsJson}) });
       console.log(graphsJson);
@@ -250,11 +256,11 @@ class App extends React.Component {
     element.innerHTML = '<input type="file">';
     var fileInput = element.firstChild;
     fileInput.click();
-    fileInput.addEventListener("change", () => {
+    fileInput.addEventListener("change", async () => {
       var file = fileInput.files[0];
       if (file.name.match(/\.(txt|svg)$/)) {
         var reader = new FileReader();
-        reader.readAsText(file);
+        await reader.readAsText(file);
         reader.onload = async () => {
           const result = await reader.result;
           const node_pathline = document.createElementNS(
