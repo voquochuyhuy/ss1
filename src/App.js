@@ -12,79 +12,90 @@ class App extends React.Component {
       edges: [],
       graphs: [],
       edgeVertex1: null,
-      edgeVertex2: null
+      edgeVertex2: null,
+      feature :"",
     };
     this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
   }
+  OnDrawingEgde = ()=>{
+    this.setState({feature:"draw"});
+  }
   drawEdge(vertex1, vertex2) {
-	  const {graphs}  = this.state
-    // const elLine = document.getElementById('node-pathline');
-    // const edges = elLine.getElementsByTagName("line");
-    const x1 = vertex1.getAttributeNS(null, "cx");
-    const y1 = vertex1.getAttributeNS(null, "cy");
-    const x2 = vertex2.getAttributeNS(null, "cx");
-    const y2 = vertex2.getAttributeNS(null, "cy");
-    const deltaX = Math.abs(parseInt(x2) - parseInt(x1));
-    const deltaY = Math.abs(parseInt(y2) - parseInt(y1));
-    const cost = Math.round(
-      Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
-    );
-    const idVertex1 = vertex1.id;
-	const idVertex2 = vertex2.id;
-	//check idVertex1 is existed in graphs
-	
-	// graphs.forEach()
-	if (graphs[idVertex1]){
-		graphs[idVertex1] = {...graphs[idVertex1], [idVertex2]: cost}
-		this.setState({ graphs });
-	}else {
-		const graph = {
-			[idVertex1]: {
-				[idVertex2]: cost
-			}
-		};
-		this.setState({ graphs: {...graphs, ...graph }});
-	}
+    if(this.state.feature === "draw")
+    {
+      const {graphs}  = this.state
+      // const elLine = document.getElementById('node-pathline');
+      // const edges = elLine.getElementsByTagName("line");
+      const x1 = vertex1.getAttributeNS(null, "cx");
+      const y1 = vertex1.getAttributeNS(null, "cy");
+      const x2 = vertex2.getAttributeNS(null, "cx");
+      const y2 = vertex2.getAttributeNS(null, "cy");
+      const deltaX = Math.abs(parseInt(x2) - parseInt(x1));
+      const deltaY = Math.abs(parseInt(y2) - parseInt(y1));
+      const cost = Math.round(
+        Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
+      );
+      const idVertex1 = vertex1.id;
+    const idVertex2 = vertex2.id;
+    //check idVertex1 is existed in graphs
+    
+    // graphs.forEach()
+    if (graphs[idVertex1]){
+      graphs[idVertex1] = {...graphs[idVertex1], [idVertex2]: cost}
+      this.setState({ graphs });
+    }else {
+      const graph = {
+        [idVertex1]: {
+          [idVertex2]: cost
+        }
+      };
+      this.setState({ graphs: {...graphs, ...graph }});
+    }
 
 
-    //check edge exist
-    const edges = document.getElementsByTagName("line");
-    let edgeExist = false;
-	if(graphs[idVertex2] && graphs[idVertex2][idVertex1]){ 
-		edgeExist = true
-	}
-    if (edgeExist) {
-      alert("Edges exist");
-    } else {
-      // let SVGnodes = document.getElementById("nodes");
-      // const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      // g.setAttributeNS(null, "id", "node-pathline");
-      const node_path = document.getElementById('node-pathline');
-      let edge = document.createElementNS("http://www.w3.org/2000/svg", "line");
-      edge.setAttributeNS(null, "x1", x1);
-      edge.setAttributeNS(null, "y1", y1);
-      edge.setAttributeNS(null, "x2", x2);
-      edge.setAttributeNS(null, "y2", y2);
-      edge.setAttributeNS(null, "stroke", "red");
-      edge.setAttributeNS(null, "stroke-width", "3");
-      edge.setAttributeNS(null, "fill", "none");
-      edge.setAttributeNS(null, "stroke-dasharray", "5,5");
-      node_path.appendChild(edge);
-      // SVGnodes.appendChild(g);
+      //check edge exist
+      const edges = document.getElementsByTagName("line");
+      let edgeExist = false;
+    if(graphs[idVertex2] && graphs[idVertex2][idVertex1]){ 
+      edgeExist = true
+    }
+      if (edgeExist) {
+        alert("Edges exist");
+      } else {
+        // let SVGnodes = document.getElementById("nodes");
+        // const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        // g.setAttributeNS(null, "id", "node-pathline");
+        const node_path = document.getElementById('node-pathline');
+        let edge = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        edge.setAttributeNS(null, "x1", x1);
+        edge.setAttributeNS(null, "y1", y1);
+        edge.setAttributeNS(null, "x2", x2);
+        edge.setAttributeNS(null, "y2", y2);
+        edge.setAttributeNS(null, "stroke", "red");
+        edge.setAttributeNS(null, "stroke-width", "3");
+        edge.setAttributeNS(null, "fill", "none");
+        edge.setAttributeNS(null, "stroke-dasharray", "5,5");
+        edge.addEventListener("click", ()=>{this.DeleteEgde(edge)});
+        node_path.appendChild(edge);
+        // SVGnodes.appendChild(g);
+      }
     }
   }
   handleMouseClick(e) {
-    const clickTarget = e.target;
-    if (clickTarget.nodeName === "circle") {
-      if (!this.isDrawingEdge) {
-        this.state.edgeVertex1 = clickTarget;
-        this.isDrawingEdge = true;
-      } else if (clickTarget !== this.state.edgeVertex1) {
-        this.state.edgeVertex2 = clickTarget;
-        this.drawEdge(this.state.edgeVertex1, this.state.edgeVertex2);
-        this.state.edgeVertex1 = null;
-        this.state.edgeVertex2 = null;
-        this.isDrawingEdge = false;
+    if(this.state.feature === "draw")
+    {
+      const clickTarget = e.target;
+      if (clickTarget.nodeName === "circle") {
+        if (!this.isDrawingEdge) {
+          this.state.edgeVertex1 = clickTarget;
+          this.isDrawingEdge = true;
+        } else if (clickTarget !== this.state.edgeVertex1) {
+          this.state.edgeVertex2 = clickTarget;
+          this.drawEdge(this.state.edgeVertex1, this.state.edgeVertex2);
+          this.state.edgeVertex1 = null;
+          this.state.edgeVertex2 = null;
+          this.isDrawingEdge = false;
+        }
       }
     }
   }
@@ -116,41 +127,38 @@ class App extends React.Component {
     Y.push(document.getElementById("L4_18_A_NODE").attributes.cy.value);
     Y.push(document.getElementById("L4_32_NODE").attributes.cy.value);
 
-    // console.log(X,Y);
     let SVGnodes = document.getElementById("nodes");
-    // for(let i = 0;i<5;i++)
-    // {
-    //   var path = document.createElementNS("http://www.w3.org/2000/svg", "line");
-    //   path.setAttributeNS(null, "x1", `${X[i]}`);
-    //   path.setAttributeNS(null, "y1", `${Y[i]}`);
-    //   path.setAttributeNS(null, "x2", `${X[i+1]}`);
-    //   path.setAttributeNS(null, "y2", `${Y[i+1]}`);
-    //   path.setAttributeNS(null, "stroke", "red");
-    //   path.setAttributeNS(null, "stroke-width",  "3");
-    //   path.setAttributeNS(null, "fill", "none");
-    //   path.setAttributeNS(null, "stroke-dasharray", "10");
-    //   SVGnodes.appendChild(path);
-    // }
-      var NoAnimatedPath =  document.createElementNS("http://www.w3.org/2000/svg", "path");
-      NoAnimatedPath.setAttributeNS(null, "d", `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${Y[3]} L ${X[4]} ${Y[4]}`);
-      NoAnimatedPath.setAttributeNS(null, "stroke", "red");
-      NoAnimatedPath.setAttributeNS(null, "stroke-width","3");
-      NoAnimatedPath.setAttributeNS(null, "fill", "none");
-      NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
-      SVGnodes.appendChild(NoAnimatedPath);
+    var NoAnimatedPath =  document.createElementNS("http://www.w3.org/2000/svg", "path");
+    NoAnimatedPath.setAttributeNS(null, "d", `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${Y[3]} L ${X[4]} ${Y[4]}`);
+    NoAnimatedPath.setAttributeNS(null, "stroke", "red");
+    NoAnimatedPath.setAttributeNS(null, "stroke-width","3");
+    NoAnimatedPath.setAttributeNS(null, "fill", "none");
+    NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
+    SVGnodes.appendChild(NoAnimatedPath);
 
-      var animatedPath =  document.createElementNS("http://www.w3.org/2000/svg", "path");
-      animatedPath.setAttributeNS(null, "d", `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${Y[3]} L ${X[4]} ${Y[4]}`);
-      animatedPath.setAttributeNS(null, "id", "animated-path");
-      animatedPath.setAttributeNS(null, "stroke-width", "3");
-      // animatedPath.setAttributeNS(null, "stroke", "red");
-      SVGnodes.appendChild(animatedPath);
+    var animatedPath =  document.createElementNS("http://www.w3.org/2000/svg", "path");
+    animatedPath.setAttributeNS(null, "d", `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${Y[3]} L ${X[4]} ${Y[4]}`);
+    animatedPath.setAttributeNS(null, "id", "animated-path");
+    animatedPath.setAttributeNS(null, "stroke-width", "3");
+    // animatedPath.setAttributeNS(null, "stroke", "red");
+    SVGnodes.appendChild(animatedPath);
   };
-  OnDrawingEgde = ()=>{
-    
-  }
+  
   OnDeleteEgde = ()=>{
-    
+    this.setState({feature:"delete"});
+  }
+  DeleteEgde = (edge)=>{
+    console.log("ham` xoa")
+    if(this.state.feature === "delete")
+    {
+      edge.parentElement.removeChild(edge);
+    }
+  }
+  OnWayFinding = ()=>{
+    this.setState({feature:"find"});
+  }
+  WayFinding = ()=>{
+
   }
   handleFileSelect = e => {
     var element = document.createElement("div");
@@ -212,9 +220,18 @@ class App extends React.Component {
         <button onClick={this.handleFileSelect}>button</button>
         <button onClick={this.handleSaveGraphs}>Save graphs</button>
         <div>
-          {/* <input type="radio" id="draw"  onChange={()=>{this.OnDrawingEgde()}} name="chooseFeature"></input>DRAW <br/>
-          <input type="radio" id="delete" onChange={()=>{this.OnDeleteEgde()}} name="chooseFeature"></input>DELETE <br/> */}
-  
+          <input type="radio" id="draw"  onChange={()=>{this.OnDrawingEgde()}} name="chooseFeature"></input>DRAW <br/>
+          <input type="radio" id="delete" onChange={()=>{this.OnDeleteEgde()}} name="chooseFeature"></input>DELETE <br/>
+          <input type="radio" id="way-Finding" onChange={()=>{this.OnWayFinding()}} name="chooseFeature"></input>Way Finding <br/>
+          {
+            this.state.feature === "find" ? (
+              <div>
+              <input type="text" ></input>
+              <span >      </span>
+              <input type="text" ></input>
+              </div>
+            ):null
+          }
         </div>
       </div>
     );
