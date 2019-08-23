@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+import Menu from './menu'
 class App extends React.Component {
   isDrawingEdge = false;
   vertices = null;
@@ -30,7 +31,6 @@ class App extends React.Component {
     const idVertex1 = vertex1.id;
     const idVertex2 = vertex2.id;
     //check idVertex1 is existed in graphs
-    // graphs.forEach()
     if (graphs[idVertex1]) {
       graphs[idVertex1] = { ...graphs[idVertex1], [idVertex2]: cost };
       this.setState({ graphs });
@@ -51,9 +51,6 @@ class App extends React.Component {
     if (edgeExist) {
       alert("Edges exist");
     } else {
-      // let SVGnodes = document.getElementById("nodes");
-      // const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-      // g.setAttributeNS(null, "id", "node-pathline");
       const node_path = document.getElementById('node-pathline');
       let edge = document.createElementNS("http://www.w3.org/2000/svg", "line");
       edge.setAttributeNS(null, "x1", x1);
@@ -67,6 +64,15 @@ class App extends React.Component {
       node_path.appendChild(edge);
       // SVGnodes.appendChild(g);
     }
+  }
+  wayFiding(){
+    const el = document.createElement("div");
+    el.innerHTML = "<input type='file'/>";
+    const fileInput = el.firstChild;
+    fileInput.addEventListener("change",)
+  }
+  handleFileGraphsChange(e){
+    
   }
   handleMouseClick(e) {
     const clickTarget = e.target;
@@ -86,7 +92,7 @@ class App extends React.Component {
   addClickEventForCircle = () => {
     const vertices = document.getElementsByTagName("circle");
     this.vertices = vertices;
-    for (let i = 0; i < this.vertices.length; i++) {
+    for (let i = 0; i < vertices.length; i++) {
       vertices[i].addEventListener("click", e => {
         this.handleMouseClick(e);
       });
@@ -153,6 +159,7 @@ class App extends React.Component {
       <div className="App">
         <button onClick={this.handleFileSelect}>button</button>
         <button onClick={this.handleSaveGraphs}>Save graphs</button>
+        <Menu/>
       </div>
     );
   }
