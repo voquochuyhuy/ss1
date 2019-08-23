@@ -137,26 +137,31 @@ class App extends React.Component {
     }
   }
   /**********************START wayFiding***********************/
-  LoadGraphsFile() {
-    console.log("???");
-    const el = document.createElement("div");
+  async LoadGraphsFile() {
+    
+    const el = await document.createElement("div");
     el.innerHTML = "<input type='file'/>";
-    const fileInput = el.firstChild;
-    fileInput.addEventListener("change", e => {
+    const fileInput = await el.firstChild;
+    await fileInput.click();
+    console.log(el);
+    await fileInput.addEventListener("change", e => {
+      console.log(".");
+      if (fileInput.files[0].name.match(/\.(txt|json)$/)) {
       this.onFileGraphsChange(e);
+      }
+      else  {
+        alert(`File not supported, .txt or .json files only`)
+      }        
     });
-    fileInput.click();
   }
   onFileGraphsChange = e => {
     console.log("..");
     const reader = new FileReader();
-    reader.onload = e => {
-      const graphsStr = e.target.result;
+    reader.onload = async  e => {
+      const graphsStr = await e.target.result;
       const graphsJson = JSON.parse(graphsStr);
-      this.setState({
-        loadedGraphs: graphsJson,
-        route: new Graph({ ...graphsJson })
-      });
+      this.setState({ loadedGraphs: graphsJson,route:new Graph({...graphsJson}) });
+      console.log(graphsJson);
     };
     reader.readAsText(e.target.files[0]);
   };
@@ -192,7 +197,7 @@ class App extends React.Component {
       M += `L ${X[i]} ${Y[i]} `;
     }
     NoAnimatedPath.setAttributeNS(null, "d", `${M}`);
-    NoAnimatedPath.setAttributeNS(null, "stroke", "red");
+    NoAnimatedPath.setAttributeNS(null, "stroke", "rgb(247, 199, 0)");
     NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
     NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
     NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
@@ -291,14 +296,16 @@ class App extends React.Component {
   };
 
   handleFileSelect = e => {
+    
     var element = document.createElement("div");
     element.innerHTML = '<input type="file">';
     var fileInput = element.firstChild;
-    fileInput.addEventListener("change", () => {
+    fileInput.click();
+    fileInput.addEventListener("change", async () => {
       var file = fileInput.files[0];
       if (file.name.match(/\.(txt|svg)$/)) {
         var reader = new FileReader();
-        reader.readAsText(file);
+        await reader.readAsText(file);
         reader.onload = async () => {
           const result = await reader.result;
           const node_pathline = document.createElementNS(
@@ -332,7 +339,7 @@ class App extends React.Component {
       }
     });
 
-    fileInput.click();
+    
   };
   handleSaveGraphs = e => {
     const a = document.createElement("a");
