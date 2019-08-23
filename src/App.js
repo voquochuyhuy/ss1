@@ -1,6 +1,6 @@
 import React from "react";
 import "./App.css";
-import Menu from './menu'
+const Graph = require("node-dijkstra");
 class App extends React.Component {
   isDrawingEdge = false;
   vertices = null;
@@ -51,7 +51,7 @@ class App extends React.Component {
     if (edgeExist) {
       alert("Edges exist");
     } else {
-      const node_path = document.getElementById('node-pathline');
+      const node_path = document.getElementById("node-pathline");
       let edge = document.createElementNS("http://www.w3.org/2000/svg", "line");
       edge.setAttributeNS(null, "x1", x1);
       edge.setAttributeNS(null, "y1", y1);
@@ -65,15 +65,88 @@ class App extends React.Component {
       // SVGnodes.appendChild(g);
     }
   }
-  wayFiding(){
+  /**********************START wayFiding***********************/
+  wayFiding() {
     const el = document.createElement("div");
     el.innerHTML = "<input type='file'/>";
     const fileInput = el.firstChild;
-    fileInput.addEventListener("change",)
+    fileInput.addEventListener("change", this.onFileGraphsChange);
   }
-  handleFileGraphsChange(e){
-    
+  onFileGraphsChange = e => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const graphsStr = e.target.result;
+      const graphsJson = JSON.parse(graphsStr);
+      console.log("length graphsJson", graphsJson.length);
+    };
+    reader.readAsText(e.target.files[0]);
+  };
+  findShortestPath(graphs, vertex1, vertex2) {
+    const route = new Graph({
+      ...graphs
+    });
+    //vertex1 is id of element's circle vertex1
+    const path = route.path(vertex1, vertex2);
+    return path;
   }
+  drawShortestPath(graphs, vertex1, vertex2) {
+    const pathArr = this.findShortestPath(graphs, vertex1, vertex2);
+    let X = [];
+    let Y = [];
+    pathArr.forEach(vertexId => {
+      X.push(document.getElementById(vertexId).attributes.cx.value);
+      Y.push(document.getElementById(vertexId).attributes.cy.value);
+    });
+    // X.push(document.getElementById("L4_24_NODE").attributes.cx.value);
+    // X.push(document.getElementById("L4_21B_NODE").attributes.cx.value);
+    // X.push(document.getElementById("L4_20_A_NODE").attributes.cx.value);
+    // X.push(document.getElementById("L4_19_A_NODE").attributes.cx.value);
+    // X.push(document.getElementById("L4_18_A_NODE").attributes.cx.value);
+    // X.push(document.getElementById("L4_32_NODE").attributes.cx.value);
+
+    // Y.push(document.getElementById("L4_24_NODE").attributes.cy.value);
+    // Y.push(document.getElementById("L4_21B_NODE").attributes.cy.value);
+    // Y.push(document.getElementById("L4_20_A_NODE").attributes.cy.value);
+    // Y.push(document.getElementById("L4_19_A_NODE").attributes.cy.value);
+    // Y.push(document.getElementById("L4_18_A_NODE").attributes.cy.value);
+    // Y.push(document.getElementById("L4_32_NODE").attributes.cy.value);
+
+    let SVGnodes = document.getElementById("nodes");
+    var NoAnimatedPath = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    NoAnimatedPath.setAttributeNS(
+      null,
+      "d",
+      `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${
+        Y[3]
+      } L ${X[4]} ${Y[4]}`
+    );
+    NoAnimatedPath.setAttributeNS(null, "stroke", "red");
+    NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
+    NoAnimatedPath.setAttributeNS(null, "fill", "none");
+    NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
+    SVGnodes.appendChild(NoAnimatedPath);
+
+    var animatedPath = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    animatedPath.setAttributeNS(
+      null,
+      "d",
+      `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${
+        Y[3]
+      } L ${X[4]} ${Y[4]}`
+    );
+    animatedPath.setAttributeNS(null, "id", "animated-path");
+    animatedPath.setAttributeNS(null, "stroke-width", "3");
+    // animatedPath.setAttributeNS(null, "stroke", "red");
+    SVGnodes.appendChild(animatedPath);
+  }
+  /********************END wayFiding*************************/
+
   handleMouseClick(e) {
     const clickTarget = e.target;
     if (clickTarget.nodeName === "circle") {
@@ -98,8 +171,8 @@ class App extends React.Component {
       });
     }
   };
-
-  testEffect = () => {};
+  OnDrawingEgde = () => {};
+  OnDeleteEgde = () => {};
   handleFileSelect = e => {
     var element = document.createElement("div");
     element.innerHTML = '<input type="file">';
@@ -111,7 +184,10 @@ class App extends React.Component {
         reader.readAsText(file);
         reader.onload = async () => {
           const result = await reader.result;
-          const node_pathline = document.createElementNS("http://www.w3.org/2000/svg", "g");
+          const node_pathline = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "g"
+          );
           node_pathline.setAttributeNS(null, "id", "node-pathline");
           if (document.getElementsByTagName("svg").length === 0) {
             const div = document.createElement("div");
@@ -123,7 +199,7 @@ class App extends React.Component {
             newSVG.innerHTML = result.trim();
             oldSVG.parentElement.replaceChild(newSVG, oldSVG);
           }
-          const nodes = document.getElementById('nodes');
+          const nodes = document.getElementById("nodes");
           nodes.parentElement.appendChild(node_pathline);
 
           const node_pathline_clone = node_pathline.cloneNode(true);
@@ -132,7 +208,7 @@ class App extends React.Component {
           nodes.replaceWith(node_pathline_clone);
           node_pathline.replaceWith(nodes_clone);
           this.addClickEventForCircle();
-          // this.testEffect();
+          // this.Effect();
         };
       } else {
         alert("File not supported, .txt or .svg files only");
@@ -159,7 +235,10 @@ class App extends React.Component {
       <div className="App">
         <button onClick={this.handleFileSelect}>button</button>
         <button onClick={this.handleSaveGraphs}>Save graphs</button>
-        <Menu/>
+        <div>
+          {/* <input type="radio" id="draw"  onChange={()=>{this.OnDrawingEgde()}} name="chooseFeature"></input>DRAW <br/>
+          <input type="radio" id="delete" onChange={()=>{this.OnDeleteEgde()}} name="chooseFeature"></input>DELETE <br/> */}
+        </div>
       </div>
     );
   }
