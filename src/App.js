@@ -82,15 +82,16 @@ class App extends React.Component {
     }
   }
   /**********************START wayFiding***********************/
-  LoadGraphsFile() {
+  async LoadGraphsFile() {
     console.log("???");
     const el = document.createElement("div");
     el.innerHTML = "<input type='file'/>";
-    const fileInput = el.firstChild;
-    fileInput.addEventListener("change", e => {
+    const fileInput = await el.firstChild;
+    await fileInput.click();
+    await fileInput.addEventListener("change", e => {
       this.onFileGraphsChange(e);
     });
-    fileInput.click();
+    
   }
   onFileGraphsChange = e => {
     console.log("..");
@@ -99,6 +100,7 @@ class App extends React.Component {
       const graphsStr = e.target.result;
       const graphsJson = JSON.parse(graphsStr);
       this.setState({ loadedGraphs: graphsJson,route:new Graph({...graphsJson}) });
+      console.log(graphsJson);
     };
     reader.readAsText(e.target.files[0]);
   };
@@ -130,7 +132,7 @@ class App extends React.Component {
       M += `L ${X[i]} ${Y[i]} `;
     }
     NoAnimatedPath.setAttributeNS(null, "d", `${M}`);
-    NoAnimatedPath.setAttributeNS(null, "stroke", "red");
+    NoAnimatedPath.setAttributeNS(null, "stroke", "rgb(247, 199, 0)");
     NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
     NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
     NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
@@ -224,9 +226,11 @@ class App extends React.Component {
   };
 
   handleFileSelect = e => {
+    
     var element = document.createElement("div");
     element.innerHTML = '<input type="file">';
     var fileInput = element.firstChild;
+    fileInput.click();
     fileInput.addEventListener("change", () => {
       var file = fileInput.files[0];
       if (file.name.match(/\.(txt|svg)$/)) {
@@ -265,7 +269,7 @@ class App extends React.Component {
       }
     });
 
-    fileInput.click();
+    
   };
   handleSaveGraphs = e => {
     const a = document.createElement("a");
