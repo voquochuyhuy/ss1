@@ -1,5 +1,6 @@
 import React from "react";
 import "./App.css";
+const Graph = require("node-dijkstra");
 class App extends React.Component {
   isDrawingEdge = false;
   vertices = null;
@@ -21,11 +22,10 @@ class App extends React.Component {
     this.setState({feature:"draw"});
   }
   drawEdge(vertex1, vertex2) {
+    console.log('draw');
     if(this.state.feature === "draw")
     {
-      const {graphs}  = this.state
-      // const elLine = document.getElementById('node-pathline');
-      // const edges = elLine.getElementsByTagName("line");
+      const { graphs } = this.state;
       const x1 = vertex1.getAttributeNS(null, "cx");
       const y1 = vertex1.getAttributeNS(null, "cy");
       const x2 = vertex2.getAttributeNS(null, "cx");
@@ -36,36 +36,29 @@ class App extends React.Component {
         Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
       );
       const idVertex1 = vertex1.id;
-    const idVertex2 = vertex2.id;
-    //check idVertex1 is existed in graphs
-    
-    // graphs.forEach()
-    if (graphs[idVertex1]){
-      graphs[idVertex1] = {...graphs[idVertex1], [idVertex2]: cost}
-      this.setState({ graphs });
-    }else {
-      const graph = {
-        [idVertex1]: {
-          [idVertex2]: cost
-        }
-      };
-      this.setState({ graphs: {...graphs, ...graph }});
-    }
-
+      const idVertex2 = vertex2.id;
+      //check idVertex1 is existed in graphs
+      if (graphs[idVertex1]) {
+        graphs[idVertex1] = { ...graphs[idVertex1], [idVertex2]: cost };
+        this.setState({ graphs });
+      } else {
+        const graph = {
+          [idVertex1]: {
+            [idVertex2]: cost
+          }
+        };
+        this.setState({ graphs: { ...graphs, ...graph } });
+      }
 
       //check edge exist
-      const edges = document.getElementsByTagName("line");
       let edgeExist = false;
-    if(graphs[idVertex2] && graphs[idVertex2][idVertex1]){ 
-      edgeExist = true
-    }
+      if (graphs[idVertex2] && graphs[idVertex2][idVertex1]) {
+        edgeExist = true;
+      }
       if (edgeExist) {
         alert("Edges exist");
       } else {
-        // let SVGnodes = document.getElementById("nodes");
-        // const g = document.createElementNS("http://www.w3.org/2000/svg", "g");
-        // g.setAttributeNS(null, "id", "node-pathline");
-        const node_path = document.getElementById('node-pathline');
+        const node_path = document.getElementById("node-pathline");
         let edge = document.createElementNS("http://www.w3.org/2000/svg", "line");
         edge.setAttributeNS(null, "x1", x1);
         edge.setAttributeNS(null, "y1", y1);
@@ -75,12 +68,94 @@ class App extends React.Component {
         edge.setAttributeNS(null, "stroke-width", "3");
         edge.setAttributeNS(null, "fill", "none");
         edge.setAttributeNS(null, "stroke-dasharray", "5,5");
-        edge.addEventListener("click", ()=>{this.DeleteEgde(edge)});
+        edge.addEventListener("click",()=>{this.DeleteEgde(edge)});
         node_path.appendChild(edge);
         // SVGnodes.appendChild(g);
       }
     }
   }
+  /**********************START wayFiding***********************/
+  wayFiding() {
+    const el = document.createElement("div");
+    el.innerHTML = "<input type='file'/>";
+    const fileInput = el.firstChild;
+    fileInput.addEventListener("change", this.onFileGraphsChange);
+  }
+  onFileGraphsChange = e => {
+    const reader = new FileReader();
+    reader.onload = e => {
+      const graphsStr = e.target.result;
+      const graphsJson = JSON.parse(graphsStr);
+      console.log("length graphsJson", graphsJson.length);
+    };
+    reader.readAsText(e.target.files[0]);
+  };
+  findShortestPath(graphs, vertex1, vertex2) {
+    const route = new Graph({
+      ...graphs
+    });
+    //vertex1 is id of element's circle vertex1
+    const path = route.path(vertex1, vertex2);
+    return path;
+  }
+  drawShortestPath(graphs, vertex1, vertex2) {
+    const pathArr = this.findShortestPath(graphs, vertex1, vertex2);
+    let X = [];
+    let Y = [];
+    pathArr.forEach(vertexId => {
+      X.push(document.getElementById(vertexId).attributes.cx.value);
+      Y.push(document.getElementById(vertexId).attributes.cy.value);
+    });
+    // X.push(document.getElementById("L4_24_NODE").attributes.cx.value);
+    // X.push(document.getElementById("L4_21B_NODE").attributes.cx.value);
+    // X.push(document.getElementById("L4_20_A_NODE").attributes.cx.value);
+    // X.push(document.getElementById("L4_19_A_NODE").attributes.cx.value);
+    // X.push(document.getElementById("L4_18_A_NODE").attributes.cx.value);
+    // X.push(document.getElementById("L4_32_NODE").attributes.cx.value);
+
+    // Y.push(document.getElementById("L4_24_NODE").attributes.cy.value);
+    // Y.push(document.getElementById("L4_21B_NODE").attributes.cy.value);
+    // Y.push(document.getElementById("L4_20_A_NODE").attributes.cy.value);
+    // Y.push(document.getElementById("L4_19_A_NODE").attributes.cy.value);
+    // Y.push(document.getElementById("L4_18_A_NODE").attributes.cy.value);
+    // Y.push(document.getElementById("L4_32_NODE").attributes.cy.value);
+
+    let SVGnodes = document.getElementById("nodes");
+    var NoAnimatedPath = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    NoAnimatedPath.setAttributeNS(
+      null,
+      "d",
+      `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${
+        Y[3]
+      } L ${X[4]} ${Y[4]}`
+    );
+    NoAnimatedPath.setAttributeNS(null, "stroke", "red");
+    NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
+    NoAnimatedPath.setAttributeNS(null, "fill", "none");
+    NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
+    SVGnodes.appendChild(NoAnimatedPath);
+
+    var animatedPath = document.createElementNS(
+      "http://www.w3.org/2000/svg",
+      "path"
+    );
+    animatedPath.setAttributeNS(
+      null,
+      "d",
+      `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${
+        Y[3]
+      } L ${X[4]} ${Y[4]}`
+    );
+    animatedPath.setAttributeNS(null, "id", "animated-path");
+    animatedPath.setAttributeNS(null, "stroke-width", "3");
+    // animatedPath.setAttributeNS(null, "stroke", "red");
+    SVGnodes.appendChild(animatedPath);
+  }
+  /********************END wayFiding*************************/
+
   handleMouseClick(e) {
     if(this.state.feature === "draw")
     {
@@ -102,53 +177,21 @@ class App extends React.Component {
   addClickEventForCircle = () => {
     const vertices = document.getElementsByTagName("circle");
     this.vertices = vertices;
-    for (let i = 0; i < this.vertices.length; i++) {
+    for (let i = 0; i < vertices.length; i++) {
       vertices[i].addEventListener("click", e => {
         this.handleMouseClick(e);
       });
     }
   };
 
-  Effect = () => {
-    let X = [];
-    
-    X.push(document.getElementById("L4_24_NODE").attributes.cx.value);
-    X.push(document.getElementById("L4_21B_NODE").attributes.cx.value);
-    X.push(document.getElementById("L4_20_A_NODE").attributes.cx.value);
-    X.push(document.getElementById("L4_19_A_NODE").attributes.cx.value);
-    X.push(document.getElementById("L4_18_A_NODE").attributes.cx.value);
-    X.push(document.getElementById("L4_32_NODE").attributes.cx.value);
-    
-    let Y = [];
-    Y.push(document.getElementById("L4_24_NODE").attributes.cy.value);
-    Y.push(document.getElementById("L4_21B_NODE").attributes.cy.value);
-    Y.push(document.getElementById("L4_20_A_NODE").attributes.cy.value);
-    Y.push(document.getElementById("L4_19_A_NODE").attributes.cy.value);
-    Y.push(document.getElementById("L4_18_A_NODE").attributes.cy.value);
-    Y.push(document.getElementById("L4_32_NODE").attributes.cy.value);
 
-    let SVGnodes = document.getElementById("nodes");
-    var NoAnimatedPath =  document.createElementNS("http://www.w3.org/2000/svg", "path");
-    NoAnimatedPath.setAttributeNS(null, "d", `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${Y[3]} L ${X[4]} ${Y[4]}`);
-    NoAnimatedPath.setAttributeNS(null, "stroke", "red");
-    NoAnimatedPath.setAttributeNS(null, "stroke-width","3");
-    NoAnimatedPath.setAttributeNS(null, "fill", "none");
-    NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
-    SVGnodes.appendChild(NoAnimatedPath);
-
-    var animatedPath =  document.createElementNS("http://www.w3.org/2000/svg", "path");
-    animatedPath.setAttributeNS(null, "d", `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${Y[3]} L ${X[4]} ${Y[4]}`);
-    animatedPath.setAttributeNS(null, "id", "animated-path");
-    animatedPath.setAttributeNS(null, "stroke-width", "3");
-    // animatedPath.setAttributeNS(null, "stroke", "red");
-    SVGnodes.appendChild(animatedPath);
-  };
   
   OnDeleteEgde = ()=>{
     this.setState({feature:"delete"});
   }
   DeleteEgde = (edge)=>{
-    console.log("ham` xoa")
+    console.log("ham` xoa");
+    console.log(edge);
     if(this.state.feature === "delete")
     {
       edge.parentElement.removeChild(edge);
@@ -171,7 +214,10 @@ class App extends React.Component {
         reader.readAsText(file);
         reader.onload = async () => {
           const result = await reader.result;
-          const node_pathline = document.createElementNS("http://www.w3.org/2000/svg", "g");
+          const node_pathline = document.createElementNS(
+            "http://www.w3.org/2000/svg",
+            "g"
+          );
           node_pathline.setAttributeNS(null, "id", "node-pathline");
           if (document.getElementsByTagName("svg").length === 0) {
             const div = document.createElement("div");
@@ -183,7 +229,7 @@ class App extends React.Component {
             newSVG.innerHTML = result.trim();
             oldSVG.parentElement.replaceChild(newSVG, oldSVG);
           }
-          const nodes = document.getElementById('nodes');
+          const nodes = document.getElementById("nodes");
           nodes.parentElement.appendChild(node_pathline);
 
           const node_pathline_clone = node_pathline.cloneNode(true);
@@ -192,7 +238,7 @@ class App extends React.Component {
           nodes.replaceWith(node_pathline_clone);
           node_pathline.replaceWith(nodes_clone);
           this.addClickEventForCircle();
-          this.Effect();
+          // this.Effect();
         };
       } else {
         alert("File not supported, .txt or .svg files only");
@@ -220,8 +266,8 @@ class App extends React.Component {
         <button onClick={this.handleFileSelect}>button</button>
         <button onClick={this.handleSaveGraphs}>Save graphs</button>
         <div>
-          <input type="radio" id="draw"  onChange={()=>{this.OnDrawingEgde()}} name="chooseFeature"></input>DRAW <br/>
-          <input type="radio" id="delete" onChange={()=>{this.OnDeleteEgde()}} name="chooseFeature"></input>DELETE <br/>
+          <input type="radio" id="draw" onChange={()=>{this.OnDrawingEgde()}}   name="chooseFeature"></input>DRAW <br/>
+          <input type="radio" id="delete" onChange={()=>{this.OnDeleteEgde()}}  name="chooseFeature"></input>DELETE <br/>
           <input type="radio" id="way-Finding" onChange={()=>{this.OnWayFinding()}} name="chooseFeature"></input>Way Finding <br/>
           {
             this.state.feature === "find" ? (
