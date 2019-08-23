@@ -3,15 +3,17 @@ import "./App.css";
 const Graph = require("node-dijkstra");
 class App extends React.Component {
   isDrawingEdge = false;
+  isFindingPath = false;
   vertices = null;
   componentDidMount() {}
   constructor(props) {
     super(props);
     this.state = {
-      vertex1: {},
-      vertex2: {},
+      vertex1: '',
+      vertex2: '',
       edges: [],
       graphs: [],
+      loadedGraphs :{},
       edgeVertex1: null,
       edgeVertex2: null,
       feature :"",
@@ -75,31 +77,35 @@ class App extends React.Component {
     }
   }
   /**********************START wayFiding***********************/
-  wayFiding() {
+  LoadGraphsFile() {
+    console.log("???")
     const el = document.createElement("div");
     el.innerHTML = "<input type='file'/>";
     const fileInput = el.firstChild;
-    fileInput.addEventListener("change", this.onFileGraphsChange);
+    fileInput.addEventListener("change",(e)=> {this.onFileGraphsChange(e)});
+    fileInput.click();
   }
   onFileGraphsChange = e => {
+    console.log("..")
     const reader = new FileReader();
     reader.onload = e => {
       const graphsStr = e.target.result;
       const graphsJson = JSON.parse(graphsStr);
-      console.log("length graphsJson", graphsJson.length);
+      this.setState({loadedGraphs : graphsJson});
+      console.log("length graphsJson", graphsJson);
     };
     reader.readAsText(e.target.files[0]);
   };
-  findShortestPath(graphs, vertex1, vertex2) {
+  findShortestPath( vertex1, vertex2) {
     const route = new Graph({
-      ...graphs
+      ...this.state.loadedGraphs
     });
     //vertex1 is id of element's circle vertex1
     const path = route.path(vertex1, vertex2);
     return path;
   }
-  drawShortestPath(graphs, vertex1, vertex2) {
-    const pathArr = this.findShortestPath(graphs, vertex1, vertex2);
+  drawShortestPath(vertex1, vertex2) {
+    const pathArr = this.findShortestPath(vertex1, vertex2);
     let X = [];
     let Y = [];
     pathArr.forEach(vertexId => {
@@ -157,9 +163,10 @@ class App extends React.Component {
   /********************END wayFiding*************************/
 
   handleMouseClick(e) {
+    const clickTarget = e.target;
     if(this.state.feature === "draw")
     {
-      const clickTarget = e.target;
+      
       if (clickTarget.nodeName === "circle") {
         if (!this.isDrawingEdge) {
           this.state.edgeVertex1 = clickTarget;
@@ -173,6 +180,23 @@ class App extends React.Component {
         }
       }
     }
+    else if(this.state.feature === "find")
+    {
+      // let vertex1,vertex2;
+      if (!this.isFindingPath) {
+        document.getElementById('first-vertex').setAttribute("value",e.target.id);
+       this.state.vertex1 = e.target.id;
+        this.isFindingPath = true;
+      } else if (this.isFindingPath) {
+        document.getElementById('second-vertex').setAttribute("value",e.target.id);
+        this.state.vertex2 = e.target.id
+        this.drawShortestPath(this.state.vertex1, this.state.vertex2 );
+        this.isFindingPath = false;
+        this.setState({vertex1 : null,vertex2:null});
+      }
+      
+      // document.getElementById('first-vertex');
+    }
   }
   addClickEventForCircle = () => {
     const vertices = document.getElementsByTagName("circle");
@@ -185,7 +209,6 @@ class App extends React.Component {
   };
 
 
-  
   OnDeleteEgde = ()=>{
     this.setState({feature:"delete"});
   }
@@ -200,9 +223,7 @@ class App extends React.Component {
   OnWayFinding = ()=>{
     this.setState({feature:"find"});
   }
-  WayFinding = ()=>{
-
-  }
+  
   handleFileSelect = e => {
     var element = document.createElement("div");
     element.innerHTML = '<input type="file">';
@@ -272,13 +293,17 @@ class App extends React.Component {
           {
             this.state.feature === "find" ? (
               <div>
-              <input type="text" ></input>
+              <input type="text" id="first-vertex" ></input>
               <span >      </span>
-              <input type="text" ></input>
+              <input type="text" id="second-vertex"></input>
+              <div style={{textAlign:'center'}}>
+              <button onClick={()=>{this.LoadGraphsFile()}}>Load Graphs File</button>
+              </div>
               </div>
             ):null
           }
         </div>
+        
       </div>
     );
   }
