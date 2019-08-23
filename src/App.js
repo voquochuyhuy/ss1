@@ -9,24 +9,23 @@ class App extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      vertex1: '',
-      vertex2: '',
+      vertex1: "",
+      vertex2: "",
       edges: [],
       graphs: [],
-      loadedGraphs :{},
+      loadedGraphs: {},
       edgeVertex1: null,
       edgeVertex2: null,
-      feature :"",
+      feature: ""
     };
     this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
   }
-  OnDrawingEgde = ()=>{
-    this.setState({feature:"draw"});
-  }
+  OnDrawingEgde = () => {
+    this.setState({ feature: "draw" });
+  };
   drawEdge(vertex1, vertex2) {
-    console.log('draw');
-    if(this.state.feature === "draw")
-    {
+    console.log("draw");
+    if (this.state.feature === "draw") {
       const { graphs } = this.state;
       const x1 = vertex1.getAttributeNS(null, "cx");
       const y1 = vertex1.getAttributeNS(null, "cy");
@@ -61,7 +60,10 @@ class App extends React.Component {
         alert("Edges exist");
       } else {
         const node_path = document.getElementById("node-pathline");
-        let edge = document.createElementNS("http://www.w3.org/2000/svg", "line");
+        let edge = document.createElementNS(
+          "http://www.w3.org/2000/svg",
+          "line"
+        );
         edge.setAttributeNS(null, "x1", x1);
         edge.setAttributeNS(null, "y1", y1);
         edge.setAttributeNS(null, "x2", x2);
@@ -70,7 +72,9 @@ class App extends React.Component {
         edge.setAttributeNS(null, "stroke-width", "3");
         edge.setAttributeNS(null, "fill", "none");
         edge.setAttributeNS(null, "stroke-dasharray", "5,5");
-        edge.addEventListener("click",()=>{this.DeleteEgde(edge)});
+        edge.addEventListener("click", () => {
+          this.DeleteEgde(edge);
+        });
         node_path.appendChild(edge);
         // SVGnodes.appendChild(g);
       }
@@ -78,25 +82,27 @@ class App extends React.Component {
   }
   /**********************START wayFiding***********************/
   LoadGraphsFile() {
-    console.log("???")
+    console.log("???");
     const el = document.createElement("div");
     el.innerHTML = "<input type='file'/>";
     const fileInput = el.firstChild;
-    fileInput.addEventListener("change",(e)=> {this.onFileGraphsChange(e)});
+    fileInput.addEventListener("change", e => {
+      this.onFileGraphsChange(e);
+    });
     fileInput.click();
   }
   onFileGraphsChange = e => {
-    console.log("..")
+    console.log("..");
     const reader = new FileReader();
     reader.onload = e => {
       const graphsStr = e.target.result;
       const graphsJson = JSON.parse(graphsStr);
-      this.setState({loadedGraphs : graphsJson});
+      this.setState({ loadedGraphs: graphsJson });
       console.log("length graphsJson", graphsJson);
     };
     reader.readAsText(e.target.files[0]);
   };
-  findShortestPath( vertex1, vertex2) {
+  findShortestPath(vertex1, vertex2) {
     const route = new Graph({
       ...this.state.loadedGraphs
     });
@@ -109,38 +115,30 @@ class App extends React.Component {
     let X = [];
     let Y = [];
     pathArr.forEach(vertexId => {
+      console.log(vertexId);
       X.push(document.getElementById(vertexId).attributes.cx.value);
       Y.push(document.getElementById(vertexId).attributes.cy.value);
     });
-    // X.push(document.getElementById("L4_24_NODE").attributes.cx.value);
-    // X.push(document.getElementById("L4_21B_NODE").attributes.cx.value);
-    // X.push(document.getElementById("L4_20_A_NODE").attributes.cx.value);
-    // X.push(document.getElementById("L4_19_A_NODE").attributes.cx.value);
-    // X.push(document.getElementById("L4_18_A_NODE").attributes.cx.value);
-    // X.push(document.getElementById("L4_32_NODE").attributes.cx.value);
-
-    // Y.push(document.getElementById("L4_24_NODE").attributes.cy.value);
-    // Y.push(document.getElementById("L4_21B_NODE").attributes.cy.value);
-    // Y.push(document.getElementById("L4_20_A_NODE").attributes.cy.value);
-    // Y.push(document.getElementById("L4_19_A_NODE").attributes.cy.value);
-    // Y.push(document.getElementById("L4_18_A_NODE").attributes.cy.value);
-    // Y.push(document.getElementById("L4_32_NODE").attributes.cy.value);
-
     let SVGnodes = document.getElementById("nodes");
     var NoAnimatedPath = document.createElementNS(
       "http://www.w3.org/2000/svg",
       "path"
     );
+    let M = `M ${X[0]} ${Y[0]}`;
+    for (let i = 1; i < X.length; i++) {
+      M += `L ${X[i]} ${Y[i]} `;
+    }
     NoAnimatedPath.setAttributeNS(
       null,
       "d",
-      `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${
-        Y[3]
-      } L ${X[4]} ${Y[4]}`
+      // `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${
+      //   Y[3]
+      // } L ${X[4]} ${Y[4]}`
+      `${M}`
     );
     NoAnimatedPath.setAttributeNS(null, "stroke", "red");
     NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
-    NoAnimatedPath.setAttributeNS(null, "fill", "none");
+    NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
     NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
     SVGnodes.appendChild(NoAnimatedPath);
 
@@ -151,12 +149,11 @@ class App extends React.Component {
     animatedPath.setAttributeNS(
       null,
       "d",
-      `M ${X[0]} ${Y[0]} L ${X[1]} ${Y[1]} L ${X[2]} ${Y[2]} L ${X[3]} ${
-        Y[3]
-      } L ${X[4]} ${Y[4]}`
+      `${M}`
     );
     animatedPath.setAttributeNS(null, "id", "animated-path");
     animatedPath.setAttributeNS(null, "stroke-width", "3");
+    animatedPath.setAttributeNS(null,"fill","transparent")
     // animatedPath.setAttributeNS(null, "stroke", "red");
     SVGnodes.appendChild(animatedPath);
   }
@@ -164,9 +161,7 @@ class App extends React.Component {
 
   handleMouseClick(e) {
     const clickTarget = e.target;
-    if(this.state.feature === "draw")
-    {
-      
+    if (this.state.feature === "draw") {
       if (clickTarget.nodeName === "circle") {
         if (!this.isDrawingEdge) {
           this.state.edgeVertex1 = clickTarget;
@@ -179,22 +174,24 @@ class App extends React.Component {
           this.isDrawingEdge = false;
         }
       }
-    }
-    else if(this.state.feature === "find")
-    {
+    } else if (this.state.feature === "find") {
       // let vertex1,vertex2;
       if (!this.isFindingPath) {
-        document.getElementById('first-vertex').setAttribute("value",e.target.id);
-       this.state.vertex1 = e.target.id;
+        document
+          .getElementById("first-vertex")
+          .setAttribute("value", e.target.id);
+        this.state.vertex1 = e.target.id;
         this.isFindingPath = true;
       } else if (this.isFindingPath) {
-        document.getElementById('second-vertex').setAttribute("value",e.target.id);
-        this.state.vertex2 = e.target.id
-        this.drawShortestPath(this.state.vertex1, this.state.vertex2 );
+        document
+          .getElementById("second-vertex")
+          .setAttribute("value", e.target.id);
+        this.state.vertex2 = e.target.id;
+        this.drawShortestPath(this.state.vertex1, this.state.vertex2);
         this.isFindingPath = false;
-        this.setState({vertex1 : null,vertex2:null});
+        this.setState({ vertex1: null, vertex2: null });
       }
-      
+
       // document.getElementById('first-vertex');
     }
   }
@@ -208,22 +205,20 @@ class App extends React.Component {
     }
   };
 
-
-  OnDeleteEgde = ()=>{
-    this.setState({feature:"delete"});
-  }
-  DeleteEgde = (edge)=>{
+  OnDeleteEgde = () => {
+    this.setState({ feature: "delete" });
+  };
+  DeleteEgde = edge => {
     console.log("ham` xoa");
     console.log(edge);
-    if(this.state.feature === "delete")
-    {
+    if (this.state.feature === "delete") {
       edge.parentElement.removeChild(edge);
     }
-  }
-  OnWayFinding = ()=>{
-    this.setState({feature:"find"});
-  }
-  
+  };
+  OnWayFinding = () => {
+    this.setState({ feature: "find" });
+  };
+
   handleFileSelect = e => {
     var element = document.createElement("div");
     element.innerHTML = '<input type="file">';
@@ -287,23 +282,50 @@ class App extends React.Component {
         <button onClick={this.handleFileSelect}>button</button>
         <button onClick={this.handleSaveGraphs}>Save graphs</button>
         <div>
-          <input type="radio" id="draw" onChange={()=>{this.OnDrawingEgde()}}   name="chooseFeature"></input>DRAW <br/>
-          <input type="radio" id="delete" onChange={()=>{this.OnDeleteEgde()}}  name="chooseFeature"></input>DELETE <br/>
-          <input type="radio" id="way-Finding" onChange={()=>{this.OnWayFinding()}} name="chooseFeature"></input>Way Finding <br/>
-          {
-            this.state.feature === "find" ? (
-              <div>
-              <input type="text" id="first-vertex" ></input>
-              <span >      </span>
-              <input type="text" id="second-vertex"></input>
-              <div style={{textAlign:'center'}}>
-              <button onClick={()=>{this.LoadGraphsFile()}}>Load Graphs File</button>
+          <input
+            type="radio"
+            id="draw"
+            onChange={() => {
+              this.OnDrawingEgde();
+            }}
+            name="chooseFeature"
+          />
+          DRAW <br />
+          <input
+            type="radio"
+            id="delete"
+            onChange={() => {
+              this.OnDeleteEgde();
+            }}
+            name="chooseFeature"
+          />
+          DELETE <br />
+          <input
+            type="radio"
+            id="way-Finding"
+            onChange={() => {
+              this.OnWayFinding();
+            }}
+            name="chooseFeature"
+          />
+          Way Finding <br />
+          {this.state.feature === "find" ? (
+            <div>
+              <input type="text" id="first-vertex" />
+              <span> </span>
+              <input type="text" id="second-vertex" />
+              <div style={{ textAlign: "center" }}>
+                <button
+                  onClick={() => {
+                    this.LoadGraphsFile();
+                  }}
+                >
+                  Load Graphs File
+                </button>
               </div>
-              </div>
-            ):null
-          }
+            </div>
+          ) : null}
         </div>
-        
       </div>
     );
   }
