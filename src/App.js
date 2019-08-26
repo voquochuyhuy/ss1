@@ -190,11 +190,13 @@ class App extends React.Component {
     let final_vertex = document.getElementById(pathArr[pathArr.length - 1]);
     final_vertex.setAttributeNS(null, "class", "highlight-circle");
     const pinLogo = document.createElementNS( "http://www.w3.org/2000/svg","image")
-    pinLogo.setAttributeNS('http://www.w3.org/1999/xlink','href',`./pin-logo.png`);
-    pinLogo.setAttributeNS(null,"x",`${final_vertex.attributes.cx.value}`);
-    pinLogo.setAttributeNS(null,"y",`${final_vertex.attributes.cy.value}-10`);
-    pinLogo.setAttributeNS(null,"width",`10`);
-    pinLogo.setAttributeNS(null,"height",`10`);
+    pinLogo.setAttributeNS('http://www.w3.org/1999/xlink','href',"./pin-logo.svg");
+    pinLogo.setAttributeNS(null,"x",`${final_vertex.attributes.cx.value - 15}`);
+    pinLogo.setAttributeNS(null,"y",`${final_vertex.attributes.cy.value - 30}`);
+    pinLogo.setAttributeNS(null,"width",`30`);
+    pinLogo.setAttributeNS(null,"height",`30`);
+    pinLogo.setAttributeNS(null,"id","pin-logo");
+    pinLogo.setAttributeNS(null,"background","transparent");
     let SVGnodes = document.getElementById("nodes");
     
     var NoAnimatedPath = document.createElementNS(
@@ -253,6 +255,8 @@ class App extends React.Component {
         first_vertex.removeAttribute("class");
         let final_vertex = document.getElementById(this.state.vertex2);
         final_vertex.removeAttribute("class");
+        let pin_logo = document.getElementById("pin-logo");
+        pin_logo.parentElement.removeChild(pin_logo);
       }
       if (!this.isFindingPath) {
         document
@@ -372,7 +376,7 @@ class App extends React.Component {
   render() {
     return (
       <div className="App">
-        <button onClick={this.handleFileSelect}>button</button>
+        <button onClick={this.handleFileSelect}>Load map</button>
         <button onClick={this.handleSaveGraphs}>Save graphs</button>
         <div>
           <input
