@@ -24,7 +24,14 @@ class App extends React.Component {
         this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
     }
     OnDrawingEgde = () => {
-        this.setState({ feature: "draw" });
+        this.setState({ feature: "draw",vertex1:"",vertex2:"" });
+        const pathNodes = document.getElementsByTagName("circle");
+        for (let i = 0; i < pathNodes.length; i++) {
+            if (pathNodes[i].id.startsWith("L4_PATH")) {
+                pathNodes[i].setAttributeNS(null, "fill", "rgb(101, 95, 84)");
+                pathNodes[i].setAttributeNS(null, "stroke", "rgb(230, 231, 232)");
+            }
+        }
     };
     /**@description add two vertex to graphs
      * @returns edgeExisted : if exist edge between them, return false, otherwise, null
@@ -155,7 +162,6 @@ class App extends React.Component {
         });
     }
     onFileGraphsChange = e => {
-        console.log("..");
         const reader = new FileReader();
         reader.onload = async e => {
             const graphsStr = await e.target.result;
@@ -299,7 +305,7 @@ class App extends React.Component {
     };
 
     OnDeleteEgde = () => {
-        this.setState({ feature: "delete" });
+        this.setState({ feature: "delete"});
     };
     DeleteEgde = edge => {
         console.log("ham` xoa");
@@ -309,7 +315,7 @@ class App extends React.Component {
         }
     };
     OnWayFinding = () => {
-        this.setState({ feature: "find" });
+        this.setState({ feature: "find",vertex1:"",vertex2:"" });
         const pathNodes = document.getElementsByTagName("circle");
         for (let i = 0; i < pathNodes.length; i++) {
             if (pathNodes[i].id.startsWith("L4_PATH")) {
@@ -322,7 +328,7 @@ class App extends React.Component {
     handleFileSelect = async e => {
 
         var element = document.createElement("div");
-        element.innerHTML = '<input type="file">';
+        element.innerHTML = '<input type="file" multiple>';
         var fileInput = element.firstChild;
         fileInput.click();
         await fileInput.addEventListener("change", async () => {
@@ -356,7 +362,6 @@ class App extends React.Component {
                     nodes.replaceWith(node_pathline_clone);
                     node_pathline.replaceWith(nodes_clone);
                     this.addClickEventForCircle();
-                    // this.Effect();
                 };
             } else {
                 alert("File not supported, .txt or .svg files only");
