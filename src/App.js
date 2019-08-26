@@ -190,7 +190,7 @@ class App extends React.Component {
     let final_vertex = document.getElementById(pathArr[pathArr.length - 1]);
     final_vertex.setAttributeNS(null, "class", "highlight-circle");
     const pinLogo = document.createElementNS( "http://www.w3.org/2000/svg","image")
-    pinLogo.setAttributeNS('http://www.w3.org/1999/xlink','href',"./pin-logo.svg");
+    pinLogo.setAttributeNS('http://www.w3.org/1999/xlink','href',"./pin-logo.png");
     pinLogo.setAttributeNS(null,"x",`${final_vertex.attributes.cx.value - 15}`);
     pinLogo.setAttributeNS(null,"y",`${final_vertex.attributes.cy.value - 30}`);
     pinLogo.setAttributeNS(null,"width",`30`);
