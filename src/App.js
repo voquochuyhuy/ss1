@@ -32,6 +32,18 @@ class App extends React.Component {
                 pathNodes[i].setAttributeNS(null, "stroke", "rgb(230, 231, 232)");
             }
         }
+        if (document.getElementById("animation-path") !== null) {
+            let noAnimation_Path = document.getElementById("noAnimation-path");
+            noAnimation_Path.parentElement.removeChild(noAnimation_Path);
+            let animated_Path = document.getElementById("animation-path");
+            animated_Path.parentElement.removeChild(animated_Path);
+            let first_vertex = document.getElementById(this.state.vertex1);
+            first_vertex.removeAttribute("class");
+            let final_vertex = document.getElementById(this.state.vertex2);
+            final_vertex.removeAttribute("class");
+            let pin_logo = document.getElementById("pin-logo");
+            pin_logo.parentElement.removeChild(pin_logo);
+        }
     };
     /**@description add two vertex to graphs
      * @returns edgeExisted : if exist edge between them, return false, otherwise, null
@@ -325,6 +337,7 @@ class App extends React.Component {
         }
     };
 
+
     handleFileSelect = async e => {
 
         var element = document.createElement("div");
@@ -367,6 +380,39 @@ class App extends React.Component {
                 alert("File not supported, .txt or .svg files only");
             }
         });
+
+        // của huy
+        // var element = document.createElement("div");
+        // element.innerHTML = '<input type="file" multiple>';
+        // var fileInput = element.firstChild;
+        // fileInput.click();
+        // await fileInput.addEventListener("change", async () => {      
+        //     let promises = [];
+        //     for (let file of fileInput.files) {
+        //         let filePromise = new Promise(resolve => {
+        //             let reader = new FileReader();
+        //             reader.readAsText(file);
+        //             reader.onload = () => resolve(reader.result);
+        //         });
+        //         promises.push(filePromise);
+        //     }
+        //     Promise.all(promises).then(fileContents => {
+        //         for(let i =0;i<fileContents.length;i++)
+        //         {
+        //             if (document.getElementsByTagName("svg").length === 0) {
+        //                 const div = document.createElement("div");
+        //                 div.innerHTML = fileContents[i].trim();
+        //                 document.body.appendChild(div);
+        //             } else {
+        //                 let oldSVG = document.getElementsByTagName("svg")[0].parentElement;
+        //                 const newSVG = document.createElement("div");
+        //                 newSVG.innerHTML = fileContents[i].trim();
+        //                 oldSVG.parentElement.appendChild(newSVG.firstChild);
+        //             }
+        //         }
+        //         this.addClickEventForCircle();
+        //     });
+        // });
     };
     handleSaveGraphs = e => {
         const a = document.createElement("a");
