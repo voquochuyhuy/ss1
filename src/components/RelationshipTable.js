@@ -1,13 +1,14 @@
 import React from 'react';
 import ReactTable from 'react-table';
+import _ from 'lodash';
 import 'react-table/react-table.css'
 class RelationshipTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: [],
             data: [],
-        }
+            removed: []
+        };
     }
     componentDidMount() {
         this.computeItems();
@@ -25,13 +26,14 @@ class RelationshipTable extends React.Component {
             return type;
         }
         const getName = (node) => {
-            const doc = document.getElementById(node);
+            const doc = document.getElementById(node); //node = L4_29_NODE
             const docTitle = document.getElementById('storetitle');
             const storeTitle = docTitle.children;
-            const nodeId = doc.id.split('_NODE')[0];
-            // console.log('nodeids : ', nodeId);
+            const nodeId = doc.id.split('_NODE')[0];//nodeis = L4_29
+            if (nodeId.includes('YAH') || nodeId === 'youarehere')
+                return nodeId;
             for (let i = 0; i < storeTitle.length; i++) {
-                if (storeTitle[i].id.includes(nodeId)) {
+                if (storeTitle[i].id.includes('_CODE') && storeTitle[i].id.includes(nodeId.split('_')[1])) { //includes '29'
                     return storeTitle[i].firstChild.textContent;
                 }
             }
@@ -41,171 +43,156 @@ class RelationshipTable extends React.Component {
                 const type = getType(node);
                 const neighbor = {
                     id: node,
-                    name: type === 'path' ? 'path' : getName(node),
-                    type: type
+                    name: type === 'path' || type === 'facility' ? node : getName(node),
+                    type: type,
+                    cost: object[node]
                 }
                 return neighbor;
             })
         }
-        const graphs = {
-            "youarehere_NODE": {
-                "L4_PATH_70_NODE": 27,
-                "L4_PATH_43_NODE": 27,
-                "L4_PATH_10_NODE": 71,
-                "L4_PATH_45_NODE": 53,
-                "L4_24_NODE": 66
-            },
-            "L4_PATH_70_NODE": {
-                "youarehere_NODE": 27,
-                "L4_PATH_69_NODE": 22,
-                "L4_PATH_44_NODE": 18
-            },
-            "L4_PATH_69_NODE": {
-                "L4_PATH_70_NODE": 22,
-                "L4_PATH_68_NODE": 17,
-                "L4_PATH_48_NODE": 21
-            },
-            "L4_PATH_68_NODE": {
-                "L4_PATH_69_NODE": 17,
-                "L4_PATH_48_NODE": 21,
-                "L4_PATH_66_NODE": 29
-            },
-            "L4_PATH_48_NODE": {
-                "L4_PATH_68_NODE": 21,
-                "L4_PATH_69_NODE": 21,
-                "L4_21B_NODE": 16,
-                "L4_PATH_66_NODE": 42
-            },
-            "L4_21B_NODE": {
-                "L4_PATH_48_NODE": 16
-            },
-        }
+        const { graphs } = this.props;
         const graphsArray = Object.keys(graphs).map(node => {
             const type = getType(node);
             const relation = {
                 node: {
                     id: node,
                     type: type,
-                    name: type === 'path' ? 'path' : getName(node)
+                    name: type === 'path' || type === 'facility' ? node : getName(node)
                 },
                 neighbors: transformNeighbors(graphs[node])
             }
             return relation;
         });
-        // console.log('graphs', graphsArray);
-        return graphsArray;
+        this.setState({ data: graphsArray });
+    }
+    handleRemoveNeighbor = (node, neighbor) => {
+        const { data, removed } = this.state;
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].node === node && data[i].neighbors.includes(neighbor)) {
+                const nodeRemoved = _.remove(data[i].neighbors, neighbor);
+                removed.push({ node: node, neighbors: [...nodeRemoved] })
+                this.setState({ removed })
+            }
+        }
+        this.setState({ data });
+    }
+    handleCreateNeighbor = (node, newNeighbor) => {
+
     }
     render() {
         const styles = {
             backgroundColor: '#dadada',
             borderRadius: '2px'
         }
-        const nameItems = [];
-        const typeItems = [];
-        // const { nodes } = this.props;
-        const nodes = this.computeItems()
-        for (let i = 0; i < nodes.length; i++) {
-            nameItems.push(<option key={i} value={nodes[i].node.id}>
-                {nodes[i].node.name}
-            </option>);
-            typeItems.push(<option key={i} value={nodes[i].type}>
-                {nodes[i].node.type}
-            </option>)
+        const changeProperty = (object, property) => {
+            return <div
+                style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
+                contentEditable
+                suppressContentEditableWarning
+                onBlur={e => {
+                    const { data } = this.state;
+                    if (object[`${property}`] !== e.target.innerHTML) {
+                        object[`${property}`] = e.target.innerHTML;
+                        this.setState({ data });
+                    }
+                }}
+                dangerouslySetInnerHTML={{
+                    __html: object[`${property}`]
+                }}
+            />
         }
-        const data = this.computeItems();
         const columns = [{
             Header: 'Node',
-            Cell: row => (
-                <div>
-                    <select style={{
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: '#dadada',
-                        borderRadius: '3px',
-                    }}>
-                        {nameItems}
-                    </select>
-                </div>
-            )
+            Cell: props => {
+                const { node } = props.original;
+                return <div
+                    dangerouslySetInnerHTML={{
+                        __html: node.name
+                    }}
+                />
+            }
         }, {
             Header: 'Type',
             accessor: 'node.type',
-            width: 200,
-            Cell: props => (
-                <div>
-                    <select style={{
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: '#dadada',
-                        borderRadius: '3px',
-                    }}>
-                        {typeItems}
-                    </select>
-                </div>
-            ) // Custom cell components!
+            width: 150,
+            Cell: props => {
+                const { node } = props.original;
+                return <div
+                    style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
+                    contentEditable={false}
+                    suppressContentEditableWarning
+                    dangerouslySetInnerHTML={{
+                        __html: node.type
+                    }}
+                />
+            }
         }, {
-            id: 'neighbors', // Required because our accessor is not a string
+            id: 'neighbors',
             Header: 'Neighbors',
-            accessor: d => d.neighbors.map(neighbor => neighbor.name),//d.friend.name // Custom value accessors!
-            Cell: props => (
-                <div>
-                    <select style={{
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: '#dadada',
-                        borderRadius: '3px',
-                    }}>
-                        {nameItems}
-                    </select>
-                </div>
-            )
+            accessor: d => d.neighbors.map(neighbor => neighbor.name),
+            Cell: props => {
+                const { neighbors } = props.original;
+                return neighbors.map(neighbor => {
+                    return changeProperty(neighbor, 'name')
+                })
+            }
         }, {
-            Header: props => <span>Type</span>, // Custom header components!
-            // accessor: 'friend.age'
-            accessor: 'neighbors.type',
-            Cell: props => (
-                <div>
-                    <select style={{
-                        width: '100%',
-                        height: '100%',
-                        backgroundColor: '#dadada',
-                        borderRadius: '3px',
-                    }}>
-                        {typeItems}
-                    </select>
-                </div>
-            ),
-            width: 200,
+            Header: props => <span>Type</span>,
+            // accessor: 'neighbors.type',
+            Cell: props => {
+                const { neighbors } = props.original;
+                return neighbors.map(neighbor => {
+                    return changeProperty(neighbor, 'type')
+                })
+            },
+            width: 150,
         },
         {
             id: 'cost',
             Header: 'Cost',
-            accessor: d => 58,
-            width: 100
+            // accessor: d => 58,
+            width: 100,
+            Cell: props => {
+                const { neighbors } = props.original;
+                return neighbors.map(neighbor => {
+                    return <div
+                        style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
+                        contentEditable={false}
+                        suppressContentEditableWarning
+                        dangerouslySetInnerHTML={{
+                            __html: neighbor.cost
+                        }}
+                    />
+                })
+            }
         },
         {
             Header: 'Action',
-            Cell: row => (
-                <div>
-                    <button style={styles} onClick={() => alert('Save')}>Save</button>
-                    <button style={styles} onClick={() => alert('Delete')}>Delete</button>
-                </div>
-            ),
-            width: 100
+            Cell: props => {
+                const { node, neighbors } = props.original;
+                return neighbors.map(neighbor => {
+                    return <div>
+                        <button style={styles} onClick={() => this.handleRemoveNeighbor(node, neighbor)}>Remove</button>
+                    </div>
+                })
+            },
+            width: 150
         }
         ]
         return <div>
-            <ReactTable
-                data={data}
-                columns={columns}
-                defaultPageSize={2}
-                showPagination={false}
-            />
             <div style={{
                 textAlign: 'right',
             }}>
                 <button style={styles} >Add</button>
+                <button style={styles} >Save</button>
             </div>
+            <ReactTable
+                data={this.state.data}
+                columns={columns}
+                defaultPageSize={10}
+                showPagination={true}
+                className="-striped -highlight"
+            />
         </div>
 
     }
