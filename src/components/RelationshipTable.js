@@ -6,7 +6,27 @@ class RelationshipTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            data: [],
+            data: [], /**example data = [
+                {
+                    node:{
+                        id: 'L4_21B_NODE',
+                        type:'store',
+                        name:'L4-21B'
+                    },
+                    neighbors:[
+                        {
+                            id: 'L4_20_NODE',
+                            type:'store',
+                            name:'L4-20'
+                        },
+                        {
+                            ...
+                        }
+                    ]
+                },
+                {...}
+            ] 
+            */
             removed: []
         };
     }
@@ -79,6 +99,48 @@ class RelationshipTable extends React.Component {
     handleCreateNeighbor = (node, newNeighbor) => {
 
     }
+    handleSave = () => {
+        const serializedData = (data) => {
+            let result = {};
+            const array = [];
+            data.forEach(items => {
+                const arrayNeighbor = items.neighbors.map(neighbor => {
+                    let item = {
+                        [items.node.id]: {
+                            [neighbor.id]: neighbor.cost
+                        }
+                    }
+                    if (result.hasOwnProperty(items.node.id)) {
+                        result[items.node.id] = { ...result[items.node.id], ...item[items.node.id] };
+                        array.push(result);
+                    }
+                    else {
+                        result = { ...item }
+                        array.push(result);
+                    }
+                    // return neighbor.id
+                });
+                // let item = {
+                //     [item.node.id]: {
+                        
+                //     }
+                // }
+            });
+            console.log('result save : ', array);
+            return array;
+        }
+        const a = document.createElement("a");
+        document.body.appendChild(a);
+        const { data } = this.state;
+        const fileName = "graphs.json";
+        const json = serializedData(data);
+        const blob = new Blob([json], { type: "octet/stream" });
+        const url = window.URL.createObjectURL(blob);
+        a.href = url;
+        a.download = fileName;
+        a.click();
+        window.URL.revokeObjectURL(url);
+    };
     render() {
         const styles = {
             backgroundColor: '#dadada',
@@ -184,7 +246,7 @@ class RelationshipTable extends React.Component {
                 textAlign: 'right',
             }}>
                 <button style={styles} >Add</button>
-                <button style={styles} >Save</button>
+                <button style={styles} onClick={() => this.handleSave()} >Save</button>
             </div>
             <ReactTable
                 data={this.state.data}
