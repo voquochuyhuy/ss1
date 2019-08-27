@@ -123,8 +123,9 @@ class App extends React.Component {
         }
         return edgeExisted;
     }
-    drawEdge(vertex1, vertex2) {
-        console.log("draw");
+    drawEdge(vertex1, vertex2,i) {
+
+        console.log("draw",i);
         if (this.state.feature === "draw") {
             const edgeExisted = this.addVertexToGraphs(vertex1, vertex2);
             const x1 = vertex1.getAttributeNS(null, "cx");
@@ -136,7 +137,9 @@ class App extends React.Component {
             if (edgeExisted) {
                 alert("Edges exist");
             } else {
-                const node_path = document.getElementById("node-pathline");
+                const node_path = document.getElementById(`node-pathline-${i}`);
+                // const node_path = document.getElementById(`node-pathline-${i}`);
+                console.log(node_path);
                 let edge = document.createElementNS(
                     "http://www.w3.org/2000/svg",
                     "line"
@@ -193,7 +196,7 @@ class App extends React.Component {
         const path = route.path(vertex1, vertex2);
         return path;
     }
-    drawShortestPath(vertex1, vertex2) {
+    drawShortestPath(vertex1, vertex2,node_path_id) {
         const pathArr = this.findShortestPath(vertex1, vertex2);
         console.log(pathArr);
         let X = [];
@@ -218,7 +221,7 @@ class App extends React.Component {
         pinLogo.setAttributeNS(null, "height", `30`);
         pinLogo.setAttributeNS(null, "id", "pin-logo");
         pinLogo.setAttributeNS(null, "background", "transparent");
-        let SVGnodes = document.getElementById("nodes");
+        let SVGnodes = document.getElementById(`nodes-${node_path_id}`);
 
         var NoAnimatedPath = document.createElementNS(
             "http://www.w3.org/2000/svg",
@@ -250,18 +253,16 @@ class App extends React.Component {
     }
     /********************END wayFiding*************************/
 
-    handleMouseClick(e) {
+    handleMouseClick(e,node_path_id) {
         const clickTarget = e.target;
         if (this.state.feature === "draw") {
             if (clickTarget.nodeName === "circle") {
                 if (!this.isDrawingEdge) {
-                    this.state.edgeVertex1 = clickTarget;
+                    this.setState({edgeVertex1:clickTarget});
                     this.isDrawingEdge = true;
                 } else if (clickTarget !== this.state.edgeVertex1) {
-                    this.state.edgeVertex2 = clickTarget;
-                    this.drawEdge(this.state.edgeVertex1, this.state.edgeVertex2);
-                    // this.state.edgeVertex1 = null;
-                    // this.state.edgeVertex2 = null;
+                    this.setState({edgeVertex2:clickTarget});
+                    this.drawEdge(this.state.edgeVertex1, this.state.edgeVertex2,node_path_id);
                     this.setState({ edgeVertex1: null, edgeVertex2: null });
                     this.isDrawingEdge = false;
                 }
@@ -283,7 +284,6 @@ class App extends React.Component {
                 document
                     .getElementById("first-vertex")
                     .setAttribute("value", e.target.id);
-                // this.state.vertex1 = e.target.id;
                 this.setState({ vertex1: e.target.id });
                 this.isFindingPath = true;
             } else {
@@ -296,9 +296,8 @@ class App extends React.Component {
                 document
                     .getElementById("second-vertex")
                     .setAttribute("value", e.target.id);
-                // this.state.vertex2 = e.target.id;
                 this.setState({ vertex2: e.target.id });
-                this.drawShortestPath(this.state.vertex1, this.state.vertex2);
+                this.drawShortestPath(this.state.vertex1, this.state.vertex2,node_path_id);
                 this.isFindingPath = false;
                 // this.setState({ vertex1: "", vertex2: "" });
             }
@@ -306,12 +305,13 @@ class App extends React.Component {
             // document.getElementById('first-vertex');
         }
     }
-    addClickEventForCircle = () => {
-        const vertices = document.getElementsByTagName("circle");
+    addClickEventForCircle = (node_path_id) => {
+        let svg = document.getElementById(`td-${node_path_id}`);
+        const vertices = svg.getElementsByTagName("circle");
         this.vertices = vertices;
         for (let i = 0; i < vertices.length; i++) {
             vertices[i].addEventListener("click", e => {
-                this.handleMouseClick(e);
+                this.handleMouseClick(e,node_path_id);
             });
         }
     };
@@ -340,79 +340,129 @@ class App extends React.Component {
 
     handleFileSelect = async e => {
 
-        var element = document.createElement("div");
-        element.innerHTML = '<input type="file" multiple>';
-        var fileInput = element.firstChild;
-        fileInput.click();
-        await fileInput.addEventListener("change", async () => {
-            var file = fileInput.files[0];
-            if (file.name.match(/\.(txt|svg)$/)) {
-                var reader = new FileReader();
-                await reader.readAsText(file);
-                reader.onload = async () => {
-                    const result = await reader.result;
-                    const node_pathline = document.createElementNS(
-                        "http://www.w3.org/2000/svg",
-                        "g"
-                    );
-                    node_pathline.setAttributeNS(null, "id", "node-pathline");
-                    if (document.getElementsByTagName("svg").length === 0) {
-                        const div = document.createElement("div");
-                        div.innerHTML = result.trim();
-                        document.body.appendChild(div);
-                    } else {
-                        let oldSVG = document.getElementsByTagName("svg")[0].parentElement;
-                        const newSVG = document.createElement("div");
-                        newSVG.innerHTML = result.trim();
-                        oldSVG.parentElement.replaceChild(newSVG, oldSVG);
-                    }
-                    const nodes = document.getElementById("nodes");
-                    nodes.parentElement.appendChild(node_pathline);
-
-                    const node_pathline_clone = node_pathline.cloneNode(true);
-                    const nodes_clone = nodes.cloneNode(true);
-                    console.log(nodes_clone);
-                    nodes.replaceWith(node_pathline_clone);
-                    node_pathline.replaceWith(nodes_clone);
-                    this.addClickEventForCircle();
-                };
-            } else {
-                alert("File not supported, .txt or .svg files only");
-            }
-        });
-
-        // của huy
         // var element = document.createElement("div");
         // element.innerHTML = '<input type="file" multiple>';
         // var fileInput = element.firstChild;
         // fileInput.click();
-        // await fileInput.addEventListener("change", async () => {      
-        //     let promises = [];
-        //     for (let file of fileInput.files) {
-        //         let filePromise = new Promise(resolve => {
-        //             let reader = new FileReader();
-        //             reader.readAsText(file);
-        //             reader.onload = () => resolve(reader.result);
-        //         });
-        //         promises.push(filePromise);
-        //     }
-        //     Promise.all(promises).then(fileContents => {
-        //         for(let i =0;i<fileContents.length;i++)
-        //         {
+        // await fileInput.addEventListener("change", async () => {
+        //     var file = fileInput.files[0];
+        //     if (file.name.match(/\.(txt|svg)$/)) {
+        //         var reader = new FileReader();
+        //         await reader.readAsText(file);
+        //         reader.onload = async () => {
+        //             const result = await reader.result;
+        //             const node_pathline = document.createElementNS(
+        //                 "http://www.w3.org/2000/svg",
+        //                 "g"
+        //             );
+        //             node_pathline.setAttributeNS(null, "id", "node-pathline");
         //             if (document.getElementsByTagName("svg").length === 0) {
         //                 const div = document.createElement("div");
-        //                 div.innerHTML = fileContents[i].trim();
+        //                 div.innerHTML = result.trim();
         //                 document.body.appendChild(div);
         //             } else {
         //                 let oldSVG = document.getElementsByTagName("svg")[0].parentElement;
         //                 const newSVG = document.createElement("div");
-        //                 newSVG.innerHTML = fileContents[i].trim();
-        //                 oldSVG.parentElement.appendChild(newSVG.firstChild);
+        //                 newSVG.innerHTML = result.trim();
+        //                 oldSVG.parentElement.replaceChild(newSVG, oldSVG);
         //             }
-        //         }
-        //         this.addClickEventForCircle();
-        //     });
+        //             const nodes = document.getElementById("nodes");
+        //             nodes.parentElement.appendChild(node_pathline);
+
+        //             const node_pathline_clone = node_pathline.cloneNode(true);
+        //             const nodes_clone = nodes.cloneNode(true);
+        //             console.log(nodes_clone);
+        //             nodes.replaceWith(node_pathline_clone);
+        //             node_pathline.replaceWith(nodes_clone);
+        //             this.addClickEventForCircle();
+        //         };
+        //     } else {
+        //         alert("File not supported, .txt or .svg files only");
+        //     }
         // });
+
+        // của huy
+        var element = document.createElement("div");
+        element.innerHTML = '<input type="file" multiple>';
+        var fileInput = element.firstChild;
+        fileInput.click();
+        await fileInput.addEventListener("change", async () => {      
+            let promises = [];
+            for (let file of fileInput.files) {
+                let filePromise = new Promise(resolve => {
+                    let reader = new FileReader();
+                    reader.readAsText(file);
+                    reader.onload = () => resolve(reader.result);
+                });
+                promises.push(filePromise);
+            }
+           
+
+            Promise.all(promises).then(fileContents => {
+                let table = document.createElement("TABLE");
+                table.setAttribute("id", "myTable");
+                document.getElementsByClassName("App")[0].appendChild(table);
+    
+                let row = document.createElement("TR");
+                row.setAttribute("id", "myTr");
+                document.getElementById("myTable").appendChild(row);
+    
+
+                for(let i =0;i<fileContents.length;i++)
+                {
+                    
+                    if (document.getElementsByTagName("svg").length === 0) {
+                        const div = document.createElement("div");
+                        div.setAttribute("id",`svg-${i}`);
+                        div.innerHTML = fileContents[i].trim();
+                        let col = document.createElement("td");
+                        col.setAttribute("id",`td-${i}`);
+                        col.appendChild(div.firstChild);
+                        document.getElementById("myTr").appendChild(col);
+                        // let app = document.getElementsByClassName("App");
+                        // app[0].appendChild(div);
+                        let node_pathline = document.createElementNS(
+                            "http://www.w3.org/2000/svg",
+                            "g"
+                        );
+                        node_pathline.setAttributeNS(null, "id", `node-pathline-${i}`);
+                        let nodes = document.getElementById("nodes");
+                        nodes.setAttribute("id",`nodes-${i}`);
+                        nodes.parentElement.appendChild(node_pathline);
+                        let node_pathline_clone = node_pathline.cloneNode(true);
+                        let nodes_clone = nodes.cloneNode(true);
+                        nodes.replaceWith(node_pathline_clone);
+                        node_pathline.replaceWith(nodes_clone);
+                        
+                    } else {
+                        let oldSVG = document.getElementsByTagName("svg")[0].parentElement;
+                        const newSVG = document.createElement("div");
+                        newSVG.setAttribute("id",`svg-${i}`);
+                        newSVG.innerHTML = fileContents[i].trim();
+                        let col = document.createElement("td");
+                        col.setAttribute("id",`td-${i}`);
+                        col.appendChild(newSVG.firstChild);
+                        document.getElementById("myTr").appendChild(col);
+                        // oldSVG.parentElement.appendChild(newSVG);
+                        let node_pathline = document.createElementNS(
+                            "http://www.w3.org/2000/svg",
+                            "g"
+                        );
+                        node_pathline.setAttributeNS(null, "id", `node-pathline-${i}`);
+                        let nodes = document.getElementById("nodes");
+                        nodes.setAttribute("id",`nodes-${i}`);
+                        nodes.parentElement.appendChild(node_pathline);
+                        let node_pathline_clone = node_pathline.cloneNode(true);
+                        let nodes_clone = nodes.cloneNode(true);
+                        nodes.replaceWith(node_pathline_clone);
+                        node_pathline.replaceWith(nodes_clone);
+                    }
+                    
+                    this.addClickEventForCircle(i);
+                }
+                
+            });
+        });
     };
     handleSaveGraphs = e => {
         const a = document.createElement("a");
@@ -470,6 +520,7 @@ class App extends React.Component {
         ]
         return (
             <div className="App">
+                <div id="menu">
                 <button onClick={this.handleFileSelect}>Load map</button>
                 <button onClick={this.handleSaveGraphs}>Save graphs</button>
                 <div>
@@ -521,6 +572,7 @@ class App extends React.Component {
                 {
                     this.state.feature === 'draw' ? (<RelationshipTable data={data} nodes={nodes} graph={this.state.loadedGraphs} />) : null
                 }
+                </div>
             </div>
         );
     }

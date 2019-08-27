@@ -29,7 +29,7 @@ class RelationshipTable extends React.Component {
             const docTitle = document.getElementById('storetitle');
             const storeTitle = docTitle.children;
             const nodeId = doc.id.split('_NODE')[0];
-            console.log('nodeids : ', nodeId);
+            // console.log('nodeids : ', nodeId);
             for (let i = 0; i < storeTitle.length; i++) {
                 if (storeTitle[i].id.includes(nodeId)) {
                     return storeTitle[i].firstChild.textContent;

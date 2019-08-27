@@ -1,13 +1,13 @@
 .App {
   text-align: center;
+  overflow: auto;
+  
 }
 
-/* .App-logo {
-  animation: App-logo-spin infinite 20s linear;
-  height: 40vmin;
-  pointer-events: none;
+/* #menu{
+  position:fixed;
+  left:50%;
 } */
-
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
@@ -57,4 +57,17 @@ line {
 .highlight-circle{
   stroke :red;
   stroke-width: 2px;
+}
+
+/* [id^="svg"]{
+  display: inline;
+} */
+td{
+  width: 1500px;
+}
+tr{
+  overflow: auto;
+}
+svg{
+  width: 1300px;
 }
