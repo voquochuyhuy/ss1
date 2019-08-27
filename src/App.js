@@ -519,7 +519,7 @@ class App extends React.Component {
                 </div>
                 {/* <RelationshipTable data={data} nodes={nodes} graph={this.state.loadedGraphs} /> */}
                 {
-                    this.state.feature === 'draw' ? (<RelationshipTable data={data} nodes={nodes} graph={this.state.loadedGraphs} />) : null
+                    this.state.feature === 'draw' ? (<RelationshipTable data={data} nodes={nodes} graphs={this.state.loadedGraphs} />) : null
                 }
             </div>
         );

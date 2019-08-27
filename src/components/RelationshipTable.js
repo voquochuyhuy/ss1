@@ -1,14 +1,14 @@
 import React from 'react';
 import ReactTable from 'react-table';
+import _ from 'lodash';
 import 'react-table/react-table.css'
 class RelationshipTable extends React.Component {
     constructor(props) {
         super(props);
         this.state = {
-            items: [],
             data: [],
+            removed: []
         };
-        // this.renderEditable = this.renderEditable.bind(this);
     }
     componentDidMount() {
         this.computeItems();
@@ -26,13 +26,14 @@ class RelationshipTable extends React.Component {
             return type;
         }
         const getName = (node) => {
-            const doc = document.getElementById(node);
+            const doc = document.getElementById(node); //node = L4_29_NODE
             const docTitle = document.getElementById('storetitle');
             const storeTitle = docTitle.children;
-            const nodeId = doc.id.split('_NODE')[0];
-            console.log('nodeids : ', nodeId);
+            const nodeId = doc.id.split('_NODE')[0];//nodeis = L4_29
+            if (nodeId.includes('YAH') || nodeId === 'youarehere')
+                return nodeId;
             for (let i = 0; i < storeTitle.length; i++) {
-                if (storeTitle[i].id.includes('_CODE') && storeTitle[i].id.includes(nodeId)) {
+                if (storeTitle[i].id.includes('_CODE') && storeTitle[i].id.includes(nodeId.split('_')[1])) { //includes '29'
                     return storeTitle[i].firstChild.textContent;
                 }
             }
@@ -42,80 +43,50 @@ class RelationshipTable extends React.Component {
                 const type = getType(node);
                 const neighbor = {
                     id: node,
-                    name: type === 'path' ? node : getName(node),
+                    name: type === 'path' || type === 'facility' ? node : getName(node),
                     type: type,
                     cost: object[node]
                 }
                 return neighbor;
             })
         }
-        const graphs = {
-            "L4_PATH_70_NODE": {
-                "youarehere_NODE": 27,
-                "L4_PATH_69_NODE": 22,
-                "L4_PATH_44_NODE": 18
-            },
-            "L4_PATH_69_NODE": {
-                "L4_PATH_70_NODE": 22,
-                "L4_PATH_68_NODE": 17,
-                "L4_PATH_48_NODE": 21
-            },
-            "L4_PATH_68_NODE": {
-                "L4_PATH_69_NODE": 17,
-                "L4_PATH_48_NODE": 21,
-                "L4_PATH_66_NODE": 29
-            },
-            "L4_PATH_48_NODE": {
-                "L4_PATH_68_NODE": 21,
-                "L4_PATH_69_NODE": 21,
-                "L4_21B_NODE": 16,
-                "L4_PATH_66_NODE": 42
-            },
-            "L4_21B_NODE": {
-                "L4_PATH_48_NODE": 16
-            },
-            "L4_23_NODE": {
-                "L4_PATH_52_NODE": 19,
-                "L4_PATH_59_NODE": 22
-            },
-        }
+        const { graphs } = this.props;
         const graphsArray = Object.keys(graphs).map(node => {
             const type = getType(node);
             const relation = {
                 node: {
                     id: node,
                     type: type,
-                    name: type === 'path' ? node : getName(node)
+                    name: type === 'path' || type === 'facility' ? node : getName(node)
                 },
                 neighbors: transformNeighbors(graphs[node])
             }
             return relation;
         });
-        console.log('graphs', graphsArray);
-        // return graphsArray;
         this.setState({ data: graphsArray });
+    }
+    handleRemoveNeighbor = (node, neighbor) => {
+        const { data, removed } = this.state;
+        for (let i = 0; i < data.length; i++) {
+            if (data[i].node === node && data[i].neighbors.includes(neighbor)) {
+                const nodeRemoved = _.remove(data[i].neighbors, neighbor);
+                removed.push({ node: node, neighbors: [...nodeRemoved] })
+                this.setState({ removed })
+            }
+        }
+        this.setState({ data });
+    }
+    handleCreateNeighbor = (node, newNeighbor) => {
+
     }
     render() {
         const styles = {
             backgroundColor: '#dadada',
             borderRadius: '2px'
         }
-        const nameItems = [];
-        const typeItems = [];
-        const nodes = this.state.data
-        for (let i = 0; i < nodes.length; i++) {
-            if (!nameItems.includes(nodes[i].node.name))
-                nameItems.push(<option key={i} value={nodes[i].node.id}>
-                    {nodes[i].node.name}
-                </option>);
-            if (!typeItems.includes(nodes[i].node.type))
-                typeItems.push(<option key={i} value={nodes[i].type}>
-                    {nodes[i].node.type}
-                </option>)
-        }
         const changeProperty = (object, property) => {
             return <div
-                style={{ backgroundColor: "#fafafa" }}
+                style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
                 contentEditable
                 suppressContentEditableWarning
                 onBlur={e => {
@@ -124,7 +95,6 @@ class RelationshipTable extends React.Component {
                         object[`${property}`] = e.target.innerHTML;
                         this.setState({ data });
                     }
-                    this.setState({ data });
                 }}
                 dangerouslySetInnerHTML={{
                     __html: object[`${property}`]
@@ -136,9 +106,6 @@ class RelationshipTable extends React.Component {
             Cell: props => {
                 const { node } = props.original;
                 return <div
-                    // style={{ backgroundColor: "#fafafa" }}
-                    // contentEditable={false}
-                    // suppressContentEditableWarning
                     dangerouslySetInnerHTML={{
                         __html: node.name
                     }}
@@ -147,11 +114,11 @@ class RelationshipTable extends React.Component {
         }, {
             Header: 'Type',
             accessor: 'node.type',
-            width: 200,
+            width: 150,
             Cell: props => {
                 const { node } = props.original;
                 return <div
-                    style={{ backgroundColor: "#fafafa", justifyContent: "center" }}
+                    style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
                     contentEditable={false}
                     suppressContentEditableWarning
                     dangerouslySetInnerHTML={{
@@ -178,18 +145,18 @@ class RelationshipTable extends React.Component {
                     return changeProperty(neighbor, 'type')
                 })
             },
-            width: 200,
+            width: 150,
         },
         {
             id: 'cost',
             Header: 'Cost',
-            accessor: d => 58,
+            // accessor: d => 58,
             width: 100,
             Cell: props => {
                 const { neighbors } = props.original;
                 return neighbors.map(neighbor => {
                     return <div
-                        style={{ backgroundColor: "#fafafa" }}
+                        style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
                         contentEditable={false}
                         suppressContentEditableWarning
                         dangerouslySetInnerHTML={{
@@ -202,14 +169,14 @@ class RelationshipTable extends React.Component {
         {
             Header: 'Action',
             Cell: props => {
-                const { neighbors } = props.original;
+                const { node, neighbors } = props.original;
                 return neighbors.map(neighbor => {
                     return <div>
-                        <button style={styles} onClick={() => alert('Removed neighbor ' + neighbor.name)}>Remove</button>
+                        <button style={styles} onClick={() => this.handleRemoveNeighbor(node, neighbor)}>Remove</button>
                     </div>
                 })
             },
-            width: 100
+            width: 150
         }
         ]
         return <div>
@@ -217,12 +184,14 @@ class RelationshipTable extends React.Component {
                 textAlign: 'right',
             }}>
                 <button style={styles} >Add</button>
+                <button style={styles} >Save</button>
             </div>
             <ReactTable
-                data={nodes}
+                data={this.state.data}
                 columns={columns}
                 defaultPageSize={10}
                 showPagination={true}
+                className="-striped -highlight"
             />
         </div>
 
