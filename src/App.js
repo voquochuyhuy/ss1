@@ -1,6 +1,7 @@
 import React from "react";
 import RelationshipTable from "./components/RelationshipTable";
 import "./App.css";
+import _ from "lodash";
 import pinLogo from "./pin-logo.png";
 const Graph = require("node-dijkstra");
 class App extends React.Component {
@@ -20,7 +21,8 @@ class App extends React.Component {
             edgeVertex2: null,
             feature: "",
             route: null,
-            currentNumberOfMap: []
+            currentNumberOfMap: [],
+            isDrawFromGraphs: false
         };
         this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
     }
@@ -124,42 +126,63 @@ class App extends React.Component {
         }
         return edgeExisted;
     }
-    drawEdge(vertex1, vertex2, i) {
-
-        console.log("draw", i);
-        if (this.state.feature === "draw") {
-            const edgeExisted = this.addVertexToGraphs(vertex1, vertex2);
-            const x1 = vertex1.getAttributeNS(null, "cx");
-            const y1 = vertex1.getAttributeNS(null, "cy");
-            const x2 = vertex2.getAttributeNS(null, "cx");
-            const y2 = vertex2.getAttributeNS(null, "cy");
-            //check edge exist
-
-            if (edgeExisted) {
-                alert("Edges exist");
-            } else {
-                const node_path = document.getElementById(`node-pathline-${i}`);
-                // const node_path = document.getElementById(`node-pathline-${i}`);
-                console.log(node_path);
-                let edge = document.createElementNS(
-                    "http://www.w3.org/2000/svg",
-                    "line"
-                );
-                edge.setAttributeNS(null, "x1", x1);
-                edge.setAttributeNS(null, "y1", y1);
-                edge.setAttributeNS(null, "x2", x2);
-                edge.setAttributeNS(null, "y2", y2);
-                edge.setAttributeNS(null, "stroke", "red");
-                edge.setAttributeNS(null, "stroke-width", "3");
-                edge.setAttributeNS(null, "fill", "none");
-                edge.setAttributeNS(null, "stroke-dasharray", "5,5");
-                edge.addEventListener("click", () => {
-                    this.DeleteEgde(edge);
-                });
-                node_path.appendChild(edge);
-                // SVGnodes.appendChild(g);
-            }
+    drawEdgeFromGraphs = () => {
+        const { loadedGraphs } = this.state;
+        console.log('drawEdgeFromGraphs called');
+        const array = [];
+        Object.keys(loadedGraphs).forEach(nodeId => {
+            Object.keys(loadedGraphs[nodeId]).forEach(nodeNeighborId => {
+                // this.drawEdge(node, nodeNeighbor, '0');
+                if (_.findIndex(array, { 'node': nodeNeighborId, 'neighbor': nodeId }) === -1) {
+                    array.push({ 'node': nodeId, 'neighbor': nodeNeighborId });
+                }
+            });
+        });
+        array.forEach(item => {
+            this.drawEdge(item.node, item.neighbor, '0');
+        })
+        this.setState({ isDrawFromGraphs: true });
+    }
+    drawEdge = (vertex1, vertex2, i) => {
+        // if (this.state.feature === "draw") {
+        //check vertex1 and vertex2 là 1 HMTLElement hay 1 string
+        //Nếu là string (id của 1 Element) thì vẽ dựa vào graphs có sẵn, k thì tạo graphs mới
+        const node_path = document.getElementById(`node-pathline-${i}`);
+        const draw = (v1, v2) => {
+            const x1 = v1.getAttributeNS(null, "cx");
+            const y1 = v1.getAttributeNS(null, "cy");
+            const x2 = v2.getAttributeNS(null, "cx");
+            const y2 = v2.getAttributeNS(null, "cy");
+            let edge = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line"
+            );
+            edge.setAttributeNS(null, "x1", x1);
+            edge.setAttributeNS(null, "y1", y1);
+            edge.setAttributeNS(null, "x2", x2);
+            edge.setAttributeNS(null, "y2", y2);
+            edge.setAttributeNS(null, "stroke", "red");
+            edge.setAttributeNS(null, "stroke-width", "3");
+            edge.setAttributeNS(null, "fill", "none");
+            edge.setAttributeNS(null, "stroke-dasharray", "5,5");
+            edge.addEventListener("click", () => {
+                this.DeleteEgde(edge);
+            });
+            node_path.appendChild(edge);
         }
+        if (typeof vertex1 !== "string") {
+            console.log('go to vertex element');
+            const edgeExisted = this.addVertexToGraphs(vertex1, vertex2);
+            edgeExisted ? alert('edge already exists') : draw(vertex1, vertex2);
+        }
+        else {
+            console.log('go to vertex string : ', vertex1, vertex2);
+            const vtx1 = document.getElementById(vertex1);
+            const vtx2 = document.getElementById(vertex2);
+            console.log('vtx1 : ', vtx1, 'vtx2 : ', vtx2);
+            draw(vtx1, vtx2);
+        }
+        // }
     }
     /**********************START wayFiding***********************/
     async LoadGraphsFile() {
@@ -167,7 +190,6 @@ class App extends React.Component {
         el.innerHTML = "<input type='file'/>";
         const fileInput = await el.firstChild;
         await fileInput.click();
-        console.log(el);
         await fileInput.addEventListener("change", e => {
             console.log(".");
             if (fileInput.files[0].name.match(/\.(txt|json)$/)) {
@@ -186,7 +208,6 @@ class App extends React.Component {
                 loadedGraphs: graphsJson,
                 route: new Graph({ ...graphsJson })
             });
-            console.log(graphsJson);
         };
         reader.readAsText(e.target.files[0]);
     };
@@ -370,14 +391,13 @@ class App extends React.Component {
                     alert(`These file was loaded and won't be load again : ${mapsWasLoaded}`);
                 }
 
-                for(i;i<fileContents.length;i++)
-                {     
-                    if(document.getElementsByTagName("svg").length === 0){
+                for (i; i < fileContents.length; i++) {
+                    if (document.getElementsByTagName("svg").length === 0) {
                         let div = document.createElement("div");
                         div.setAttribute("id", "list-svg");
                         div.innerHTML = fileContents[i].trim();
                         document.getElementsByClassName('App')[0].appendChild(div);
-                        div.firstChild.setAttributeNS(null,"id",`svg-${i}`);
+                        div.firstChild.setAttributeNS(null, "id", `svg-${i}`);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
                             "g"
@@ -394,7 +414,7 @@ class App extends React.Component {
                     else {
                         let div = document.createElement("div");
                         div.innerHTML = fileContents[i].trim();
-                        div.firstChild.setAttributeNS(null,"id",`svg-${i}`);
+                        div.firstChild.setAttributeNS(null, "id", `svg-${i}`);
                         document.getElementById("list-svg").appendChild(div.firstChild);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
@@ -427,11 +447,11 @@ class App extends React.Component {
                         let nameOfMap = document.createElement("span");
                         nameOfMap.innerText = `${fileInput.files[k].name}    `;
                         let button = document.createElement("button");
-                        button.addEventListener("click",()=>{this.DeleteMap(k)});  
+                        button.addEventListener("click", () => { this.DeleteMap(k) });
                         button.textContent = "Delete";
                         let space = document.createElement("span");
                         nameOfMap.innerText = `     `;
-                        document.getElementsByClassName("App")[0].appendChild(radio);  
+                        document.getElementsByClassName("App")[0].appendChild(radio);
                         document.getElementsByClassName("App")[0].appendChild(nameOfMap);
                         document.getElementsByClassName("App")[0].appendChild(button);
                         document.getElementsByClassName("App")[0].appendChild(space);
@@ -441,11 +461,11 @@ class App extends React.Component {
             });
         });
     };
-    DeleteMap = (k)=>{
+    DeleteMap = (k) => {
         document.getElementById("list-svg").removeChild(document.getElementById(`svg-${k}`));
         //cập nhập lại currentNumberofMap
     }
-    scrollMap = (k)=>{
+    scrollMap = (k) => {
         let svg = document.getElementById(`svg-${k}`);
         svg.scrollIntoView();
     }
@@ -485,6 +505,10 @@ class App extends React.Component {
                                 type="radio"
                                 id="draw"
                                 onChange={() => {
+                                    if (!this.state.isDrawFromGraphs) {
+                                        this.drawEdgeFromGraphs();
+                                        this.setState({ graphs: this.state.loadedGraphs });
+                                    }
                                     this.OnDrawingEgde();
                                 }}
                                 name="chooseFeature"
