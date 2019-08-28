@@ -4,6 +4,7 @@
   "private": true,
   "dependencies": {
     "lodash": "^4.17.15",
+    "match-sorter": "^4.0.1",
     "node-dijkstra": "^2.5.0",
     "react": "^16.9.0",
     "react-dom": "^16.9.0",

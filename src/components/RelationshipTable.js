@@ -1,6 +1,7 @@
 import React from 'react';
 import ReactTable from 'react-table';
 import _ from 'lodash';
+import matchSorter from 'match-sorter';
 import 'react-table/react-table.css'
 class RelationshipTable extends React.Component {
     constructor(props) {
@@ -27,7 +28,8 @@ class RelationshipTable extends React.Component {
                 {...}
             ] 
             */
-            removed: []
+            removed: [],
+            count: 0
         };
     }
     componentDidMount() {
@@ -113,11 +115,11 @@ class RelationshipTable extends React.Component {
                         ...nb
                     }
                 };
-                graphs = {...graphs,...item}
+                graphs = { ...graphs, ...item }
                 // array.push(item);
             });
             console.log('result save : ', graphs);
-           return graphs;
+            return graphs;
         }
         const a = document.createElement("a");
         document.body.appendChild(a);
@@ -137,25 +139,52 @@ class RelationshipTable extends React.Component {
             backgroundColor: '#dadada',
             borderRadius: '2px'
         }
-        const changeProperty = (object, property) => {
-            return <div
-                style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
-                contentEditable
-                suppressContentEditableWarning
-                onBlur={e => {
-                    const { data } = this.state;
-                    if (object[`${property}`] !== e.target.innerHTML) {
-                        object[`${property}`] = e.target.innerHTML;
-                        this.setState({ data });
+
+
+        const changeProperty = (node, neighbor, property) => {
+            const handleButtonAdd = () => {
+                let counter = this.state.count++;
+                const { data } = this.state;
+                data.map(item => {
+                    if (item.node === node) {
+                        const newNeighbor = {
+                            id: 'new-neighbor-' + counter,
+                            name: 'new Neighbor ' + counter,
+                            type: 'path',
+                            cost: 1
+                        }
+                        item.neighbors.push(newNeighbor);;
                     }
-                }}
-                dangerouslySetInnerHTML={{
-                    __html: object[`${property}`]
-                }}
-            />
+                })
+                this.setState({ data });
+            }
+            return (
+                <div>
+                    {property === 'name' ? (<button style={{ float: 'right' }} onClick={() => handleButtonAdd()} >+</button>) : null}
+                    <div
+                        style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
+                        contentEditable
+                        suppressContentEditableWarning
+                        onBlur={e => {
+                            const { data } = this.state;
+                            if (neighbor[`${property}`] !== e.target.innerHTML) {
+                                if (property === 'cost')
+                                    neighbor[`${property}`] = Number(e.target.innerHTML);
+                                else neighbor[`${property}`] = e.target.innerHTML;
+                                this.setState({ data });
+                            }
+                        }}
+                        dangerouslySetInnerHTML={{
+                            __html: neighbor[`${property}`]
+                        }}
+                    />
+
+                </div>
+            )
         }
         const columns = [{
             Header: 'Node',
+            id: 'node-root',
             Cell: props => {
                 const { node } = props.original;
                 return <div
@@ -163,10 +192,14 @@ class RelationshipTable extends React.Component {
                         __html: node.name
                     }}
                 />
-            }
+            },
+            filterMethod: (filter, rows) =>
+                matchSorter(rows, filter.value, { keys: ["node-root"] }),
+            filterAll: true
         }, {
             Header: 'Type',
             accessor: 'node.type',
+            id: 'node-type',
             width: 150,
             Cell: props => {
                 const { node } = props.original;
@@ -178,26 +211,36 @@ class RelationshipTable extends React.Component {
                         __html: node.type
                     }}
                 />
-            }
+            },
+            filterMethod: (filter, rows) =>
+                matchSorter(rows, filter.value, { keys: ["node-type"] }),
+            filterAll: true
         }, {
             id: 'neighbors',
             Header: 'Neighbors',
             accessor: d => d.neighbors.map(neighbor => neighbor.name),
             Cell: props => {
-                const { neighbors } = props.original;
+                const { node, neighbors } = props.original;
                 return neighbors.map(neighbor => {
-                    return changeProperty(neighbor, 'name')
+                    return changeProperty(node, neighbor, 'name')
                 })
-            }
+            },
+            filterMethod: (filter, rows) =>
+                matchSorter(rows, filter.value, { keys: ["neighbors"] }),
+            filterAll: true
         }, {
             Header: props => <span>Type</span>,
             // accessor: 'neighbors.type',
+            id: 'nb-type',
             Cell: props => {
-                const { neighbors } = props.original;
+                const { node, neighbors } = props.original;
                 return neighbors.map(neighbor => {
-                    return changeProperty(neighbor, 'type')
+                    return changeProperty(node, neighbor, 'type')
                 })
             },
+            filterMethod: (filter, rows) =>
+                matchSorter(rows, filter.value, { keys: ["nb-type"] }),
+            filterAll: true,
             width: 150,
         },
         {
@@ -206,21 +249,18 @@ class RelationshipTable extends React.Component {
             // accessor: d => 58,
             width: 100,
             Cell: props => {
-                const { neighbors } = props.original;
+                const { node, neighbors } = props.original;
                 return neighbors.map(neighbor => {
-                    return <div
-                        style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
-                        contentEditable={false}
-                        suppressContentEditableWarning
-                        dangerouslySetInnerHTML={{
-                            __html: neighbor.cost
-                        }}
-                    />
+                    return changeProperty(node, neighbor, 'cost')
                 })
-            }
+            },
+            filterMethod: (filter, rows) =>
+                matchSorter(rows, filter.value, { keys: ["cost"] }),
+            filterAll: true,
         },
         {
             Header: 'Action',
+            id: 'action',
             Cell: props => {
                 const { node, neighbors } = props.original;
                 return neighbors.map(neighbor => {
@@ -229,6 +269,9 @@ class RelationshipTable extends React.Component {
                     </div>
                 })
             },
+            filterMethod: (filter, rows) =>
+                matchSorter(rows, filter.value, { keys: ["action"] }),
+            filterAll: true,
             width: 150
         }
         ]
@@ -240,6 +283,9 @@ class RelationshipTable extends React.Component {
                 <button style={styles} onClick={() => this.handleSave()} >Save</button>
             </div>
             <ReactTable
+                filterable
+                defaultFilterMethod={(filter, row) =>
+                    String(row[filter.id]) === filter.value}
                 data={this.state.data}
                 columns={columns}
                 defaultPageSize={10}
