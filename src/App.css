@@ -59,15 +59,7 @@ line {
   stroke-width: 2px;
 }
 
-/* [id^="svg"]{
-  display: inline;
-} */
-td{
-  width: 1500px;
-}
-tr{
+#list-svg{
   overflow: auto;
-}
-svg{
-  width: 1300px;
+  white-space: nowrap;
 }

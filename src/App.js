@@ -19,7 +19,8 @@ class App extends React.Component {
             edgeVertex1: null,
             edgeVertex2: null,
             feature: "",
-            route: null
+            route: null,
+            currentNumberOfMap :[]
         };
         this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
     }
@@ -306,7 +307,7 @@ class App extends React.Component {
         }
     }
     addClickEventForCircle = (node_path_id) => {
-        let svg = document.getElementById(`td-${node_path_id}`);
+        let svg = document.getElementById(`nodes-${node_path_id}`);
         const vertices = svg.getElementsByTagName("circle");
         this.vertices = vertices;
         for (let i = 0; i < vertices.length; i++) {
@@ -339,55 +340,13 @@ class App extends React.Component {
 
 
     handleFileSelect = async e => {
-
-        // var element = document.createElement("div");
-        // element.innerHTML = '<input type="file" multiple>';
-        // var fileInput = element.firstChild;
-        // fileInput.click();
-        // await fileInput.addEventListener("change", async () => {
-        //     var file = fileInput.files[0];
-        //     if (file.name.match(/\.(txt|svg)$/)) {
-        //         var reader = new FileReader();
-        //         await reader.readAsText(file);
-        //         reader.onload = async () => {
-        //             const result = await reader.result;
-        //             const node_pathline = document.createElementNS(
-        //                 "http://www.w3.org/2000/svg",
-        //                 "g"
-        //             );
-        //             node_pathline.setAttributeNS(null, "id", "node-pathline");
-        //             if (document.getElementsByTagName("svg").length === 0) {
-        //                 const div = document.createElement("div");
-        //                 div.innerHTML = result.trim();
-        //                 document.body.appendChild(div);
-        //             } else {
-        //                 let oldSVG = document.getElementsByTagName("svg")[0].parentElement;
-        //                 const newSVG = document.createElement("div");
-        //                 newSVG.innerHTML = result.trim();
-        //                 oldSVG.parentElement.replaceChild(newSVG, oldSVG);
-        //             }
-        //             const nodes = document.getElementById("nodes");
-        //             nodes.parentElement.appendChild(node_pathline);
-
-        //             const node_pathline_clone = node_pathline.cloneNode(true);
-        //             const nodes_clone = nodes.cloneNode(true);
-        //             console.log(nodes_clone);
-        //             nodes.replaceWith(node_pathline_clone);
-        //             node_pathline.replaceWith(nodes_clone);
-        //             this.addClickEventForCircle();
-        //         };
-        //     } else {
-        //         alert("File not supported, .txt or .svg files only");
-        //     }
-        // });
-
-        // của huy
         var element = document.createElement("div");
         element.innerHTML = '<input type="file" multiple>';
         var fileInput = element.firstChild;
         fileInput.click();
         await fileInput.addEventListener("change", async () => {      
             let promises = [];
+            
             for (let file of fileInput.files) {
                 let filePromise = new Promise(resolve => {
                     let reader = new FileReader();
@@ -397,73 +356,152 @@ class App extends React.Component {
                 promises.push(filePromise);
             }
            
-
             Promise.all(promises).then(fileContents => {
-                let table = document.createElement("TABLE");
-                table.setAttribute("id", "myTable");
-                document.getElementsByClassName("App")[0].appendChild(table);
-    
-                let row = document.createElement("TR");
-                row.setAttribute("id", "myTr");
-                document.getElementById("myTable").appendChild(row);
-    
-
-                for(let i =0;i<fileContents.length;i++)
+               
+                //kiểm tra là lần load lại hay load thêm
+                // if(document.getElementById("myTable") === null)
+                // {  
+                //     let table = document.createElement("TABLE");
+                //     table.setAttribute("id", "myTable");
+                //     document.getElementsByClassName("App")[0].appendChild(table);
+        
+                //     let row = document.createElement("TR");
+                //     row.setAttribute("id", "myTr");
+                //     document.getElementById("myTable").appendChild(row);
+                // }
+                /*Thông báo khi load lại map cũ*/
+                let i = 0;
+                let mapsWasLoaded = '';
+                for(let a =0;a<this.state.currentNumberOfMap.length;a++)
                 {
-                    
-                    if (document.getElementsByTagName("svg").length === 0) {
-                        const div = document.createElement("div");
-                        div.setAttribute("id",`svg-${i}`);
-                        div.innerHTML = fileContents[i].trim();
-                        let col = document.createElement("td");
-                        col.setAttribute("id",`td-${i}`);
-                        col.appendChild(div.firstChild);
-                        document.getElementById("myTr").appendChild(col);
-                        // let app = document.getElementsByClassName("App");
-                        // app[0].appendChild(div);
-                        let node_pathline = document.createElementNS(
-                            "http://www.w3.org/2000/svg",
-                            "g"
-                        );
-                        node_pathline.setAttributeNS(null, "id", `node-pathline-${i}`);
-                        let nodes = document.getElementById("nodes");
-                        nodes.setAttribute("id",`nodes-${i}`);
-                        nodes.parentElement.appendChild(node_pathline);
-                        let node_pathline_clone = node_pathline.cloneNode(true);
-                        let nodes_clone = nodes.cloneNode(true);
-                        nodes.replaceWith(node_pathline_clone);
-                        node_pathline.replaceWith(nodes_clone);
+                    for(let b =0; b< fileInput.files.length;b++)
+                    {
+                        if(this.state.currentNumberOfMap[a].name === fileInput.files[b].name)
+                        {
+                            i++;
+                            mapsWasLoaded += `${fileInput.files[b].name}`
+                        }
+                    }
+                }
+                if(i !== 0)
+                {
+                    alert(`These file was loaded and won't be load again : ${mapsWasLoaded}`);
+                }
+                /*End thông báo */
+
+                // thêm sự kiện, html element khi load
+                for(i;i<fileContents.length;i++)
+                {     
+                    // if (document.getElementsByTagName("svg").length === 0) {
+                    //     const div = document.createElement("div");
+                    //     div.setAttribute("id",`svg-${this.state.currentNumberOfMap.length +i}`);
+                    //     div.innerHTML = fileContents[i].trim();
+                    //     let col = document.createElement("td");
+                    //     col.setAttribute("id",`td-${this.state.currentNumberOfMap.length +i}`);
+                    //     col.appendChild(div.firstChild);
+                    //     document.getElementById("myTr").appendChild(col); 
+                    //     let node_pathline = document.createElementNS(
+                    //         "http://www.w3.org/2000/svg",
+                    //         "g"
+                    //     );
+                    //     node_pathline.setAttributeNS(null, "id", `node-pathline-${this.state.currentNumberOfMap.length +i}`);
+                    //     let nodes = document.getElementById("nodes");
+                    //     nodes.setAttribute("id",`nodes-${this.state.currentNumberOfMap.length +i}`);
+                    //     nodes.parentElement.appendChild(node_pathline);
+                    //     let node_pathline_clone = node_pathline.cloneNode(true);
+                    //     let nodes_clone = nodes.cloneNode(true);
+                    //     nodes.replaceWith(node_pathline_clone);
+                    //     node_pathline.replaceWith(nodes_clone);
                         
-                    } else {
-                        let oldSVG = document.getElementsByTagName("svg")[0].parentElement;
-                        const newSVG = document.createElement("div");
-                        newSVG.setAttribute("id",`svg-${i}`);
-                        newSVG.innerHTML = fileContents[i].trim();
-                        let col = document.createElement("td");
-                        col.setAttribute("id",`td-${i}`);
-                        col.appendChild(newSVG.firstChild);
-                        document.getElementById("myTr").appendChild(col);
-                        // oldSVG.parentElement.appendChild(newSVG);
+                    // } else {
+                    //     let oldSVG = document.getElementsByTagName("svg")[0].parentElement;
+                    //     const newSVG = document.createElement("div");
+                    //     newSVG.setAttribute("id",`svg-${this.state.currentNumberOfMap.length +i}`);
+                    //     newSVG.innerHTML = fileContents[i].trim();
+                    //     let col = document.createElement("td");
+                    //     col.setAttribute("id",`td-${this.state.currentNumberOfMap.length +i}`);
+                    //     col.appendChild(newSVG.firstChild);
+                    //     document.getElementById("myTr").appendChild(col);
+                    //     let node_pathline = document.createElementNS(
+                    //         "http://www.w3.org/2000/svg",
+                    //         "g"
+                    //     );
+                    //     node_pathline.setAttributeNS(null, "id", `node-pathline-${this.state.currentNumberOfMap.length +i}`);
+                    //     let nodes = document.getElementById("nodes");
+                    //     nodes.setAttribute("id",`nodes-${this.state.currentNumberOfMap.length +i}`);
+                    //     nodes.parentElement.appendChild(node_pathline);
+                    //     let node_pathline_clone = node_pathline.cloneNode(true);
+                    //     let nodes_clone = nodes.cloneNode(true);
+                    //     nodes.replaceWith(node_pathline_clone);
+                    //     node_pathline.replaceWith(nodes_clone);
+                    // } 
+                    // this.addClickEventForCircle(this.state.currentNumberOfMap.length +i);
+                    if(document.getElementsByTagName("svg").length === 0){
+                        let div = document.createElement("div");
+                        div.setAttribute("id","list-svg");
+                        div.innerHTML = fileContents[i].trim();
+                        document.getElementsByClassName('App')[0].appendChild(div);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
                             "g"
                         );
-                        node_pathline.setAttributeNS(null, "id", `node-pathline-${i}`);
+                        node_pathline.setAttributeNS(null, "id", `node-pathline-${this.state.currentNumberOfMap.length +i}`);
                         let nodes = document.getElementById("nodes");
-                        nodes.setAttribute("id",`nodes-${i}`);
+                        nodes.setAttribute("id",`nodes-${this.state.currentNumberOfMap.length +i}`);
                         nodes.parentElement.appendChild(node_pathline);
                         let node_pathline_clone = node_pathline.cloneNode(true);
                         let nodes_clone = nodes.cloneNode(true);
                         nodes.replaceWith(node_pathline_clone);
                         node_pathline.replaceWith(nodes_clone);
                     }
-                    
-                    this.addClickEventForCircle(i);
+                    else{
+                        let div = document.createElement("div");
+                        div.innerHTML = fileContents[i].trim();
+                        document.getElementById("list-svg").appendChild(div.firstChild);
+                        let node_pathline = document.createElementNS(
+                            "http://www.w3.org/2000/svg",
+                            "g"
+                        );
+                        node_pathline.setAttributeNS(null, "id", `node-pathline-${this.state.currentNumberOfMap.length +i}`);
+                        let nodes = document.getElementById("nodes");
+                        nodes.setAttribute("id",`nodes-${this.state.currentNumberOfMap.length +i}`);
+                        nodes.parentElement.appendChild(node_pathline);
+                        let node_pathline_clone = node_pathline.cloneNode(true);
+                        let nodes_clone = nodes.cloneNode(true);
+                        nodes.replaceWith(node_pathline_clone);
+                        node_pathline.replaceWith(nodes_clone);
+                    }
+                    this.addClickEventForCircle(this.state.currentNumberOfMap.length +i);
                 }
-                
+                // thêm radio button
+                for (let k =0;k< fileInput.files.length;k++) {
+                    let check = 0;
+                    for(let y =0;y<this.state.currentNumberOfMap.length;y++)
+                    {
+                        if(fileInput.files[k].name !== this.state.currentNumberOfMap[y].name)
+                        {
+                            check ++;
+                        }
+                    }
+                    if(check === this.state.currentNumberOfMap.length)
+                    {
+                        let radio = document.createElement("input");
+                        radio.setAttribute("type","radio");
+                        radio.setAttribute("name","radioGroup");
+                        radio.addEventListener("change",()=>{this.scrollMap(k)});
+                        let nameOfMap = document.createElement("span");
+                        nameOfMap.innerText = `${fileInput.files[k].name}    `;     
+                        document.getElementsByClassName("App")[0].appendChild(radio);  
+                        document.getElementsByClassName("App")[0].appendChild(nameOfMap);
+                        this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[k]] });
+                    }   
+                }    
             });
         });
     };
+    scrollMap = (i)=>{
+
+    }
     handleSaveGraphs = e => {
         const a = document.createElement("a");
         document.body.appendChild(a);
