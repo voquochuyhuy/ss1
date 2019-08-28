@@ -100,40 +100,31 @@ class RelationshipTable extends React.Component {
 
     }
     handleSave = () => {
-        const serializedData = (data) => {
-            let result = {};
+        const serializeData = (data) => {
+            let graphs = {};
             const array = [];
             data.forEach(items => {
                 const arrayNeighbor = items.neighbors.map(neighbor => {
-                    let item = {
-                        [items.node.id]: {
-                            [neighbor.id]: neighbor.cost
-                        }
-                    }
-                    if (result.hasOwnProperty(items.node.id)) {
-                        result[items.node.id] = { ...result[items.node.id], ...item[items.node.id] };
-                        array.push(result);
-                    }
-                    else {
-                        result = { ...item }
-                        array.push(result);
-                    }
-                    // return neighbor.id
+                    return [[neighbor.id], neighbor.cost]
                 });
-                // let item = {
-                //     [item.node.id]: {
-                        
-                //     }
-                // }
+                const nb = arrayNeighbor.reduce((prev, curr) => { prev[curr[0]] = curr[1]; return prev; }, {})
+                const item = {
+                    [items.node.id]: {
+                        ...nb
+                    }
+                };
+                graphs = {...graphs,...item}
+                // array.push(item);
             });
-            console.log('result save : ', array);
-            return array;
+            console.log('result save : ', graphs);
+           return graphs;
         }
         const a = document.createElement("a");
         document.body.appendChild(a);
         const { data } = this.state;
+        const serializedData = serializeData(data)
         const fileName = "graphs.json";
-        const json = serializedData(data);
+        const json = JSON.stringify(serializedData);
         const blob = new Blob([json], { type: "octet/stream" });
         const url = window.URL.createObjectURL(blob);
         a.href = url;
