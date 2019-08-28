@@ -414,7 +414,7 @@ class App extends React.Component {
                     else {
                         let div = document.createElement("div");
                         div.innerHTML = fileContents[i].trim();
-                        div.firstChild.setAttributeNS(null, "id", `svg-${i}`);
+                        div.firstChild.setAttributeNS(null,"id",`svg-${this.state.currentNumberOfMap.length+i}`);
                         document.getElementById("list-svg").appendChild(div.firstChild);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
@@ -445,25 +445,42 @@ class App extends React.Component {
                         radio.setAttribute("name", "radioGroup");
                         radio.addEventListener("change", () => { this.scrollMap(k) });
                         let nameOfMap = document.createElement("span");
-                        nameOfMap.innerText = `${fileInput.files[k].name}    `;
+                        nameOfMap.innerHTML= `${fileInput.files[k].name}    `;
+                        console.log(nameOfMap,fileInput.files[k].name);
                         let button = document.createElement("button");
-                        button.addEventListener("click", () => { this.DeleteMap(k) });
+                        button.addEventListener("click",()=>{this.DeleteMap(k,fileInput.files[k])});  
                         button.textContent = "Delete";
                         let space = document.createElement("span");
                         nameOfMap.innerText = `     `;
                         document.getElementsByClassName("App")[0].appendChild(radio);
                         document.getElementsByClassName("App")[0].appendChild(nameOfMap);
                         document.getElementsByClassName("App")[0].appendChild(button);
-                        document.getElementsByClassName("App")[0].appendChild(space);
+                        // document.getElementsByClassName("App")[0].appendChild(space);
                         this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[k]] });
                     }
                 }
             });
         });
+        console.log(this.state.currentNumberOfMap);
     };
-    DeleteMap = (k) => {
+    DeleteMap = (k,file)=>{
+        let deleteFile ;
         document.getElementById("list-svg").removeChild(document.getElementById(`svg-${k}`));
-        //cập nhập lại currentNumberofMap
+        if(document.getElementsByTagName("svg").length === 0)
+        {
+            let list_svg = document.getElementById("list-svg");
+            list_svg.parentElement.removeChild(list_svg);
+        }
+        for(let i = 0;i<this.state.currentNumberOfMap.length;i++){
+            if(file.name === this.state.currentNumberOfMap[i])
+            {
+                deleteFile = i;
+                break;
+            }
+        }
+        var cloneState = [...this.state.currentNumberOfMap];
+        cloneState.splice(deleteFile,1);
+        this.setState({currentNumberOfMap:cloneState});
     }
     scrollMap = (k) => {
         let svg = document.getElementById(`svg-${k}`);
