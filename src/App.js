@@ -348,6 +348,9 @@ class App extends React.Component {
     };
     OnWayFinding = () => {
         this.setState({ feature: "find", vertex1: "", vertex2: "" });
+        const groupPathNode = document.getElementById('node-pathline-0');
+        let clone = groupPathNode.cloneNode(false);
+        groupPathNode.replaceWith(clone);
         const pathNodes = document.getElementsByTagName("circle");
         for (let i = 0; i < pathNodes.length; i++) {
             if (pathNodes[i].id.startsWith("L4_PATH")) {
@@ -416,11 +419,11 @@ class App extends React.Component {
                         let div = document.createElement("div");
                         div.innerHTML = fileContents[i].trim();
                         let listSVG = document.getElementsByTagName("svg");
-                        let oldId = listSVG[listSVG.length - 1].getAttributeNS(null,"id");
+                        let oldId = listSVG[listSVG.length - 1].getAttributeNS(null, "id");
                         let check = /\d+/;
                         let newId = parseInt(oldId.match(check));
-                        console.log(oldId,newId);
-                        div.firstChild.setAttributeNS(null,"id",`svg-${newId + 1}`);
+                        console.log(oldId, newId);
+                        div.firstChild.setAttributeNS(null, "id", `svg-${newId + 1}`);
                         document.getElementById("list-svg").appendChild(div.firstChild);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
@@ -436,7 +439,7 @@ class App extends React.Component {
                         node_pathline.replaceWith(nodes_clone);
                         this.addClickEventForCircle(newId + 1);
                     }
-                    
+
                 }
                 // thêm radio button
                 for (let k = 0; k < fileInput.files.length; k++) {
@@ -447,53 +450,52 @@ class App extends React.Component {
                         }
                     }
                     if (check === this.state.currentNumberOfMap.length) {
-                        
-                        if(document.getElementsByClassName("menuOfMap").length === 0 )
-                        {
+
+                        if (document.getElementsByClassName("menuOfMap").length === 0) {
                             let divMenuOfMap = document.createElement("div");
-                            divMenuOfMap.setAttribute("class","menuOfMap");
+                            divMenuOfMap.setAttribute("class", "menuOfMap");
                             document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
                             let radio = document.createElement("input");
                             radio.setAttribute("type", "radio");
                             radio.setAttribute("name", "radioGroup");
-                            radio.setAttribute("id",`radio-${k}`);
+                            radio.setAttribute("id", `radio-${k}`);
                             radio.addEventListener("change", () => { this.scrollMap(k) });
                             let nameOfMap = document.createElement("span");
-                            nameOfMap.innerHTML= `${fileInput.files[k].name}    `;
+                            nameOfMap.innerHTML = `${fileInput.files[k].name}    `;
                             let button = document.createElement("button");
-                            button.addEventListener("click",()=>{this.DeleteMap(k,fileInput.files[k])});  
+                            button.addEventListener("click", () => { this.DeleteMap(k, fileInput.files[k]) });
                             button.textContent = "Delete";
                             let space = document.createElement("span");
                             space.innerText = `     `;
-                            divMenuOfMap.appendChild(radio);  
+                            divMenuOfMap.appendChild(radio);
                             divMenuOfMap.appendChild(nameOfMap);
                             divMenuOfMap.appendChild(button);
                             divMenuOfMap.appendChild(space);
                             this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[k]] });
                         }
-                        else{
+                        else {
                             let list_menu = document.getElementsByClassName("menuOfMap");
-                            let lastMenu = list_menu[list_menu.length- 1];
-                            let oldMenuInputId = lastMenu.firstChild.getAttributeNS(null,"id");
+                            let lastMenu = list_menu[list_menu.length - 1];
+                            let oldMenuInputId = lastMenu.firstChild.getAttributeNS(null, "id");
                             let checkCondition = /\d+/;
                             let newMenuInputId = parseInt(oldMenuInputId.match(checkCondition)) + 1;
 
                             let divMenuOfMap = document.createElement("div");
-                            divMenuOfMap.setAttribute("class","menuOfMap");
+                            divMenuOfMap.setAttribute("class", "menuOfMap");
                             document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
                             let radio = document.createElement("input");
                             radio.setAttribute("type", "radio");
                             radio.setAttribute("name", "radioGroup");
-                            radio.setAttribute("id",`radio-${newMenuInputId}`);
+                            radio.setAttribute("id", `radio-${newMenuInputId}`);
                             radio.addEventListener("change", () => { this.scrollMap(newMenuInputId) });
                             let nameOfMap = document.createElement("span");
-                            nameOfMap.innerHTML= `${fileInput.files[k].name}    `;
+                            nameOfMap.innerHTML = `${fileInput.files[k].name}    `;
                             let button = document.createElement("button");
-                            button.addEventListener("click",()=>{this.DeleteMap(newMenuInputId,fileInput.files[k])});  
+                            button.addEventListener("click", () => { this.DeleteMap(newMenuInputId, fileInput.files[k]) });
                             button.textContent = "Delete";
                             let space = document.createElement("span");
                             space.innerText = `     `;
-                            divMenuOfMap.appendChild(radio);  
+                            divMenuOfMap.appendChild(radio);
                             divMenuOfMap.appendChild(nameOfMap);
                             divMenuOfMap.appendChild(button);
                             divMenuOfMap.appendChild(space);
@@ -505,28 +507,26 @@ class App extends React.Component {
         });
         console.log(this.state.currentNumberOfMap);
     };
-    DeleteMap = (k,file)=>{
+    DeleteMap = (k, file) => {
         console.log(this.state.currentNumberOfMap);
-        let deleteFile ;
+        let deleteFile;
         document.getElementById("list-svg").removeChild(document.getElementById(`svg-${k}`));
         let radioElement = document.getElementById(`radio-${k}`);
         document.getElementsByClassName("App")[0].removeChild(radioElement.parentElement);
-        if(document.getElementsByTagName("svg").length === 0)
-        {
+        if (document.getElementsByTagName("svg").length === 0) {
             let list_svg = document.getElementById("list-svg");
             list_svg.parentElement.removeChild(list_svg);
         }
         console.log(file.name);
-        for(let i = 0;i<this.state.currentNumberOfMap.length;i++){
-            if(file.name === this.state.currentNumberOfMap[i].name)
-            {
+        for (let i = 0; i < this.state.currentNumberOfMap.length; i++) {
+            if (file.name === this.state.currentNumberOfMap[i].name) {
                 deleteFile = i;
                 break;
             }
         }
         var cloneState = [...this.state.currentNumberOfMap];
-        cloneState.splice(deleteFile,1);
-        this.setState({currentNumberOfMap:cloneState});
+        cloneState.splice(deleteFile, 1);
+        this.setState({ currentNumberOfMap: cloneState });
         console.log(this.state.currentNumberOfMap);
     }
     scrollMap = (k) => {
