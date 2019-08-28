@@ -383,7 +383,7 @@ class App extends React.Component {
                     for (let b = 0; b < fileInput.files.length; b++) {
                         if (this.state.currentNumberOfMap[a].name === fileInput.files[b].name) {
                             i++;
-                            mapsWasLoaded += `${fileInput.files[b].name}`
+                            mapsWasLoaded += `${fileInput.files[b].name}`;
                         }
                     }
                 }
@@ -506,6 +506,7 @@ class App extends React.Component {
         console.log(this.state.currentNumberOfMap);
     };
     DeleteMap = (k,file)=>{
+        console.log(this.state.currentNumberOfMap);
         let deleteFile ;
         document.getElementById("list-svg").removeChild(document.getElementById(`svg-${k}`));
         let radioElement = document.getElementById(`radio-${k}`);
@@ -515,8 +516,9 @@ class App extends React.Component {
             let list_svg = document.getElementById("list-svg");
             list_svg.parentElement.removeChild(list_svg);
         }
+        console.log(file.name);
         for(let i = 0;i<this.state.currentNumberOfMap.length;i++){
-            if(file.name === this.state.currentNumberOfMap[i])
+            if(file.name === this.state.currentNumberOfMap[i].name)
             {
                 deleteFile = i;
                 break;
@@ -525,6 +527,7 @@ class App extends React.Component {
         var cloneState = [...this.state.currentNumberOfMap];
         cloneState.splice(deleteFile,1);
         this.setState({currentNumberOfMap:cloneState});
+        console.log(this.state.currentNumberOfMap);
     }
     scrollMap = (k) => {
         let svg = document.getElementById(`svg-${k}`);
