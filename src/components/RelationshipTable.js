@@ -98,13 +98,9 @@ class RelationshipTable extends React.Component {
         }
         this.setState({ data });
     }
-    handleCreateNeighbor = (node, newNeighbor) => {
-
-    }
     handleSave = () => {
         const serializeData = (data) => {
             let graphs = {};
-            const array = [];
             data.forEach(items => {
                 const arrayNeighbor = items.neighbors.map(neighbor => {
                     return [[neighbor.id], neighbor.cost]
@@ -139,8 +135,6 @@ class RelationshipTable extends React.Component {
             backgroundColor: '#dadada',
             borderRadius: '2px'
         }
-
-
         const changeProperty = (node, neighbor, property) => {
             const handleButtonAdd = () => {
                 let counter = this.state.count++;
@@ -160,7 +154,7 @@ class RelationshipTable extends React.Component {
             }
             return (
                 <div>
-                    {property === 'name' ? (<button style={{ float: 'right' }} onClick={() => handleButtonAdd()} >+</button>) : null}
+                    {property === 'id' ? (<button style={{ float: 'right' }} onClick={() => handleButtonAdd()} >+</button>) : null}
                     <div
                         style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
                         contentEditable
@@ -178,7 +172,6 @@ class RelationshipTable extends React.Component {
                             __html: neighbor[`${property}`]
                         }}
                     />
-
                 </div>
             )
         }
@@ -218,11 +211,11 @@ class RelationshipTable extends React.Component {
         }, {
             id: 'neighbors',
             Header: 'Neighbors',
-            accessor: d => d.neighbors.map(neighbor => neighbor.name),
+            accessor: d => d.neighbors.map(neighbor => neighbor.id),
             Cell: props => {
                 const { node, neighbors } = props.original;
                 return neighbors.map(neighbor => {
-                    return changeProperty(node, neighbor, 'name')
+                    return changeProperty(node, neighbor, 'id')
                 })
             },
             filterMethod: (filter, rows) =>
@@ -279,7 +272,7 @@ class RelationshipTable extends React.Component {
             <div style={{
                 textAlign: 'right',
             }}>
-                <button style={styles} >Add</button>
+                <button style={styles} onClick={() => alert("This feature will be available in next version")}>Add</button>
                 <button style={styles} onClick={() => this.handleSave()} >Save</button>
             </div>
             <ReactTable
@@ -288,7 +281,7 @@ class RelationshipTable extends React.Component {
                     String(row[filter.id]) === filter.value}
                 data={this.state.data}
                 columns={columns}
-                defaultPageSize={10}
+                defaultPageSize={5}
                 showPagination={true}
                 className="-striped -highlight"
             />
