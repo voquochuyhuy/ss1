@@ -20,12 +20,12 @@ class App extends React.Component {
             edgeVertex2: null,
             feature: "",
             route: null,
-            currentNumberOfMap :[]
+            currentNumberOfMap: []
         };
         this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
     }
     OnDrawingEgde = () => {
-        this.setState({ feature: "draw",vertex1:"",vertex2:"" });
+        this.setState({ feature: "draw", vertex1: "", vertex2: "" });
         const pathNodes = document.getElementsByTagName("circle");
         for (let i = 0; i < pathNodes.length; i++) {
             if (pathNodes[i].id.startsWith("L4_PATH")) {
@@ -124,9 +124,9 @@ class App extends React.Component {
         }
         return edgeExisted;
     }
-    drawEdge(vertex1, vertex2,i) {
+    drawEdge(vertex1, vertex2, i) {
 
-        console.log("draw",i);
+        console.log("draw", i);
         if (this.state.feature === "draw") {
             const edgeExisted = this.addVertexToGraphs(vertex1, vertex2);
             const x1 = vertex1.getAttributeNS(null, "cx");
@@ -197,7 +197,7 @@ class App extends React.Component {
         const path = route.path(vertex1, vertex2);
         return path;
     }
-    drawShortestPath(vertex1, vertex2,node_path_id) {
+    drawShortestPath(vertex1, vertex2, node_path_id) {
         const pathArr = this.findShortestPath(vertex1, vertex2);
         console.log(pathArr);
         let X = [];
@@ -254,16 +254,16 @@ class App extends React.Component {
     }
     /********************END wayFiding*************************/
 
-    handleMouseClick(e,node_path_id) {
+    handleMouseClick(e, node_path_id) {
         const clickTarget = e.target;
         if (this.state.feature === "draw") {
             if (clickTarget.nodeName === "circle") {
                 if (!this.isDrawingEdge) {
-                    this.setState({edgeVertex1:clickTarget});
+                    this.setState({ edgeVertex1: clickTarget });
                     this.isDrawingEdge = true;
                 } else if (clickTarget !== this.state.edgeVertex1) {
-                    this.setState({edgeVertex2:clickTarget});
-                    this.drawEdge(this.state.edgeVertex1, this.state.edgeVertex2,node_path_id);
+                    this.setState({ edgeVertex2: clickTarget });
+                    this.drawEdge(this.state.edgeVertex1, this.state.edgeVertex2, node_path_id);
                     this.setState({ edgeVertex1: null, edgeVertex2: null });
                     this.isDrawingEdge = false;
                 }
@@ -298,7 +298,7 @@ class App extends React.Component {
                     .getElementById("second-vertex")
                     .setAttribute("value", e.target.id);
                 this.setState({ vertex2: e.target.id });
-                this.drawShortestPath(this.state.vertex1, this.state.vertex2,node_path_id);
+                this.drawShortestPath(this.state.vertex1, this.state.vertex2, node_path_id);
                 this.isFindingPath = false;
                 // this.setState({ vertex1: "", vertex2: "" });
             }
@@ -312,13 +312,13 @@ class App extends React.Component {
         this.vertices = vertices;
         for (let i = 0; i < vertices.length; i++) {
             vertices[i].addEventListener("click", e => {
-                this.handleMouseClick(e,node_path_id);
+                this.handleMouseClick(e, node_path_id);
             });
         }
     };
 
     OnDeleteEgde = () => {
-        this.setState({ feature: "delete"});
+        this.setState({ feature: "delete" });
     };
     DeleteEgde = edge => {
         console.log("ham` xoa");
@@ -328,7 +328,7 @@ class App extends React.Component {
         }
     };
     OnWayFinding = () => {
-        this.setState({ feature: "find",vertex1:"",vertex2:"" });
+        this.setState({ feature: "find", vertex1: "", vertex2: "" });
         const pathNodes = document.getElementsByTagName("circle");
         for (let i = 0; i < pathNodes.length; i++) {
             if (pathNodes[i].id.startsWith("L4_PATH")) {
@@ -344,9 +344,9 @@ class App extends React.Component {
         element.innerHTML = '<input type="file" multiple>';
         var fileInput = element.firstChild;
         fileInput.click();
-        await fileInput.addEventListener("change", async () => {      
+        await fileInput.addEventListener("change", async () => {
             let promises = [];
-            
+
             for (let file of fileInput.files) {
                 let filePromise = new Promise(resolve => {
                     let reader = new FileReader();
@@ -355,16 +355,16 @@ class App extends React.Component {
                 });
                 promises.push(filePromise);
             }
-           
+
             Promise.all(promises).then(fileContents => {
-               
+
                 //kiểm tra là lần load lại hay load thêm
                 // if(document.getElementById("myTable") === null)
                 // {  
                 //     let table = document.createElement("TABLE");
                 //     table.setAttribute("id", "myTable");
                 //     document.getElementsByClassName("App")[0].appendChild(table);
-        
+
                 //     let row = document.createElement("TR");
                 //     row.setAttribute("id", "myTr");
                 //     document.getElementById("myTable").appendChild(row);
@@ -372,26 +372,21 @@ class App extends React.Component {
                 /*Thông báo khi load lại map cũ*/
                 let i = 0;
                 let mapsWasLoaded = '';
-                for(let a =0;a<this.state.currentNumberOfMap.length;a++)
-                {
-                    for(let b =0; b< fileInput.files.length;b++)
-                    {
-                        if(this.state.currentNumberOfMap[a].name === fileInput.files[b].name)
-                        {
+                for (let a = 0; a < this.state.currentNumberOfMap.length; a++) {
+                    for (let b = 0; b < fileInput.files.length; b++) {
+                        if (this.state.currentNumberOfMap[a].name === fileInput.files[b].name) {
                             i++;
                             mapsWasLoaded += `${fileInput.files[b].name}`
                         }
                     }
                 }
-                if(i !== 0)
-                {
+                if (i !== 0) {
                     alert(`These file was loaded and won't be load again : ${mapsWasLoaded}`);
                 }
                 /*End thông báo */
 
                 // thêm sự kiện, html element khi load
-                for(i;i<fileContents.length;i++)
-                {     
+                for (i; i < fileContents.length; i++) {
                     // if (document.getElementsByTagName("svg").length === 0) {
                     //     const div = document.createElement("div");
                     //     div.setAttribute("id",`svg-${this.state.currentNumberOfMap.length +i}`);
@@ -412,7 +407,7 @@ class App extends React.Component {
                     //     let nodes_clone = nodes.cloneNode(true);
                     //     nodes.replaceWith(node_pathline_clone);
                     //     node_pathline.replaceWith(nodes_clone);
-                        
+
                     // } else {
                     //     let oldSVG = document.getElementsByTagName("svg")[0].parentElement;
                     //     const newSVG = document.createElement("div");
@@ -436,25 +431,25 @@ class App extends React.Component {
                     //     node_pathline.replaceWith(nodes_clone);
                     // } 
                     // this.addClickEventForCircle(this.state.currentNumberOfMap.length +i);
-                    if(document.getElementsByTagName("svg").length === 0){
+                    if (document.getElementsByTagName("svg").length === 0) {
                         let div = document.createElement("div");
-                        div.setAttribute("id","list-svg");
+                        div.setAttribute("id", "list-svg");
                         div.innerHTML = fileContents[i].trim();
                         document.getElementsByClassName('App')[0].appendChild(div);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
                             "g"
                         );
-                        node_pathline.setAttributeNS(null, "id", `node-pathline-${this.state.currentNumberOfMap.length +i}`);
+                        node_pathline.setAttributeNS(null, "id", `node-pathline-${this.state.currentNumberOfMap.length + i}`);
                         let nodes = document.getElementById("nodes");
-                        nodes.setAttribute("id",`nodes-${this.state.currentNumberOfMap.length +i}`);
+                        nodes.setAttribute("id", `nodes-${this.state.currentNumberOfMap.length + i}`);
                         nodes.parentElement.appendChild(node_pathline);
                         let node_pathline_clone = node_pathline.cloneNode(true);
                         let nodes_clone = nodes.cloneNode(true);
                         nodes.replaceWith(node_pathline_clone);
                         node_pathline.replaceWith(nodes_clone);
                     }
-                    else{
+                    else {
                         let div = document.createElement("div");
                         div.innerHTML = fileContents[i].trim();
                         document.getElementById("list-svg").appendChild(div.firstChild);
@@ -462,44 +457,41 @@ class App extends React.Component {
                             "http://www.w3.org/2000/svg",
                             "g"
                         );
-                        node_pathline.setAttributeNS(null, "id", `node-pathline-${this.state.currentNumberOfMap.length +i}`);
+                        node_pathline.setAttributeNS(null, "id", `node-pathline-${this.state.currentNumberOfMap.length + i}`);
                         let nodes = document.getElementById("nodes");
-                        nodes.setAttribute("id",`nodes-${this.state.currentNumberOfMap.length +i}`);
+                        nodes.setAttribute("id", `nodes-${this.state.currentNumberOfMap.length + i}`);
                         nodes.parentElement.appendChild(node_pathline);
                         let node_pathline_clone = node_pathline.cloneNode(true);
                         let nodes_clone = nodes.cloneNode(true);
                         nodes.replaceWith(node_pathline_clone);
                         node_pathline.replaceWith(nodes_clone);
                     }
-                    this.addClickEventForCircle(this.state.currentNumberOfMap.length +i);
+                    this.addClickEventForCircle(this.state.currentNumberOfMap.length + i);
                 }
                 // thêm radio button
-                for (let k =0;k< fileInput.files.length;k++) {
+                for (let k = 0; k < fileInput.files.length; k++) {
                     let check = 0;
-                    for(let y =0;y<this.state.currentNumberOfMap.length;y++)
-                    {
-                        if(fileInput.files[k].name !== this.state.currentNumberOfMap[y].name)
-                        {
-                            check ++;
+                    for (let y = 0; y < this.state.currentNumberOfMap.length; y++) {
+                        if (fileInput.files[k].name !== this.state.currentNumberOfMap[y].name) {
+                            check++;
                         }
                     }
-                    if(check === this.state.currentNumberOfMap.length)
-                    {
+                    if (check === this.state.currentNumberOfMap.length) {
                         let radio = document.createElement("input");
-                        radio.setAttribute("type","radio");
-                        radio.setAttribute("name","radioGroup");
-                        radio.addEventListener("change",()=>{this.scrollMap(k)});
+                        radio.setAttribute("type", "radio");
+                        radio.setAttribute("name", "radioGroup");
+                        radio.addEventListener("change", () => { this.scrollMap(k) });
                         let nameOfMap = document.createElement("span");
-                        nameOfMap.innerText = `${fileInput.files[k].name}    `;     
-                        document.getElementsByClassName("App")[0].appendChild(radio);  
+                        nameOfMap.innerText = `${fileInput.files[k].name}    `;
+                        document.getElementsByClassName("App")[0].appendChild(radio);
                         document.getElementsByClassName("App")[0].appendChild(nameOfMap);
                         this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[k]] });
-                    }   
-                }    
+                    }
+                }
             });
         });
     };
-    scrollMap = (i)=>{
+    scrollMap = (i) => {
 
     }
     handleSaveGraphs = e => {
@@ -516,84 +508,13 @@ class App extends React.Component {
         window.URL.revokeObjectURL(url);
     };
     render() {
-        const data = [{
-            fromNode: {
-                id: 'L4_YAH_NODE',
-                name: 'You Are Here',
-                type: 'more'
-            },
-            toNode: {
-                id: 'L4_21B_NODE',
-                name: 'ADIDAS',
-                type: 'Stores'
-            }
-        }, {
-            fromNode: {
-                id: 'L4_21B_NODE',
-                name: 'ADIDAS',
-                type: 'Stores'
-            },
-            toNode: {
-                id: 'L4_29_NODE',
-                name: 'CGV',
-                type: 'Stores'
-            }
-        }]
-        const nodes = [
-            {
-                id: 'L4_YAH_NODE',
-                name: 'You Are Here',
-                type: 'More'
-            },
-            {
-                id: 'L4_29_NODE',
-                name: 'CGV',
-                type: 'Stores'
-            },
-            {
-                id: 'L4_21B_NODE',
-                name: 'ADIDAS',
-                type: 'Facilities'
-            },
-        ]
         return (
-            <div className="App">
-                <div id="menu">
-                <button onClick={this.handleFileSelect}>Load map</button>
-                <button onClick={this.handleSaveGraphs}>Save graphs</button>
-                <div>
-                    <input
-                        type="radio"
-                        id="draw"
-                        onChange={() => {
-                            this.OnDrawingEgde();
-                        }}
-                        name="chooseFeature"
-                    />
-                    DRAW <br />
-                    <input
-                        type="radio"
-                        id="delete"
-                        onChange={() => {
-                            this.OnDeleteEgde();
-                        }}
-                        name="chooseFeature"
-                    />
-                    DELETE <br />
-                    <input
-                        type="radio"
-                        id="way-Finding"
-                        onChange={() => {
-                            this.OnWayFinding();
-                        }}
-                        name="chooseFeature"
-                    />
-                    Way Finding <br />
-                    {this.state.feature === "find" ? (
+            <div>
+                <div className="App">
+                    <div id="menu">
+                        <button onClick={this.handleFileSelect}>Load map</button>
+                        <button onClick={this.handleSaveGraphs}>Save graphs</button>
                         <div>
-                            <input type="text" id="first-vertex" />
-                            <span> </span>
-                            <input type="text" id="second-vertex" />
                             <div style={{ textAlign: "center" }}>
                                 <button
                                     onClick={() => {
@@ -604,12 +525,49 @@ class App extends React.Component {
                                 </button>
                             </div>
                         </div>
-                    ) : null}
+                        <div>
+                            <input
+                                type="radio"
+                                id="draw"
+                                onChange={() => {
+                                    this.OnDrawingEgde();
+                                }}
+                                name="chooseFeature"
+                            />
+                            DRAW <br />
+                            <input
+                                type="radio"
+                                id="delete"
+                                onChange={() => {
+                                    this.OnDeleteEgde();
+                                }}
+                                name="chooseFeature"
+                            />
+                            DELETE <br />
+                            <input
+                                type="radio"
+                                id="way-Finding"
+                                onChange={() => {
+                                    this.OnWayFinding();
+                                }}
+                                name="chooseFeature"
+                            />
+                            Way Finding <br />
+                            {
+                                this.state.feature === 'find' ? (
+                                    <div>
+                                        <input type="text" id="first-vertex" />
+                                        <span> </span>
+                                        <input type="text" id="second-vertex" />
+                                    </div>) : null
+                            }
+                        </div>
+                    </div>
                 </div>
-                {/* <RelationshipTable data={data} nodes={nodes} graph={this.state.loadedGraphs} /> */}
-                {
-                    this.state.feature === 'draw' ? (<RelationshipTable data={data} nodes={nodes} graphs={this.state.loadedGraphs} />) : null
-                }
+                <div id="relationship-table">
+                    {
+                        this.state.feature === 'draw' ? (<RelationshipTable graphs={this.state.loadedGraphs} />) : null
+                    }
                 </div>
             </div>
         );
