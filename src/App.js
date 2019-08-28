@@ -390,26 +390,33 @@ class App extends React.Component {
                         let nodes_clone = nodes.cloneNode(true);
                         nodes.replaceWith(node_pathline_clone);
                         node_pathline.replaceWith(nodes_clone);
+                        this.addClickEventForCircle(this.state.currentNumberOfMap.length + i);
                     }
                     else {
                         let div = document.createElement("div");
                         div.innerHTML = fileContents[i].trim();
-                        div.firstChild.setAttributeNS(null,"id",`svg-${this.state.currentNumberOfMap.length+i}`);
+                        let listSVG = document.getElementsByTagName("svg");
+                        let oldId = listSVG[listSVG.length - 1].getAttributeNS(null,"id");
+                        let check = /\d+/;
+                        let newId = parseInt(oldId.match(check));
+                        console.log(oldId,newId);
+                        div.firstChild.setAttributeNS(null,"id",`svg-${newId + 1}`);
                         document.getElementById("list-svg").appendChild(div.firstChild);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
                             "g"
                         );
-                        node_pathline.setAttributeNS(null, "id", `node-pathline-${this.state.currentNumberOfMap.length + i}`);
+                        node_pathline.setAttributeNS(null, "id", `node-pathline-${newId + 1}`);
                         let nodes = document.getElementById("nodes");
-                        nodes.setAttribute("id", `nodes-${this.state.currentNumberOfMap.length + i}`);
+                        nodes.setAttribute("id", `nodes-${newId + 1}`);
                         nodes.parentElement.appendChild(node_pathline);
                         let node_pathline_clone = node_pathline.cloneNode(true);
                         let nodes_clone = nodes.cloneNode(true);
                         nodes.replaceWith(node_pathline_clone);
                         node_pathline.replaceWith(nodes_clone);
+                        this.addClickEventForCircle(newId + 1);
                     }
-                    this.addClickEventForCircle(this.state.currentNumberOfMap.length + i);
+                    
                 }
                 // thêm radio button
                 for (let k = 0; k < fileInput.files.length; k++) {
@@ -420,23 +427,58 @@ class App extends React.Component {
                         }
                     }
                     if (check === this.state.currentNumberOfMap.length) {
-                        let radio = document.createElement("input");
-                        radio.setAttribute("type", "radio");
-                        radio.setAttribute("name", "radioGroup");
-                        radio.addEventListener("change", () => { this.scrollMap(k) });
-                        let nameOfMap = document.createElement("span");
-                        nameOfMap.innerHTML= `${fileInput.files[k].name}    `;
-                        console.log(nameOfMap,fileInput.files[k].name);
-                        let button = document.createElement("button");
-                        button.addEventListener("click",()=>{this.DeleteMap(k,fileInput.files[k])});  
-                        button.textContent = "Delete";
-                        let space = document.createElement("span");
-                        nameOfMap.innerText = `     `;
-                        document.getElementsByClassName("App")[0].appendChild(radio);  
-                        document.getElementsByClassName("App")[0].appendChild(nameOfMap);
-                        document.getElementsByClassName("App")[0].appendChild(button);
-                        // document.getElementsByClassName("App")[0].appendChild(space);
-                        this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[k]] });
+                        
+                        if(document.getElementsByClassName("menuOfMap").length === 0 )
+                        {
+                            let divMenuOfMap = document.createElement("div");
+                            divMenuOfMap.setAttribute("class","menuOfMap");
+                            document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
+                            let radio = document.createElement("input");
+                            radio.setAttribute("type", "radio");
+                            radio.setAttribute("name", "radioGroup");
+                            radio.setAttribute("id",`radio-${k}`);
+                            radio.addEventListener("change", () => { this.scrollMap(k) });
+                            let nameOfMap = document.createElement("span");
+                            nameOfMap.innerHTML= `${fileInput.files[k].name}    `;
+                            let button = document.createElement("button");
+                            button.addEventListener("click",()=>{this.DeleteMap(k,fileInput.files[k])});  
+                            button.textContent = "Delete";
+                            let space = document.createElement("span");
+                            space.innerText = `     `;
+                            divMenuOfMap.appendChild(radio);  
+                            divMenuOfMap.appendChild(nameOfMap);
+                            divMenuOfMap.appendChild(button);
+                            divMenuOfMap.appendChild(space);
+                            this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[k]] });
+                        }
+                        else{
+                            let list_menu = document.getElementsByClassName("menuOfMap");
+                            let lastMenu = list_menu[list_menu.length- 1];
+                            let oldMenuInputId = lastMenu.firstChild.getAttributeNS(null,"id");
+                            let checkCondition = /\d+/;
+                            let newMenuInputId = parseInt(oldMenuInputId.match(checkCondition)) + 1;
+
+                            let divMenuOfMap = document.createElement("div");
+                            divMenuOfMap.setAttribute("class","menuOfMap");
+                            document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
+                            let radio = document.createElement("input");
+                            radio.setAttribute("type", "radio");
+                            radio.setAttribute("name", "radioGroup");
+                            radio.setAttribute("id",`radio-${newMenuInputId}`);
+                            radio.addEventListener("change", () => { this.scrollMap(newMenuInputId) });
+                            let nameOfMap = document.createElement("span");
+                            nameOfMap.innerHTML= `${fileInput.files[k].name}    `;
+                            let button = document.createElement("button");
+                            button.addEventListener("click",()=>{this.DeleteMap(newMenuInputId,fileInput.files[k])});  
+                            button.textContent = "Delete";
+                            let space = document.createElement("span");
+                            space.innerText = `     `;
+                            divMenuOfMap.appendChild(radio);  
+                            divMenuOfMap.appendChild(nameOfMap);
+                            divMenuOfMap.appendChild(button);
+                            divMenuOfMap.appendChild(space);
+                            this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[k]] });
+                        }
                     }
                 }
             });
@@ -446,6 +488,8 @@ class App extends React.Component {
     DeleteMap = (k,file)=>{
         let deleteFile ;
         document.getElementById("list-svg").removeChild(document.getElementById(`svg-${k}`));
+        let radioElement = document.getElementById(`radio-${k}`);
+        document.getElementsByClassName("App")[0].removeChild(radioElement.parentElement);
         if(document.getElementsByTagName("svg").length === 0)
         {
             let list_svg = document.getElementById("list-svg");

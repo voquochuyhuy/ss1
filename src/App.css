@@ -63,3 +63,6 @@ line {
   overflow: auto;
   white-space: nowrap;
 }
+.menuOfMap{
+  display: inline;
+}
