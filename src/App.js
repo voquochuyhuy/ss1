@@ -321,8 +321,6 @@ class App extends React.Component {
         this.setState({ feature: "delete" });
     };
     DeleteEgde = edge => {
-        console.log("ham` xoa");
-        console.log(edge);
         if (this.state.feature === "delete") {
             edge.parentElement.removeChild(edge);
         }
@@ -358,18 +356,6 @@ class App extends React.Component {
 
             Promise.all(promises).then(fileContents => {
 
-                //kiểm tra là lần load lại hay load thêm
-                // if(document.getElementById("myTable") === null)
-                // {  
-                //     let table = document.createElement("TABLE");
-                //     table.setAttribute("id", "myTable");
-                //     document.getElementsByClassName("App")[0].appendChild(table);
-
-                //     let row = document.createElement("TR");
-                //     row.setAttribute("id", "myTr");
-                //     document.getElementById("myTable").appendChild(row);
-                // }
-                /*Thông báo khi load lại map cũ*/
                 let i = 0;
                 let mapsWasLoaded = '';
                 for (let a = 0; a < this.state.currentNumberOfMap.length; a++) {
@@ -383,59 +369,15 @@ class App extends React.Component {
                 if (i !== 0) {
                     alert(`These file was loaded and won't be load again : ${mapsWasLoaded}`);
                 }
-                /*End thông báo */
 
-                // thêm sự kiện, html element khi load
-                for (i; i < fileContents.length; i++) {
-                    // if (document.getElementsByTagName("svg").length === 0) {
-                    //     const div = document.createElement("div");
-                    //     div.setAttribute("id",`svg-${this.state.currentNumberOfMap.length +i}`);
-                    //     div.innerHTML = fileContents[i].trim();
-                    //     let col = document.createElement("td");
-                    //     col.setAttribute("id",`td-${this.state.currentNumberOfMap.length +i}`);
-                    //     col.appendChild(div.firstChild);
-                    //     document.getElementById("myTr").appendChild(col); 
-                    //     let node_pathline = document.createElementNS(
-                    //         "http://www.w3.org/2000/svg",
-                    //         "g"
-                    //     );
-                    //     node_pathline.setAttributeNS(null, "id", `node-pathline-${this.state.currentNumberOfMap.length +i}`);
-                    //     let nodes = document.getElementById("nodes");
-                    //     nodes.setAttribute("id",`nodes-${this.state.currentNumberOfMap.length +i}`);
-                    //     nodes.parentElement.appendChild(node_pathline);
-                    //     let node_pathline_clone = node_pathline.cloneNode(true);
-                    //     let nodes_clone = nodes.cloneNode(true);
-                    //     nodes.replaceWith(node_pathline_clone);
-                    //     node_pathline.replaceWith(nodes_clone);
-
-                    // } else {
-                    //     let oldSVG = document.getElementsByTagName("svg")[0].parentElement;
-                    //     const newSVG = document.createElement("div");
-                    //     newSVG.setAttribute("id",`svg-${this.state.currentNumberOfMap.length +i}`);
-                    //     newSVG.innerHTML = fileContents[i].trim();
-                    //     let col = document.createElement("td");
-                    //     col.setAttribute("id",`td-${this.state.currentNumberOfMap.length +i}`);
-                    //     col.appendChild(newSVG.firstChild);
-                    //     document.getElementById("myTr").appendChild(col);
-                    //     let node_pathline = document.createElementNS(
-                    //         "http://www.w3.org/2000/svg",
-                    //         "g"
-                    //     );
-                    //     node_pathline.setAttributeNS(null, "id", `node-pathline-${this.state.currentNumberOfMap.length +i}`);
-                    //     let nodes = document.getElementById("nodes");
-                    //     nodes.setAttribute("id",`nodes-${this.state.currentNumberOfMap.length +i}`);
-                    //     nodes.parentElement.appendChild(node_pathline);
-                    //     let node_pathline_clone = node_pathline.cloneNode(true);
-                    //     let nodes_clone = nodes.cloneNode(true);
-                    //     nodes.replaceWith(node_pathline_clone);
-                    //     node_pathline.replaceWith(nodes_clone);
-                    // } 
-                    // this.addClickEventForCircle(this.state.currentNumberOfMap.length +i);
-                    if (document.getElementsByTagName("svg").length === 0) {
+                for(i;i<fileContents.length;i++)
+                {     
+                    if(document.getElementsByTagName("svg").length === 0){
                         let div = document.createElement("div");
                         div.setAttribute("id", "list-svg");
                         div.innerHTML = fileContents[i].trim();
                         document.getElementsByClassName('App')[0].appendChild(div);
+                        div.firstChild.setAttributeNS(null,"id",`svg-${i}`);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
                             "g"
@@ -452,6 +394,7 @@ class App extends React.Component {
                     else {
                         let div = document.createElement("div");
                         div.innerHTML = fileContents[i].trim();
+                        div.firstChild.setAttributeNS(null,"id",`svg-${i}`);
                         document.getElementById("list-svg").appendChild(div.firstChild);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
@@ -483,16 +426,28 @@ class App extends React.Component {
                         radio.addEventListener("change", () => { this.scrollMap(k) });
                         let nameOfMap = document.createElement("span");
                         nameOfMap.innerText = `${fileInput.files[k].name}    `;
-                        document.getElementsByClassName("App")[0].appendChild(radio);
+                        let button = document.createElement("button");
+                        button.addEventListener("click",()=>{this.DeleteMap(k)});  
+                        button.textContent = "Delete";
+                        let space = document.createElement("span");
+                        nameOfMap.innerText = `     `;
+                        document.getElementsByClassName("App")[0].appendChild(radio);  
                         document.getElementsByClassName("App")[0].appendChild(nameOfMap);
+                        document.getElementsByClassName("App")[0].appendChild(button);
+                        document.getElementsByClassName("App")[0].appendChild(space);
                         this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[k]] });
                     }
                 }
             });
         });
     };
-    scrollMap = (i) => {
-
+    DeleteMap = (k)=>{
+        document.getElementById("list-svg").removeChild(document.getElementById(`svg-${k}`));
+        //cập nhập lại currentNumberofMap
+    }
+    scrollMap = (k)=>{
+        let svg = document.getElementById(`svg-${k}`);
+        svg.scrollIntoView();
     }
     handleSaveGraphs = e => {
         const a = document.createElement("a");
