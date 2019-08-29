@@ -34,22 +34,15 @@ class RelationshipTable extends React.Component {
             graphs: {}
         };
     }
-    componentWillMount() {
-        this.setState({ graphs: this.props.graphs })
-    }
     componentDidMount() {
-        const { graphs } = this.state;
+        const { graphs } = this.props;
         this.computeItems(graphs);
-    }
-    shouldComponentUpdate(nextProps) {
-        const { graphs } = this.state;
-        return !equal(nextProps.graphs, graphs);
     }
     componentDidUpdate(prevProps) {
         if (!equal(prevProps.graphs, this.props.graphs)) {
             console.log('2 graphs khac nhau, re-render');
-            this.setState({ graphs: this.props.graphs });
-            // this.computeItems(this.props.graphs);
+            // this.setState({ graphs: this.props.graphs });
+            this.computeItems(this.props.graphs);
         }
     }
     computeItems(graphs) {
