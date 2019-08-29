@@ -2,7 +2,8 @@ import React from 'react';
 import ReactTable from 'react-table';
 import _ from 'lodash';
 import matchSorter from 'match-sorter';
-import 'react-table/react-table.css'
+import equal from 'deep-equal';
+import 'react-table/react-table.css';
 class RelationshipTable extends React.Component {
     constructor(props) {
         super(props);
@@ -29,13 +30,29 @@ class RelationshipTable extends React.Component {
             ] 
             */
             removed: [],
-            count: 0
+            count: 0,
+            graphs: {}
         };
     }
-    componentDidMount() {
-        this.computeItems();
+    componentWillMount() {
+        this.setState({ graphs: this.props.graphs })
     }
-    computeItems() {
+    componentDidMount() {
+        const { graphs } = this.state;
+        this.computeItems(graphs);
+    }
+    shouldComponentUpdate(nextProps) {
+        const { graphs } = this.state;
+        return !equal(nextProps.graphs, graphs);
+    }
+    componentDidUpdate(prevProps) {
+        if (!equal(prevProps.graphs, this.props.graphs)) {
+            console.log('2 graphs khac nhau, re-render');
+            this.setState({ graphs: this.props.graphs });
+            // this.computeItems(this.props.graphs);
+        }
+    }
+    computeItems(graphs) {
         const getType = (node) => {
             const doc = document.getElementById(node);
             const parentElement = doc.parentElement;
@@ -72,7 +89,7 @@ class RelationshipTable extends React.Component {
                 return neighbor;
             })
         }
-        const { graphs } = this.props;
+        // const { graphs } = props;
         const graphsArray = Object.keys(graphs).map(node => {
             const type = getType(node);
             const relation = {
@@ -112,7 +129,6 @@ class RelationshipTable extends React.Component {
                     }
                 };
                 graphs = { ...graphs, ...item }
-                // array.push(item);
             });
             console.log('result save : ', graphs);
             return graphs;
