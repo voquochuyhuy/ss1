@@ -102,10 +102,12 @@ class RelationshipTable extends React.Component {
         for (let i = 0; i < data.length; i++) {
             if (data[i].node === node && data[i].neighbors.includes(neighbor)) {
                 const nodeRemoved = _.remove(data[i].neighbors, neighbor);
-                removed.push({ node: node, neighbors: [...nodeRemoved] })
-                this.setState({ removed })
+                // removed.push({ node: node.id, neighbor: nodeRemoved[0].id })
+                // this.setState({ removed });
+                this.props.removeRelationship({ node: node.id, neighbor: nodeRemoved[0].id })
             }
         }
+        // this.props.removeRelationship(removed);
         this.setState({ data });
     }
     handleSave = () => {

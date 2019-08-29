@@ -8,7 +8,8 @@ class App extends React.Component {
     isDrawingEdge = false;
     isFindingPath = false;
     vertices = null;
-    componentDidMount() { }
+    componentDidMount() {
+    }
     constructor(props) {
         super(props);
         this.state = {
@@ -157,6 +158,7 @@ class App extends React.Component {
                 "http://www.w3.org/2000/svg",
                 "line"
             );
+            edge.setAttributeNS(null, "id", `${v1.id}:${v2.id}`);
             edge.setAttributeNS(null, "x1", x1);
             edge.setAttributeNS(null, "y1", y1);
             edge.setAttributeNS(null, "x2", x2);
@@ -165,18 +167,17 @@ class App extends React.Component {
             edge.setAttributeNS(null, "stroke-width", "3");
             edge.setAttributeNS(null, "fill", "none");
             edge.setAttributeNS(null, "stroke-dasharray", "5,5");
+            edge.setAttributeNS(null, "style", "cursor: pointer;");
             edge.addEventListener("click", () => {
                 this.DeleteEgde(edge, v1.id, v2.id);
             });
             node_path.appendChild(edge);
         }
         if (typeof vertex1 !== "string") {
-            console.log('go to vertex element');
             const edgeExisted = this.addVertexToGraphs(vertex1, vertex2);
             edgeExisted ? alert('edge already existed') : draw(vertex1, vertex2);
         }
         else {
-            console.log('go to vertex string : ', vertex1, vertex2);
             const vtx1 = document.getElementById(vertex1);
             const vtx2 = document.getElementById(vertex2);
             draw(vtx1, vtx2);
@@ -219,7 +220,6 @@ class App extends React.Component {
     }
     drawShortestPath(vertex1, vertex2, node_path_id) {
         const pathArr = this.findShortestPath(vertex1, vertex2);
-        console.log(pathArr);
         let X = [];
         let Y = [];
         if (!pathArr) {
@@ -334,6 +334,7 @@ class App extends React.Component {
             vertices[i].addEventListener("click", e => {
                 this.handleMouseClick(e, node_path_id);
             });
+            vertices[i].setAttribute("style", "cursor: pointer;")
         }
     };
 
@@ -349,10 +350,14 @@ class App extends React.Component {
                 this.setState({ graphs })
             }
         }
-        if (this.state.feature === "delete") {
+        if (this.state.feature === "delete" && typeof edge !== "string") {
             edge.parentElement.removeChild(edge);
-            removeVertexFromGraphs(vertex1Id, vertex2Id);
         }
+        else {
+            const edgeEl = document.getElementById(edge);
+            edgeEl.parentElement.removeChild(edgeEl);
+        }
+        removeVertexFromGraphs(vertex1Id, vertex2Id);
     };
     OnWayFinding = () => {
         this.setState({ feature: "find", vertex1: "", vertex2: "" });
@@ -430,7 +435,6 @@ class App extends React.Component {
                         let oldId = listSVG[listSVG.length - 1].getAttributeNS(null, "id");
                         let check = /\d+/;
                         let newId = parseInt(oldId.match(check));
-                        console.log(oldId, newId);
                         div.firstChild.setAttributeNS(null, "id", `svg-${newId + 1}`);
                         document.getElementById("list-svg").appendChild(div.firstChild);
                         let node_pathline = document.createElementNS(
@@ -513,7 +517,6 @@ class App extends React.Component {
                 }
             });
         });
-        console.log(this.state.currentNumberOfMap);
     };
     DeleteMap = (k, file) => {
         console.log(this.state.currentNumberOfMap);
@@ -554,6 +557,17 @@ class App extends React.Component {
         a.click();
         window.URL.revokeObjectURL(url);
     };
+    onRemoveFromChild = (removedObj) => {
+        const { graphs } = this.state;
+        const { node, neighbor } = removedObj;
+        console.log('onRemoveFromChild : ', node, neighbor);
+        if ((_.has(graphs, [node, neighbor]) && _.has(graphs, [neighbor, node]))) {
+            this.DeleteEgde(`${node}:${neighbor}`, node, neighbor);
+            delete graphs[node][neighbor];
+            delete graphs[neighbor][node];
+            this.setState({ graphs });
+        }
+    }
     render() {
         return (
             <div>
@@ -616,7 +630,7 @@ class App extends React.Component {
                 </div>
                 <div id="relationship-table">
                     {
-                        this.state.feature === 'draw' ? (<RelationshipTable graphs={this.state.graphs} />) : null
+                        this.state.feature === 'draw' ? (<RelationshipTable removeRelationship={(removedObj) => this.onRemoveFromChild(removedObj)} graphs={this.state.graphs} />) : null
                     }
                 </div>
             </div>
