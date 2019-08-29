@@ -15,7 +15,7 @@ class App extends React.Component {
             vertex1: "",
             vertex2: "",
             edges: [],
-            graphs: [],
+            graphs: {},
             loadedGraphs: {},
             edgeVertex1: null,
             edgeVertex2: null,
@@ -127,7 +127,7 @@ class App extends React.Component {
         return edgeExisted;
     }
     drawEdgeFromGraphs = () => {
-        const { loadedGraphs } = this.state;
+        const loadedGraphs = this.state.graphs;
         console.log('drawEdgeFromGraphs called');
         const array = [];
         Object.keys(loadedGraphs).forEach(nodeId => {
@@ -166,20 +166,19 @@ class App extends React.Component {
             edge.setAttributeNS(null, "fill", "none");
             edge.setAttributeNS(null, "stroke-dasharray", "5,5");
             edge.addEventListener("click", () => {
-                this.DeleteEgde(edge);
+                this.DeleteEgde(edge, v1.id, v2.id);
             });
             node_path.appendChild(edge);
         }
         if (typeof vertex1 !== "string") {
             console.log('go to vertex element');
             const edgeExisted = this.addVertexToGraphs(vertex1, vertex2);
-            edgeExisted ? alert('edge already exists') : draw(vertex1, vertex2);
+            edgeExisted ? alert('edge already existed') : draw(vertex1, vertex2);
         }
         else {
             console.log('go to vertex string : ', vertex1, vertex2);
             const vtx1 = document.getElementById(vertex1);
             const vtx2 = document.getElementById(vertex2);
-            console.log('vtx1 : ', vtx1, 'vtx2 : ', vtx2);
             draw(vtx1, vtx2);
         }
         // }
@@ -205,7 +204,7 @@ class App extends React.Component {
             const graphsStr = await e.target.result;
             const graphsJson = JSON.parse(graphsStr);
             this.setState({
-                loadedGraphs: graphsJson,
+                graphs: graphsJson,
                 route: new Graph({ ...graphsJson })
             });
         };
@@ -341,9 +340,18 @@ class App extends React.Component {
     OnDeleteEgde = () => {
         this.setState({ feature: "delete" });
     };
-    DeleteEgde = edge => {
+    DeleteEgde = (edge, vertex1Id, vertex2Id) => {
+        const removeVertexFromGraphs = (v1, v2) => {
+            const { graphs } = this.state;
+            if (_.has(graphs, [v1, v2]) && _.has(graphs, [v2, v1])) {
+                delete graphs[v1][v2];
+                delete graphs[v2][v1];
+                this.setState({ graphs })
+            }
+        }
         if (this.state.feature === "delete") {
             edge.parentElement.removeChild(edge);
+            removeVertexFromGraphs(vertex1Id, vertex2Id);
         }
     };
     OnWayFinding = () => {
@@ -571,7 +579,6 @@ class App extends React.Component {
                                 onChange={() => {
                                     if (!this.state.isDrawFromGraphs) {
                                         this.drawEdgeFromGraphs();
-                                        this.setState({ graphs: this.state.loadedGraphs });
                                     }
                                     this.OnDrawingEgde();
                                 }}
@@ -609,7 +616,7 @@ class App extends React.Component {
                 </div>
                 <div id="relationship-table">
                     {
-                        this.state.feature === 'draw' ? (<RelationshipTable graphs={this.state.loadedGraphs} />) : null
+                        this.state.feature === 'draw' ? (<RelationshipTable graphs={this.state.graphs} />) : null
                     }
                 </div>
             </div>
