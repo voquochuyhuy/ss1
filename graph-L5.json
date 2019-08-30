@@ -1,15 +1,9 @@
 {
-    "youarehere_NODE": {
-        "L5_STAIR1_DOWN_NODE": 20,
-        "L5_PATH_30_NODE": 25,
-        "L5_04_NODE": 75
-    },
+    "youarehere_NODE": {},
     "L5_STAIR1_DOWN_NODE": {
-        "youarehere_NODE": 20,
         "L5_PATH_30_NODE": 25
     },
     "L5_PATH_30_NODE": {
-        "youarehere_NODE": 25,
         "L5_STAIR1_DOWN_NODE": 25,
         "L5_PATH_53_NODE": 24,
         "L5_PATH_33_NODE": 22
@@ -306,7 +300,6 @@
         "L5_04_NODE": 16
     },
     "L5_04_NODE": {
-        "L5_PATH_37_NODE": 16,
-        "youarehere_NODE": 75
+        "L5_PATH_37_NODE": 16
     }
 }
