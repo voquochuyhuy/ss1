@@ -532,5 +532,11 @@
     "L4_ChooChoo_NODE": {
         "L4_04_NODE": 51,
         "L4_24_NODE": 48
+    },
+    "L4_STAIR2_UP_NODE": {
+        "L5_STAIR2_DOWN_NODE-2": 1
+    },
+    "L5_STAIR2_DOWN_NODE": {
+        "L4_STAIR2_UP_NODE": 1
     }
 }
