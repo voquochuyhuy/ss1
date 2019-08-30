@@ -4,12 +4,14 @@
         "L4_PATH_43_NODE": 27,
         "L4_PATH_10_NODE": 71,
         "L4_PATH_45_NODE": 53,
-        "L4_24_NODE": 66
+        "L4_24_NODE": 66,
+        "L4_STAIR1_DOWN_NODE": 18
     },
     "L4_PATH_70_NODE": {
         "youarehere_NODE": 27,
         "L4_PATH_69_NODE": 22,
-        "L4_PATH_44_NODE": 18
+        "L4_PATH_44_NODE": 18,
+        "L4_STAIR1_DOWN_NODE": 21
     },
     "L4_PATH_69_NODE": {
         "L4_PATH_70_NODE": 22,
@@ -324,7 +326,8 @@
         "L4_PATH_35_NODE": 21,
         "L4_14B_NODE": 87,
         "L4_PATH_6_NODE": 30,
-        "L4_PATH_37_NODE": 26
+        "L4_PATH_37_NODE": 26,
+        "L4_STAIR1_UP_NODE": 51
     },
     "L4_PATH_6_NODE": {
         "L4_PATH_36_NODE": 30,
@@ -335,7 +338,8 @@
     "L4_PATH_37_NODE": {
         "L4_PATH_36_NODE": 26,
         "L4_PATH_38_NODE": 26,
-        "L4_PATH_6_NODE": 22
+        "L4_PATH_6_NODE": 22,
+        "L4_STAIR1_UP_NODE": 41
     },
     "L4_PATH_43_NODE": {
         "youarehere_NODE": 27,
@@ -363,12 +367,14 @@
     "L4_PATH_40_NODE": {
         "L4_PATH_41_NODE": 30,
         "L4_PATH_38_NODE": 27,
-        "L4_PATH_39_NODE": 24
+        "L4_PATH_39_NODE": 24,
+        "L4_STAIR1_UP_NODE": 36
     },
     "L4_PATH_38_NODE": {
         "L4_PATH_40_NODE": 27,
         "L4_PATH_37_NODE": 26,
-        "L4_PATH_7_NODE": 48
+        "L4_PATH_7_NODE": 48,
+        "L4_STAIR1_UP_NODE": 31
     },
     "L4_PATH_5_NODE": {
         "L4_PATH_6_NODE": 22,
@@ -533,12 +539,16 @@
         "L4_04_NODE": 51,
         "L4_24_NODE": 48
     },
-    "L4_STAIR1_UP_NODE":{
-        "L5_STAIR1_DOWN_NODE":1
+    "L4_STAIR1_UP_NODE": {
+        "L5_STAIR1_DOWN_NODE": 1,
+        "L4_PATH_38_NODE": 31,
+        "L4_PATH_36_NODE": 51,
+        "L4_PATH_37_NODE": 41,
+        "L4_PATH_40_NODE": 36
     },
     "L5_STAIR1_DOWN_NODE": {
         "L5_PATH_30_NODE": 25,
-        "L4_STAIR1_UP_NODE":1
+        "L4_STAIR1_UP_NODE": 1
     },
     "L5_PATH_30_NODE": {
         "L5_STAIR1_DOWN_NODE": 25,
@@ -838,5 +848,9 @@
     },
     "L5_04_NODE": {
         "L5_PATH_37_NODE": 16
+    },
+    "L4_STAIR1_DOWN_NODE": {
+        "L4_PATH_70_NODE": 21,
+        "youarehere_NODE": 18
     }
 }
