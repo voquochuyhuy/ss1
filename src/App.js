@@ -180,7 +180,8 @@ class App extends React.Component {
         else {
             const vtx1 = document.getElementById(vertex1);
             const vtx2 = document.getElementById(vertex2);
-            draw(vtx1, vtx2);
+            if(vtx1 && vtx2)
+                draw(vtx1, vtx2);
         }
         // }
     }
