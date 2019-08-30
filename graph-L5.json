@@ -1,0 +1,312 @@
+{
+    "youarehere_NODE": {
+        "L5_STAIR1_DOWN_NODE": 20,
+        "L5_PATH_30_NODE": 25,
+        "L5_04_NODE": 75
+    },
+    "L5_STAIR1_DOWN_NODE": {
+        "youarehere_NODE": 20,
+        "L5_PATH_30_NODE": 25
+    },
+    "L5_PATH_30_NODE": {
+        "youarehere_NODE": 25,
+        "L5_STAIR1_DOWN_NODE": 25,
+        "L5_PATH_53_NODE": 24,
+        "L5_PATH_33_NODE": 22
+    },
+    "L5_PATH_53_NODE": {
+        "L5_PATH_30_NODE": 24,
+        "L5_PATH_54_NODE": 17,
+        "L5_PATH_33_NODE": 22
+    },
+    "L5_PATH_54_NODE": {
+        "L5_PATH_53_NODE": 17,
+        "L5_PATH_52_NODE": 26
+    },
+    "L5_PATH_52_NODE": {
+        "L5_PATH_54_NODE": 26,
+        "L5_PATH_51_NODE": 19
+    },
+    "L5_PATH_51_NODE": {
+        "L5_PATH_52_NODE": 19,
+        "L5_06_NODE": 17,
+        "L5_PATH_57_NODE": 27
+    },
+    "L5_06_NODE": {
+        "L5_PATH_51_NODE": 17
+    },
+    "L5_PATH_57_NODE": {
+        "L5_PATH_51_NODE": 27,
+        "L5_PATH_58_NODE": 16
+    },
+    "L5_PATH_58_NODE": {
+        "L5_PATH_57_NODE": 16,
+        "L5_PATH_56_NODE": 19
+    },
+    "L5_PATH_56_NODE": {
+        "L5_PATH_58_NODE": 19,
+        "L5_PATH_55_NODE": 23
+    },
+    "L5_PATH_55_NODE": {
+        "L5_PATH_56_NODE": 23,
+        "L5_PATH_41_NODE": 23
+    },
+    "L5_PATH_41_NODE": {
+        "L5_PATH_55_NODE": 23,
+        "L5_PATH_42_NODE": 16
+    },
+    "L5_PATH_42_NODE": {
+        "L5_PATH_41_NODE": 16,
+        "L5_PATH_40_NODE": 19,
+        "L5_21_24_NODE": 32
+    },
+    "L5_PATH_40_NODE": {
+        "L5_PATH_42_NODE": 19,
+        "L5_21_24_NODE": 27,
+        "L5_PATH_39_NODE": 23
+    },
+    "L5_21_24_NODE": {
+        "L5_PATH_40_NODE": 27,
+        "L5_PATH_42_NODE": 32
+    },
+    "L5_PATH_39_NODE": {
+        "L5_PATH_40_NODE": 23,
+        "L5_PATH_45_NODE": 21
+    },
+    "L5_PATH_45_NODE": {
+        "L5_PATH_39_NODE": 21,
+        "L5_PATH_46_NODE": 17
+    },
+    "L5_PATH_46_NODE": {
+        "L5_PATH_45_NODE": 17,
+        "L5_PATH_44_NODE": 19
+    },
+    "L5_PATH_44_NODE": {
+        "L5_PATH_46_NODE": 19,
+        "L5_PATH_43_NODE": 22
+    },
+    "L5_PATH_43_NODE": {
+        "L5_PATH_44_NODE": 22,
+        "L5_PATH_49_NODE": 21,
+        "L5_22_23_NODE": 36
+    },
+    "L5_PATH_49_NODE": {
+        "L5_PATH_43_NODE": 21,
+        "L5_22_23_NODE": 29,
+        "L5_PATH_50_NODE": 16
+    },
+    "L5_22_23_NODE": {
+        "L5_PATH_49_NODE": 29,
+        "L5_PATH_43_NODE": 36,
+        "L5_PATH_50_NODE": 33
+    },
+    "L5_PATH_50_NODE": {
+        "L5_PATH_49_NODE": 16,
+        "L5_PATH_48_NODE": 20,
+        "L5_22_23_NODE": 33
+    },
+    "L5_PATH_48_NODE": {
+        "L5_PATH_50_NODE": 20,
+        "L5_PATH_47_NODE": 22,
+        "L5_PATH_34_NODE": 31
+    },
+    "L5_PATH_47_NODE": {
+        "L5_PATH_48_NODE": 22,
+        "L5_PATH_34_NODE": 22,
+        "L5_PATH_36_NODE": 24
+    },
+    "L5_PATH_34_NODE": {
+        "L5_PATH_48_NODE": 31,
+        "L5_PATH_31_NODE": 26,
+        "L5_PATH_47_NODE": 22
+    },
+    "L5_PATH_31_NODE": {
+        "L5_PATH_34_NODE": 26,
+        "L5_10_NODE": 22
+    },
+    "L5_10_NODE": {
+        "L5_PATH_31_NODE": 22
+    },
+    "L5_PATH_36_NODE": {
+        "L5_PATH_47_NODE": 24,
+        "L5_PATH_35_NODE": 22
+    },
+    "L5_PATH_35_NODE": {
+        "L5_PATH_36_NODE": 22,
+        "L5_PATH_28_NODE": 24
+    },
+    "L5_PATH_28_NODE": {
+        "L5_PATH_35_NODE": 24,
+        "L5_11_NODE": 25,
+        "L5_PATH_29_NODE": 22
+    },
+    "L5_11_NODE": {
+        "L5_PATH_28_NODE": 25
+    },
+    "L5_PATH_29_NODE": {
+        "L5_PATH_28_NODE": 22,
+        "L5_PATH_5_NODE": 23
+    },
+    "L5_PATH_5_NODE": {
+        "L5_PATH_29_NODE": 23,
+        "L5_PATH_4_NODE": 24,
+        "L5_12_NODE": 31
+    },
+    "L5_PATH_4_NODE": {
+        "L5_PATH_5_NODE": 24,
+        "L5_PATH_0_NODE": 28,
+        "L5_12_NODE": 28
+    },
+    "L5_PATH_0_NODE": {
+        "L5_PATH_4_NODE": 28,
+        "L5_PATH_3_NODE": 19
+    },
+    "L5_PATH_3_NODE": {
+        "L5_PATH_0_NODE": 19,
+        "L5_PATH_16_NODE": 21,
+        "L5_14_NODE": 28
+    },
+    "L5_PATH_16_NODE": {
+        "L5_PATH_3_NODE": 21,
+        "L5_PATH_17_NODE": 28
+    },
+    "L5_PATH_17_NODE": {
+        "L5_PATH_16_NODE": 28,
+        "L5_PATH_19_NODE": 19
+    },
+    "L5_14_NODE": {
+        "L5_PATH_3_NODE": 28
+    },
+    "L5_12_NODE": {
+        "L5_PATH_5_NODE": 31,
+        "L5_PATH_4_NODE": 28
+    },
+    "L5_PATH_19_NODE": {
+        "L5_PATH_17_NODE": 19,
+        "L5_PATH_18_NODE": 16
+    },
+    "L5_PATH_18_NODE": {
+        "L5_PATH_19_NODE": 16,
+        "L5_STAIR2_DOWN_NODE": 23,
+        "L5_PATH_12_NODE": 21
+    },
+    "L5_STAIR2_DOWN_NODE": {
+        "L5_PATH_18_NODE": 23
+    },
+    "L5_PATH_12_NODE": {
+        "L5_PATH_18_NODE": 21,
+        "L5_PATH_13_NODE": 22
+    },
+    "L5_PATH_13_NODE": {
+        "L5_PATH_12_NODE": 22,
+        "L5_PATH_15_NODE": 20
+    },
+    "L5_PATH_15_NODE": {
+        "L5_PATH_13_NODE": 20,
+        "L5_PATH_14_NODE": 16
+    },
+    "L5_PATH_14_NODE": {
+        "L5_PATH_15_NODE": 16,
+        "L5_PATH_8_NODE": 21
+    },
+    "L5_PATH_8_NODE": {
+        "L5_PATH_14_NODE": 21,
+        "L5_PATH_9_NODE": 23
+    },
+    "L5_PATH_9_NODE": {
+        "L5_PATH_8_NODE": 23,
+        "L5_PATH_11_NODE": 19
+    },
+    "L5_PATH_11_NODE": {
+        "L5_PATH_9_NODE": 19,
+        "L5_PATH_10_NODE": 17
+    },
+    "L5_PATH_10_NODE": {
+        "L5_PATH_11_NODE": 17,
+        "L5_PATH_24_NODE": 23
+    },
+    "L5_PATH_24_NODE": {
+        "L5_PATH_10_NODE": 23,
+        "L5_PATH_25_NODE": 22
+    },
+    "L5_PATH_25_NODE": {
+        "L5_PATH_24_NODE": 22,
+        "L5_PATH_27_NODE": 19
+    },
+    "L5_PATH_27_NODE": {
+        "L5_PATH_25_NODE": 19,
+        "L5_PATH_26_NODE": 17
+    },
+    "L5_PATH_26_NODE": {
+        "L5_PATH_27_NODE": 17,
+        "L5_PATH_20_NODE": 26
+    },
+    "L5_PATH_20_NODE": {
+        "L5_PATH_26_NODE": 26,
+        "L5_STAIR1_UP_NODE": 18,
+        "L5_PATH_21_NODE": 20,
+        "L5_16_17_NODE": 24
+    },
+    "L5_STAIR1_UP_NODE": {
+        "L5_PATH_20_NODE": 18
+    },
+    "L5_PATH_21_NODE": {
+        "L5_PATH_20_NODE": 20,
+        "L5_PATH_23_NODE": 25
+    },
+    "L5_16_17_NODE": {
+        "L5_PATH_20_NODE": 24
+    },
+    "L5_PATH_23_NODE": {
+        "L5_PATH_21_NODE": 25,
+        "L5_PATH_22_NODE": 17
+    },
+    "L5_PATH_22_NODE": {
+        "L5_PATH_23_NODE": 17,
+        "L5_PATH_2_NODE": 22
+    },
+    "L5_PATH_2_NODE": {
+        "L5_PATH_22_NODE": 22,
+        "L5_PATH_1_NODE": 18
+    },
+    "L5_PATH_1_NODE": {
+        "L5_PATH_2_NODE": 18,
+        "L5_PATH_7_NODE": 16,
+        "L5_18_NODE": 17
+    },
+    "L5_PATH_7_NODE": {
+        "L5_PATH_1_NODE": 16,
+        "L5_PATH_6_NODE": 17
+    },
+    "L5_PATH_6_NODE": {
+        "L5_PATH_7_NODE": 17,
+        "L5_STAIR0_UP_NODE": 21
+    },
+    "L5_STAIR0_UP_NODE": {
+        "L5_PATH_6_NODE": 21
+    },
+    "L5_18_NODE": {
+        "L5_PATH_1_NODE": 17
+    },
+    "L5_PATH_33_NODE": {
+        "L5_PATH_53_NODE": 22,
+        "L5_PATH_32_NODE": 19,
+        "L5_PATH_30_NODE": 22
+    },
+    "L5_PATH_32_NODE": {
+        "L5_PATH_33_NODE": 19,
+        "L5_PATH_38_NODE": 16
+    },
+    "L5_PATH_38_NODE": {
+        "L5_PATH_32_NODE": 16,
+        "L5_PATH_37_NODE": 16
+    },
+    "L5_PATH_37_NODE": {
+        "L5_PATH_38_NODE": 16,
+        "L5_04_NODE": 16
+    },
+    "L5_04_NODE": {
+        "L5_PATH_37_NODE": 16,
+        "youarehere_NODE": 75
+    }
+}
