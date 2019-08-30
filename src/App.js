@@ -1,5 +1,5 @@
 import React from "react";
-import RelationshipTable from "./components/RelationshipTable";
+import RelationshipTable from "./components/RelationshipTable/RelationshipTable";
 import "./App.css";
 import _ from "lodash";
 import pinLogo from "./pin-logo.png";
