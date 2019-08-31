@@ -180,7 +180,7 @@ class App extends React.Component {
         else {
             const vtx1 = document.getElementById(vertex1);
             const vtx2 = document.getElementById(vertex2);
-            if(vtx1 && vtx2)
+            if (vtx1 && vtx2)
                 draw(vtx1, vtx2);
         }
         // }
@@ -221,16 +221,19 @@ class App extends React.Component {
     }
     drawShortestPath(vertex1, vertex2, node_path_id) {
         const pathArr = this.findShortestPath(vertex1, vertex2);
-        let X = [];
-        let Y = [];
         if (!pathArr) {
             alert("Not found shotest path, check model graphs");
             return;
         }
-        pathArr.forEach(vertexId => {
-            X.push(document.getElementById(vertexId).attributes.cx.value);
-            Y.push(document.getElementById(vertexId).attributes.cy.value);
-        });
+        const step = _.groupBy(pathArr, (vertexId) => {
+            return vertexId.substring(0, 2);
+        })
+        // for (let i = 0; i < pathArr.length - 1; i++) {
+        //     const vtx = pathArr[i];
+        //     X.push(document.getElementById(vtx).attributes.cx.value);
+        //     Y.push(document.getElementById(vtx).attributes.cy.value);
+        // }
+        // console.log(step);
         let first_vertex = document.getElementById(pathArr[0]);
         first_vertex.setAttributeNS(null, "class", "highlight-circle");
         let final_vertex = document.getElementById(pathArr[pathArr.length - 1]);
@@ -244,34 +247,111 @@ class App extends React.Component {
         pinLogo.setAttributeNS(null, "id", "pin-logo");
         pinLogo.setAttributeNS(null, "background", "transparent");
         let SVGnodes = document.getElementById(`nodes-${node_path_id}`);
-
-        var NoAnimatedPath = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "path"
-        );
-        let M = `M ${X[0]} ${Y[0]}`;
-        for (let i = 1; i < X.length; i++) {
-            M += `L ${X[i]} ${Y[i]} `;
+        /**vẽ path step by step khi user lên tầng trên hoặc xuống tầng dưới */
+        const drawStepPath = (X, Y) => {
+            console.log('ve neu co nhieu group');
         }
-        NoAnimatedPath.setAttributeNS(null, "d", `${M}`);
-        NoAnimatedPath.setAttributeNS(null, "stroke", "rgb(247, 199, 0)");
-        NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
-        NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
-        NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
-        NoAnimatedPath.setAttributeNS(null, "id", "noAnimation-path");
-        SVGnodes.appendChild(NoAnimatedPath);
+        /**
+         * @param X array chứa tọa độ x
+         * @param Y array chứa tọa độ y
+         * @description vẽ path khi user đi đến địa điểm trong tầng đó 
+         * */
+        const drawPath = (X, Y) => {
+            console.log('X : ', X);
+            console.log('Y : ', Y);
+            var NoAnimatedPath = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "path"
+            );
+            let M = `M ${X[0]} ${Y[0]}`;
+            for (let i = 1; i < X.length; i++) {
+                M += `L ${X[i]} ${Y[i]} `;
+            }
+            NoAnimatedPath.setAttributeNS(null, "d", `${M}`);
+            NoAnimatedPath.setAttributeNS(null, "stroke", "rgb(247, 199, 0)");
+            NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
+            NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
+            NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
+            NoAnimatedPath.setAttributeNS(null, "id", "noAnimation-path");
+            SVGnodes.appendChild(NoAnimatedPath);
 
-        var animatedPath = document.createElementNS(
-            "http://www.w3.org/2000/svg",
-            "path"
-        );
-        animatedPath.setAttributeNS(null, "d", `${M}`);
-        animatedPath.setAttributeNS(null, "id", "animation-path");
-        animatedPath.setAttributeNS(null, "stroke-width", "3");
-        animatedPath.setAttributeNS(null, "fill", "transparent");
+            var animatedPath = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "path"
+            );
+            animatedPath.setAttributeNS(null, "d", `${M}`);
+            animatedPath.setAttributeNS(null, "id", "animation-path");
+            animatedPath.setAttributeNS(null, "stroke-width", "3");
+            animatedPath.setAttributeNS(null, "fill", "transparent");
 
-        SVGnodes.appendChild(animatedPath);
-        SVGnodes.appendChild(pinLogo);
+            SVGnodes.appendChild(animatedPath);
+            SVGnodes.appendChild(pinLogo);
+        }
+        let X = [];
+        let Y = [];
+        if (_.size(step) !== 1) {
+            _.forEach(step, (verticesGroup) => {
+                console.log('verticesGroup : ', verticesGroup);
+                for (let i = 0; i < verticesGroup.length; i++) {
+                    const vtx = verticesGroup[i];
+                    X.push(document.getElementById(vtx).attributes.cx.value);
+                    Y.push(document.getElementById(vtx).attributes.cy.value);
+                };
+                drawStepPath(X, Y);
+            });
+        }
+        else {
+            const verticesGroup = _.reduce(step, (firstGroup) => firstGroup);
+            console.log('verticesGroup else :', verticesGroup);
+            for (let i = 0; i < verticesGroup.length; i++) {
+                const vtx = verticesGroup[i];
+                console.log('vtx:', vtx);
+                X.push(document.getElementById(vtx).attributes.cx.value);
+                Y.push(document.getElementById(vtx).attributes.cy.value);
+                drawPath(X, Y);
+            }
+        }
+        // let first_vertex = document.getElementById(pathArr[0]);
+        // first_vertex.setAttributeNS(null, "class", "highlight-circle");
+        // let final_vertex = document.getElementById(pathArr[pathArr.length - 1]);
+        // final_vertex.setAttributeNS(null, "class", "highlight-circle");
+        // const pinLogo = document.createElementNS("http://www.w3.org/2000/svg", "image")
+        // pinLogo.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "./pin-logo.png");
+        // pinLogo.setAttributeNS(null, "x", `${final_vertex.attributes.cx.value - 15}`);
+        // pinLogo.setAttributeNS(null, "y", `${final_vertex.attributes.cy.value - 30}`);
+        // pinLogo.setAttributeNS(null, "width", `30`);
+        // pinLogo.setAttributeNS(null, "height", `30`);
+        // pinLogo.setAttributeNS(null, "id", "pin-logo");
+        // pinLogo.setAttributeNS(null, "background", "transparent");
+        // let SVGnodes = document.getElementById(`nodes-${node_path_id}`);
+
+        // var NoAnimatedPath = document.createElementNS(
+        //     "http://www.w3.org/2000/svg",
+        //     "path"
+        // );
+        // let M = `M ${X[0]} ${Y[0]}`;
+        // for (let i = 1; i < X.length; i++) {
+        //     M += `L ${X[i]} ${Y[i]} `;
+        // }
+        // NoAnimatedPath.setAttributeNS(null, "d", `${M}`);
+        // NoAnimatedPath.setAttributeNS(null, "stroke", "rgb(247, 199, 0)");
+        // NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
+        // NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
+        // NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
+        // NoAnimatedPath.setAttributeNS(null, "id", "noAnimation-path");
+        // SVGnodes.appendChild(NoAnimatedPath);
+
+        // var animatedPath = document.createElementNS(
+        //     "http://www.w3.org/2000/svg",
+        //     "path"
+        // );
+        // animatedPath.setAttributeNS(null, "d", `${M}`);
+        // animatedPath.setAttributeNS(null, "id", "animation-path");
+        // animatedPath.setAttributeNS(null, "stroke-width", "3");
+        // animatedPath.setAttributeNS(null, "fill", "transparent");
+
+        // SVGnodes.appendChild(animatedPath);
+        // SVGnodes.appendChild(pinLogo);
     }
     /********************END wayFiding*************************/
 
