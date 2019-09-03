@@ -23,7 +23,8 @@ class App extends React.Component {
             feature: "",
             route: null,
             currentNumberOfMap: [],
-            isDrawFromGraphs: false
+            isDrawFromGraphs: false,
+            svgId_FirstClick:""
         };
         this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
     }
@@ -31,16 +32,23 @@ class App extends React.Component {
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
         const pathNodes = document.getElementsByTagName("circle");
         for (let i = 0; i < pathNodes.length; i++) {
-            if (pathNodes[i].id.startsWith("L4_PATH")) {
+            if (pathNodes[i].id.includes("PATH")) {
                 pathNodes[i].setAttributeNS(null, "fill", "rgb(101, 95, 84)");
                 pathNodes[i].setAttributeNS(null, "stroke", "rgb(230, 231, 232)");
             }
         }
-        if (document.getElementById("animation-path") !== null) {
-            let noAnimation_Path = document.getElementById("noAnimation-path");
-            noAnimation_Path.parentElement.removeChild(noAnimation_Path);
-            let animated_Path = document.getElementById("animation-path");
-            animated_Path.parentElement.removeChild(animated_Path);
+        if (document.getElementsByClassName("animation-path").length !== 0) {
+            let noAnimation_Path = document.getElementsByClassName("noAnimation-path");
+            for(let i=0;i<noAnimation_Path.length;i++)
+            {
+                noAnimation_Path[i].parentElement.removeChild(noAnimation_Path[i]);
+            } 
+            let animated_Path = document.getElementsByClassName("animation-path");
+            for(let i=0;i<animated_Path.length;i++)
+            { 
+                animated_Path[i].parentElement.removeChild(animated_Path[i]);
+            }
+
             let first_vertex = document.getElementById(this.state.vertex1);
             first_vertex.removeAttribute("class");
             let final_vertex = document.getElementById(this.state.vertex2);
@@ -140,6 +148,7 @@ class App extends React.Component {
             });
         });
         array.forEach(item => {
+            //hard code 0 nên k thể vẽ trên nhiều bảng
             this.drawEdge(item.node, item.neighbor, '0');
         })
         this.setState({ isDrawFromGraphs: true });
@@ -219,6 +228,13 @@ class App extends React.Component {
         const path = route.path(vertex1, vertex2);
         return path;
     }
+    /**
+     * 
+     * @param {*} vertex1 
+     * @param {*} vertex2 
+     * @param {*} node_path_id 
+     * @de
+     */
     drawShortestPath(vertex1, vertex2, node_path_id) {
         const pathArr = this.findShortestPath(vertex1, vertex2);
         if (!pathArr) {
@@ -227,13 +243,13 @@ class App extends React.Component {
         }
         const step = _.groupBy(pathArr, (vertexId) => {
             return vertexId.substring(0, 2);
-        })
+        });
         // for (let i = 0; i < pathArr.length - 1; i++) {
         //     const vtx = pathArr[i];
         //     X.push(document.getElementById(vtx).attributes.cx.value);
         //     Y.push(document.getElementById(vtx).attributes.cy.value);
         // }
-        // console.log(step);
+        
         let first_vertex = document.getElementById(pathArr[0]);
         first_vertex.setAttributeNS(null, "class", "highlight-circle");
         let final_vertex = document.getElementById(pathArr[pathArr.length - 1]);
@@ -246,19 +262,10 @@ class App extends React.Component {
         pinLogo.setAttributeNS(null, "height", `30`);
         pinLogo.setAttributeNS(null, "id", "pin-logo");
         pinLogo.setAttributeNS(null, "background", "transparent");
-        let SVGnodes = document.getElementById(`nodes-${node_path_id}`);
+        
         /**vẽ path step by step khi user lên tầng trên hoặc xuống tầng dưới */
-        const drawStepPath = (X, Y) => {
-            console.log('ve neu co nhieu group');
-        }
-        /**
-         * @param X array chứa tọa độ x
-         * @param Y array chứa tọa độ y
-         * @description vẽ path khi user đi đến địa điểm trong tầng đó 
-         * */
-        const drawPath = (X, Y) => {
-            console.log('X : ', X);
-            console.log('Y : ', Y);
+        const drawStepPath = (X, Y,floor_id) => {
+            let SVGnodes = document.getElementById(floor_id).lastChild;
             var NoAnimatedPath = document.createElementNS(
                 "http://www.w3.org/2000/svg",
                 "path"
@@ -272,7 +279,7 @@ class App extends React.Component {
             NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
             NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
             NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
-            NoAnimatedPath.setAttributeNS(null, "id", "noAnimation-path");
+            NoAnimatedPath.setAttributeNS(null, "class", "noAnimation-path");
             SVGnodes.appendChild(NoAnimatedPath);
 
             var animatedPath = document.createElementNS(
@@ -280,36 +287,80 @@ class App extends React.Component {
                 "path"
             );
             animatedPath.setAttributeNS(null, "d", `${M}`);
-            animatedPath.setAttributeNS(null, "id", "animation-path");
+            animatedPath.setAttributeNS(null, "class", "animation-path");//
             animatedPath.setAttributeNS(null, "stroke-width", "3");
             animatedPath.setAttributeNS(null, "fill", "transparent");
 
             SVGnodes.appendChild(animatedPath);
             SVGnodes.appendChild(pinLogo);
         }
-        let X = [];
-        let Y = [];
+        /**
+         * @param X array chứa tọa độ x
+         * @param Y array chứa tọa độ y
+         * @param floor_id chứa 2 kí tự đầu để xác định vẽ trên SVG nào
+         * @description vẽ path khi user đi đến địa điểm trong tầng đó 
+         * */
+        const drawPath = (X, Y,floor_id) => {
+            // console.log('X : ', X);
+            // console.log('Y : ', Y);
+            
+            let SVGnodes = document.getElementById(`nodes-${node_path_id}`);
+            var NoAnimatedPath = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "path"
+            );
+            let M = `M ${X[0]} ${Y[0]}`;
+            for (let i = 1; i < X.length; i++) {
+                M += `L ${X[i]} ${Y[i]} `;
+            }
+            NoAnimatedPath.setAttributeNS(null, "d", `${M}`);
+            NoAnimatedPath.setAttributeNS(null, "stroke", "rgb(247, 199, 0)");
+            NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
+            NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
+            NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
+            NoAnimatedPath.setAttributeNS(null, "class", "noAnimation-path");
+            SVGnodes.appendChild(NoAnimatedPath);
+
+            var animatedPath = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "path"
+            );
+            animatedPath.setAttributeNS(null, "d", `${M}`);
+            animatedPath.setAttributeNS(null, "class", "animation-path");
+            animatedPath.setAttributeNS(null, "stroke-width", "3");
+            animatedPath.setAttributeNS(null, "fill", "transparent");
+
+            SVGnodes.appendChild(animatedPath);
+            SVGnodes.appendChild(pinLogo);
+        }
+        console.log(step,_.size(step));
         if (_.size(step) !== 1) {
             _.forEach(step, (verticesGroup) => {
-                console.log('verticesGroup : ', verticesGroup);
+                // console.log('verticesGroup : ', verticesGroup);
+                let floor_id = verticesGroup[0].substring(0,2);
+                let X = [];
+                let Y = [];
                 for (let i = 0; i < verticesGroup.length; i++) {
                     const vtx = verticesGroup[i];
+                    
                     X.push(document.getElementById(vtx).attributes.cx.value);
                     Y.push(document.getElementById(vtx).attributes.cy.value);
                 };
-                drawStepPath(X, Y);
+                drawStepPath(X, Y,floor_id);
             });
         }
         else {
             const verticesGroup = _.reduce(step, (firstGroup) => firstGroup);
-            console.log('verticesGroup else :', verticesGroup);
+            let floor_id = verticesGroup[0].substring(0,2); 
+            let X = [];
+            let Y = [];
             for (let i = 0; i < verticesGroup.length; i++) {
-                const vtx = verticesGroup[i];
-                console.log('vtx:', vtx);
+                const vtx = verticesGroup[i];             
                 X.push(document.getElementById(vtx).attributes.cx.value);
                 Y.push(document.getElementById(vtx).attributes.cy.value);
-                drawPath(X, Y);
+               
             }
+            drawPath(X, Y,floor_id);
         }
         // let first_vertex = document.getElementById(pathArr[0]);
         // first_vertex.setAttributeNS(null, "class", "highlight-circle");
@@ -370,22 +421,37 @@ class App extends React.Component {
                 }
             }
         } else if (this.state.feature === "find") {
-            if (document.getElementById("animation-path") !== null) {
-                let noAnimation_Path = document.getElementById("noAnimation-path");
-                noAnimation_Path.parentElement.removeChild(noAnimation_Path);
-                let animated_Path = document.getElementById("animation-path");
-                animated_Path.parentElement.removeChild(animated_Path);
+            if (document.getElementsByClassName("animation-path").length !== 0) {
+                let noAnimation_Path = document.getElementsByClassName("noAnimation-path");
+                for(let i=0;i<noAnimation_Path.length;i++)
+                {
+                    noAnimation_Path[i].parentElement.removeChild(noAnimation_Path[i]);
+                }
+                    
+                
+                let animated_Path = document.getElementsByClassName("animation-path");
+                for(let i=0;i<animated_Path.length;i++)
+                { 
+                    animated_Path[i].parentElement.removeChild(animated_Path[i]);
+                }
+                    
+
                 let first_vertex = document.getElementById(this.state.vertex1);
                 first_vertex.removeAttribute("class");
                 let final_vertex = document.getElementById(this.state.vertex2);
                 final_vertex.removeAttribute("class");
-                let pin_logo = document.getElementById("pin-logo");
-                pin_logo.parentElement.removeChild(pin_logo);
+                if(document.getElementById("pin-logo") !== null)
+                {
+                    let pin_logo = document.getElementById("pin-logo");
+                    console.log(pin_logo);
+                    pin_logo.parentElement.removeChild(pin_logo);
+                }
             }
             if (!this.isFindingPath) {
                 document
                     .getElementById("first-vertex")
                     .setAttribute("value", e.target.id);
+                
                 this.setState({ vertex1: e.target.id });
                 this.isFindingPath = true;
             } else {
@@ -600,7 +666,7 @@ class App extends React.Component {
         });
     };
     DeleteMap = (k, file) => {
-        console.log(this.state.currentNumberOfMap);
+        // console.log(this.state.currentNumberOfMap);
         let deleteFile;
         document.getElementById("list-svg").removeChild(document.getElementById(`svg-${k}`));
         let radioElement = document.getElementById(`radio-${k}`);
@@ -609,7 +675,7 @@ class App extends React.Component {
             let list_svg = document.getElementById("list-svg");
             list_svg.parentElement.removeChild(list_svg);
         }
-        console.log(file.name);
+        // console.log(file.name);
         for (let i = 0; i < this.state.currentNumberOfMap.length; i++) {
             if (file.name === this.state.currentNumberOfMap[i].name) {
                 deleteFile = i;
@@ -619,7 +685,7 @@ class App extends React.Component {
         var cloneState = [...this.state.currentNumberOfMap];
         cloneState.splice(deleteFile, 1);
         this.setState({ currentNumberOfMap: cloneState });
-        console.log(this.state.currentNumberOfMap);
+        // console.log(this.state.currentNumberOfMap);
     }
     scrollMap = (k) => {
         let svg = document.getElementById(`svg-${k}`);

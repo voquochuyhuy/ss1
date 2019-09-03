@@ -41,7 +41,7 @@ line {
 }
 
 
-#animation-path {
+.animation-path {
 
   stroke:red;
   stroke-dasharray: 1300;

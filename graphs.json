@@ -1,5 +1,5 @@
 {
-    "youarehere_NODE": {
+    "L4_2_youarehere_NODE": {
         "L4_PATH_70_NODE": 27,
         "L4_PATH_43_NODE": 27,
         "L4_PATH_10_NODE": 71,
@@ -8,7 +8,7 @@
         "L4_STAIR1_DOWN_NODE": 18
     },
     "L4_PATH_70_NODE": {
-        "youarehere_NODE": 27,
+        "L4_2_youarehere_NODE": 27,
         "L4_PATH_69_NODE": 22,
         "L4_PATH_44_NODE": 18,
         "L4_STAIR1_DOWN_NODE": 21
@@ -16,7 +16,8 @@
     "L4_PATH_69_NODE": {
         "L4_PATH_70_NODE": 22,
         "L4_PATH_68_NODE": 17,
-        "L4_PATH_48_NODE": 21
+        "L4_PATH_48_NODE": 21,
+        "L4_STAIR1_DOWN_NODE": 36
     },
     "L4_PATH_68_NODE": {
         "L4_PATH_69_NODE": 17,
@@ -79,7 +80,7 @@
         "L4_19_A_NODE": 44,
         "L4_PATH_61_NODE": 25,
         "L4_PATH_50_NODE": 31,
-        "L4_PATH_58_NODE": 28
+        "L4_FPATH_58_NODE": 28
     },
     "L4_PATH_58_NODE": {
         "L4_PATH_60_NODE": 28,
@@ -342,8 +343,9 @@
         "L4_STAIR1_UP_NODE": 41
     },
     "L4_PATH_43_NODE": {
-        "youarehere_NODE": 27,
-        "L4_PATH_42_NODE": 27
+        "L4_2_youarehere_NODE": 27,
+        "L4_PATH_42_NODE": 27,
+        "L4_STAIR1_DOWN_NODE": 28
     },
     "L4_PATH_42_NODE": {
         "L4_PATH_43_NODE": 27,
@@ -489,7 +491,7 @@
     },
     "L4_PATH_10_NODE": {
         "L4_PATH_42_NODE": 51,
-        "youarehere_NODE": 71,
+        "L4_2_youarehere_NODE": 71,
         "L4_25_NODE": 34,
         "L4_26C_NODE": 58,
         "L4_PATH_11_NODE": 49
@@ -506,7 +508,7 @@
         "L4_PATH_45_NODE": 22
     },
     "L4_PATH_45_NODE": {
-        "youarehere_NODE": 53,
+        "L4_2_youarehere_NODE": 53,
         "L4_PATH_44_NODE": 22,
         "L4_PATH_46_NODE": 24,
         "L4_24_NODE": 21
@@ -525,7 +527,7 @@
     },
     "L4_24_NODE": {
         "L4_PATH_45_NODE": 21,
-        "youarehere_NODE": 66,
+        "L4_2_youarehere_NODE": 66,
         "L4_ChooChoo_NODE": 48
     },
     "L4_04_NODE": {
@@ -539,21 +541,29 @@
         "L4_04_NODE": 51,
         "L4_24_NODE": 48
     },
-    "L4_STAIR1_UP_NODE": {
-        "L5_STAIR1_DOWN_NODE": 1,
-        "L4_PATH_38_NODE": 31,
-        "L4_PATH_36_NODE": 51,
-        "L4_PATH_37_NODE": 41,
-        "L4_PATH_40_NODE": 36
+    "L4_STAIR1_DOWN_NODE": {
+        "L4_2_youarehere_NODE": 18,
+        "L4_PATH_70_NODE": 21,
+        "L4_PATH_43_NODE": 28,
+        "L4_PATH_69_NODE": 36
+    },
+    "L5_2_youarehere_NODE": {
+        "L5_STAIR1_DOWN_NODE": 20,
+        "L5_PATH_30_NODE": 25,
+        "L5_PATH_33_NODE": 36,
+        "L5_04_NODE": 75
     },
     "L5_STAIR1_DOWN_NODE": {
         "L5_PATH_30_NODE": 25,
-        "L4_STAIR1_UP_NODE": 1
+        "L5_2_youarehere_NODE": 20,
+        "L4_STAIR1_UP_NODE":1
     },
     "L5_PATH_30_NODE": {
         "L5_STAIR1_DOWN_NODE": 25,
         "L5_PATH_53_NODE": 24,
-        "L5_PATH_33_NODE": 22
+        "L5_PATH_33_NODE": 22,
+        "L5_2_youarehere_NODE": 25,
+        "L5_PATH_54_NODE": 36
     },
     "L5_PATH_53_NODE": {
         "L5_PATH_30_NODE": 24,
@@ -562,7 +572,8 @@
     },
     "L5_PATH_54_NODE": {
         "L5_PATH_53_NODE": 17,
-        "L5_PATH_52_NODE": 26
+        "L5_PATH_52_NODE": 26,
+        "L5_PATH_30_NODE": 36
     },
     "L5_PATH_52_NODE": {
         "L5_PATH_54_NODE": 26,
@@ -832,7 +843,8 @@
     "L5_PATH_33_NODE": {
         "L5_PATH_53_NODE": 22,
         "L5_PATH_32_NODE": 19,
-        "L5_PATH_30_NODE": 22
+        "L5_PATH_30_NODE": 22,
+        "L5_2_youarehere_NODE": 36
     },
     "L5_PATH_32_NODE": {
         "L5_PATH_33_NODE": 19,
@@ -847,10 +859,14 @@
         "L5_04_NODE": 16
     },
     "L5_04_NODE": {
-        "L5_PATH_37_NODE": 16
+        "L5_PATH_37_NODE": 16,
+        "L5_2_youarehere_NODE": 75
     },
-    "L4_STAIR1_DOWN_NODE": {
-        "L4_PATH_70_NODE": 21,
-        "youarehere_NODE": 18
+    "L4_STAIR1_UP_NODE": {
+        "L4_PATH_38_NODE": 31,
+        "L4_PATH_37_NODE": 41,
+        "L4_PATH_36_NODE": 51,
+        "L4_PATH_40_NODE": 36,
+        "L5_STAIR1_DOWN_NODE":1
     }
 }
