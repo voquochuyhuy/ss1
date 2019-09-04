@@ -236,7 +236,7 @@ class App extends React.Component {
     }
 
     /**********************START wayFiding***********************/
-    async LoadGraphsFile() {
+    LoadGraphsFile = async ()=> {
         const el = await document.createElement("div");
         el.innerHTML = "<input type='file'/>";
         const fileInput = await el.firstChild;
