@@ -28,6 +28,7 @@ class App extends React.Component {
         };
         this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
     }
+    /********************VẼ CẠNH ******************** */
     OnDrawingEgde = () => {
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
         const pathNodes = document.getElementsByTagName("circle");
@@ -57,6 +58,96 @@ class App extends React.Component {
             pin_logo.parentElement.removeChild(pin_logo);
         }
     };
+    drawEdge = (vertex1, vertex2, floorId) => {
+        // if (this.state.feature === "draw") {
+        //check vertex1 and vertex2 là 1 HMTLElement hay 1 string
+        //Nếu là string (id của 1 Element) thì vẽ dựa vào graphs có sẵn, k thì tạo graphs mới
+        const node_path = document.getElementById(`node-pathline-${floorId}`);
+        const draw = (v1, v2) => {
+            const x1 = v1.getAttributeNS(null, "cx");
+            const y1 = v1.getAttributeNS(null, "cy");
+            const x2 = v2.getAttributeNS(null, "cx");
+            const y2 = v2.getAttributeNS(null, "cy");
+            let edge = document.createElementNS(
+                "http://www.w3.org/2000/svg",
+                "line"
+            );
+            edge.setAttributeNS(null, "id", `${v1.id}:${v2.id}`);
+            edge.setAttributeNS(null, "x1", x1);
+            edge.setAttributeNS(null, "y1", y1);
+            edge.setAttributeNS(null, "x2", x2);
+            edge.setAttributeNS(null, "y2", y2);
+            edge.setAttributeNS(null, "stroke", "red");
+            edge.setAttributeNS(null, "stroke-width", "3");
+            edge.setAttributeNS(null, "fill", "none");
+            edge.setAttributeNS(null, "stroke-dasharray", "5,5");
+            edge.setAttributeNS(null, "style", "cursor: pointer;");
+            edge.addEventListener("click", () => {
+                this.DeleteEgde(edge, v1.id, v2.id);
+            });
+            node_path.appendChild(edge);
+        }
+        if (typeof vertex1 !== "string") {
+            const edgeExisted = this.addVertexToGraphs(vertex1, vertex2);
+            edgeExisted ? alert('edge already existed') : draw(vertex1, vertex2);
+        }
+        else {
+            const vtx1 = document.getElementById(vertex1);
+            const vtx2 = document.getElementById(vertex2);
+            if (vtx1 && vtx2)
+                draw(vtx1, vtx2);
+        }
+        // }
+    }
+    
+
+    /********************XÓA CẠNH ******************** */
+    OnDeleteEgde = () => {
+        this.setState({ feature: "delete" });
+    };
+    DeleteEgde = (edge, vertex1Id, vertex2Id) => {
+        console.log(edge)
+        const removeVertexFromGraphs = (v1, v2) => {
+            const { graphs } = this.state;
+            if (_.has(graphs, [v1, v2]) && _.has(graphs, [v2, v1])) {
+                delete graphs[v1][v2];
+                delete graphs[v2][v1];
+                this.setState({ graphs })
+            }
+        }
+        if (this.state.feature === "delete" && typeof edge !== "string") {
+            edge.parentElement.removeChild(edge);
+        }
+        else {
+            const edgeEl = document.getElementById(edge);
+            console.log(edgeEl);//bị null khi nhấn nút remove từ bảng
+            console.log(edge);
+            edgeEl.parentElement.removeChild(edgeEl);
+        }
+        removeVertexFromGraphs(vertex1Id, vertex2Id);
+    };
+
+    /********************CHỌN CHỨC NĂNG TÌM ĐƯỜNG ******************** */
+    OnWayFinding = () => {
+        this.setState({ feature: "find", vertex1: "", vertex2: "" });
+        for(let i =0;i< this.state.currentNumberOfMap.length;i++)
+        {
+            let floorId = this.state.currentNumberOfMap[i].name.substring(0,2);
+            let groupPathNode = document.getElementById(`node-pathline-${floorId}`);
+            let clone = groupPathNode.cloneNode(false);
+            groupPathNode.replaceWith(clone);
+            let pathNodes = document.getElementsByTagName("circle");
+            for (let y = 0; y < pathNodes.length; y++) {
+                if (pathNodes[y].id.startsWith(`${floorId}_PATH`)) {
+                    pathNodes[y].setAttributeNS(null, "fill", "transparent");
+                    pathNodes[y].setAttributeNS(null, "stroke", "transparent");
+                }
+            }
+        }
+        
+    };
+
+
     /**@description add two vertex to graphs
      * @returns edgeExisted : if exist edge between them, return false, otherwise, null
      */
@@ -135,6 +226,7 @@ class App extends React.Component {
         }
         return edgeExisted;
     }
+    
     drawEdgeFromGraphs = () => {
         const loadedGraphs = this.state.graphs;
         console.log('drawEdgeFromGraphs called');
@@ -150,52 +242,11 @@ class App extends React.Component {
         array.forEach(item => {
             //hard code 0 nên k thể vẽ trên nhiều bảng
             // dựa vào item.node và item.neight mà vẽ
-            console.log(item.node.substring(0,2) === item.neighbor.substring(0,2));
             if(item.node.substring(0,2) === item.neighbor.substring(0,2))
                 this.drawEdge(item.node, item.neighbor, item.node.substring(0,2));
         })
     }
-    drawEdge = (vertex1, vertex2, i) => {
-        // if (this.state.feature === "draw") {
-        //check vertex1 and vertex2 là 1 HMTLElement hay 1 string
-        //Nếu là string (id của 1 Element) thì vẽ dựa vào graphs có sẵn, k thì tạo graphs mới
-        const node_path = document.getElementById(`node-pathline-${i}`);
-        const draw = (v1, v2) => {
-            const x1 = v1.getAttributeNS(null, "cx");
-            const y1 = v1.getAttributeNS(null, "cy");
-            const x2 = v2.getAttributeNS(null, "cx");
-            const y2 = v2.getAttributeNS(null, "cy");
-            let edge = document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "line"
-            );
-            edge.setAttributeNS(null, "id", `${v1.id}:${v2.id}`);
-            edge.setAttributeNS(null, "x1", x1);
-            edge.setAttributeNS(null, "y1", y1);
-            edge.setAttributeNS(null, "x2", x2);
-            edge.setAttributeNS(null, "y2", y2);
-            edge.setAttributeNS(null, "stroke", "red");
-            edge.setAttributeNS(null, "stroke-width", "3");
-            edge.setAttributeNS(null, "fill", "none");
-            edge.setAttributeNS(null, "stroke-dasharray", "5,5");
-            edge.setAttributeNS(null, "style", "cursor: pointer;");
-            edge.addEventListener("click", () => {
-                this.DeleteEgde(edge, v1.id, v2.id);
-            });
-            node_path.appendChild(edge);
-        }
-        if (typeof vertex1 !== "string") {
-            const edgeExisted = this.addVertexToGraphs(vertex1, vertex2);
-            edgeExisted ? alert('edge already existed') : draw(vertex1, vertex2);
-        }
-        else {
-            const vtx1 = document.getElementById(vertex1);
-            const vtx2 = document.getElementById(vertex2);
-            if (vtx1 && vtx2)
-                draw(vtx1, vtx2);
-        }
-        // }
-    }
+    
     /**********************START wayFiding***********************/
     async LoadGraphsFile() {
         const el = await document.createElement("div");
@@ -230,13 +281,7 @@ class App extends React.Component {
         const path = route.path(vertex1, vertex2);
         return path;
     }
-    /**
-     * 
-     * @param {*} vertex1 
-     * @param {*} vertex2 
-     * @param {*} node_path_id 
-     * @de
-     */
+
     drawShortestPath(vertex1, vertex2, node_path_id) {
         const pathArr = this.findShortestPath(vertex1, vertex2);
         if (!pathArr) {
@@ -246,12 +291,6 @@ class App extends React.Component {
         const step = _.groupBy(pathArr, (vertexId) => {
             return vertexId.substring(0, 2);
         });
-        // for (let i = 0; i < pathArr.length - 1; i++) {
-        //     const vtx = pathArr[i];
-        //     X.push(document.getElementById(vtx).attributes.cx.value);
-        //     Y.push(document.getElementById(vtx).attributes.cy.value);
-        // }
-        
         let first_vertex = document.getElementById(pathArr[0]);
         first_vertex.setAttributeNS(null, "class", "highlight-circle");
         let final_vertex = document.getElementById(pathArr[pathArr.length - 1]);
@@ -306,7 +345,7 @@ class App extends React.Component {
             // console.log('X : ', X);
             // console.log('Y : ', Y);
             
-            let SVGnodes = document.getElementById(`nodes-${node_path_id}`);
+            let SVGnodes = document.getElementById(`nodes-${floor_id}`);
             var NoAnimatedPath = document.createElementNS(
                 "http://www.w3.org/2000/svg",
                 "path"
@@ -364,171 +403,11 @@ class App extends React.Component {
             }
             drawPath(X, Y,floor_id);
         }
-        // let first_vertex = document.getElementById(pathArr[0]);
-        // first_vertex.setAttributeNS(null, "class", "highlight-circle");
-        // let final_vertex = document.getElementById(pathArr[pathArr.length - 1]);
-        // final_vertex.setAttributeNS(null, "class", "highlight-circle");
-        // const pinLogo = document.createElementNS("http://www.w3.org/2000/svg", "image")
-        // pinLogo.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "./pin-logo.png");
-        // pinLogo.setAttributeNS(null, "x", `${final_vertex.attributes.cx.value - 15}`);
-        // pinLogo.setAttributeNS(null, "y", `${final_vertex.attributes.cy.value - 30}`);
-        // pinLogo.setAttributeNS(null, "width", `30`);
-        // pinLogo.setAttributeNS(null, "height", `30`);
-        // pinLogo.setAttributeNS(null, "id", "pin-logo");
-        // pinLogo.setAttributeNS(null, "background", "transparent");
-        // let SVGnodes = document.getElementById(`nodes-${node_path_id}`);
-
-        // var NoAnimatedPath = document.createElementNS(
-        //     "http://www.w3.org/2000/svg",
-        //     "path"
-        // );
-        // let M = `M ${X[0]} ${Y[0]}`;
-        // for (let i = 1; i < X.length; i++) {
-        //     M += `L ${X[i]} ${Y[i]} `;
-        // }
-        // NoAnimatedPath.setAttributeNS(null, "d", `${M}`);
-        // NoAnimatedPath.setAttributeNS(null, "stroke", "rgb(247, 199, 0)");
-        // NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
-        // NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
-        // NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
-        // NoAnimatedPath.setAttributeNS(null, "id", "noAnimation-path");
-        // SVGnodes.appendChild(NoAnimatedPath);
-
-        // var animatedPath = document.createElementNS(
-        //     "http://www.w3.org/2000/svg",
-        //     "path"
-        // );
-        // animatedPath.setAttributeNS(null, "d", `${M}`);
-        // animatedPath.setAttributeNS(null, "id", "animation-path");
-        // animatedPath.setAttributeNS(null, "stroke-width", "3");
-        // animatedPath.setAttributeNS(null, "fill", "transparent");
-
-        // SVGnodes.appendChild(animatedPath);
-        // SVGnodes.appendChild(pinLogo);
     }
     /********************END wayFiding*************************/
 
-    handleMouseClick(e, node_path_id) {
-        const clickTarget = e.target;
-        if (this.state.feature === "draw") {
-            if (clickTarget.nodeName === "circle") {
-                if (!this.isDrawingEdge) {
-                    this.setState({ edgeVertex1: clickTarget });
-                    this.isDrawingEdge = true;
-                } else if (clickTarget !== this.state.edgeVertex1) {
-                    this.setState({ edgeVertex2: clickTarget });
-                    this.drawEdge(this.state.edgeVertex1, this.state.edgeVertex2, node_path_id);
-                    this.setState({ edgeVertex1: null, edgeVertex2: null });
-                    this.isDrawingEdge = false;
-                }
-            }
-        } else if (this.state.feature === "find") {
-            if (document.getElementsByClassName("animation-path").length !== 0) {
-                let noAnimation_Path = document.getElementsByClassName("noAnimation-path");
-                for(let i=0;i<noAnimation_Path.length;i++)
-                {
-                    noAnimation_Path[i].parentElement.removeChild(noAnimation_Path[i]);
-                }
-                    
-                
-                let animated_Path = document.getElementsByClassName("animation-path");
-                for(let i=0;i<animated_Path.length;i++)
-                { 
-                    animated_Path[i].parentElement.removeChild(animated_Path[i]);
-                }
-                    
 
-                let first_vertex = document.getElementById(this.state.vertex1);
-                first_vertex.removeAttribute("class");
-                let final_vertex = document.getElementById(this.state.vertex2);
-                final_vertex.removeAttribute("class");
-                if(document.getElementById("pin-logo") !== null)
-                {
-                    let pin_logo = document.getElementById("pin-logo");
-                    console.log(pin_logo);
-                    pin_logo.parentElement.removeChild(pin_logo);
-                }
-            }
-            if (!this.isFindingPath) {
-                document
-                    .getElementById("first-vertex")
-                    .setAttribute("value", e.target.id);
-                
-                this.setState({ vertex1: e.target.id });
-                this.isFindingPath = true;
-            } else {
-                if (e.target.id === this.state.vertex1) {
-                    alert("Vertex cannot connect it self");
-                    this.setState({ vertex1: "", vertex2: "" });
-                    this.isFindingPath = false;
-                    return;
-                }
-                document
-                    .getElementById("second-vertex")
-                    .setAttribute("value", e.target.id);
-                this.setState({ vertex2: e.target.id });
-                this.drawShortestPath(this.state.vertex1, this.state.vertex2, node_path_id);
-                this.isFindingPath = false;
-                // this.setState({ vertex1: "", vertex2: "" });
-            }
-
-            // document.getElementById('first-vertex');
-        }
-    }
-    addClickEventForCircle = (node_path_id) => {
-        let svg = document.getElementById(`nodes-${node_path_id}`);
-        const vertices = svg.getElementsByTagName("circle");
-        this.vertices = vertices;
-        for (let i = 0; i < vertices.length; i++) {
-            vertices[i].addEventListener("click", e => {
-                this.handleMouseClick(e, node_path_id);
-            });
-            vertices[i].setAttribute("style", "cursor: pointer;")
-        }
-    };
-
-    OnDeleteEgde = () => {
-        this.setState({ feature: "delete" });
-    };
-    DeleteEgde = (edge, vertex1Id, vertex2Id) => {
-        console.log(edge)
-        const removeVertexFromGraphs = (v1, v2) => {
-            const { graphs } = this.state;
-            if (_.has(graphs, [v1, v2]) && _.has(graphs, [v2, v1])) {
-                delete graphs[v1][v2];
-                delete graphs[v2][v1];
-                this.setState({ graphs })
-            }
-        }
-        if (this.state.feature === "delete" && typeof edge !== "string") {
-            edge.parentElement.removeChild(edge);
-        }
-        else {
-            const edgeEl = document.getElementById(edge);
-            console.log(edgeEl);
-            console.log(edge);
-            edgeEl.parentElement.removeChild(edgeEl);
-        }
-        removeVertexFromGraphs(vertex1Id, vertex2Id);
-    };
-    OnWayFinding = () => {
-        this.setState({ feature: "find", vertex1: "", vertex2: "" });
-        for(let i =0;i< this.state.currentNumberOfMap.length;i++)
-        {
-            let floorId = this.state.currentNumberOfMap[i].name.substring(0,2);
-            let groupPathNode = document.getElementById(`node-pathline-${floorId}`);
-            let clone = groupPathNode.cloneNode(false);
-            groupPathNode.replaceWith(clone);
-            let pathNodes = document.getElementsByTagName("circle");
-            for (let y = 0; y < pathNodes.length; y++) {
-                if (pathNodes[y].id.startsWith(`${floorId}_PATH`)) {
-                    pathNodes[y].setAttributeNS(null, "fill", "transparent");
-                    pathNodes[y].setAttributeNS(null, "stroke", "transparent");
-                }
-            }
-        }
-        
-    };
+    /********************START LOAD FILE ******************** */
     handleFileSelect = async e => {
         var element = document.createElement("div");
         element.innerHTML = '<input type="file" multiple>';
@@ -688,6 +567,90 @@ class App extends React.Component {
         });
         
     };
+    handleMouseClick(e, floorId) {
+        const clickTarget = e.target;
+        if (this.state.feature === "draw") {
+            if (clickTarget.nodeName === "circle") {
+                if (!this.isDrawingEdge) {
+                    this.setState({ edgeVertex1: clickTarget });
+                    this.isDrawingEdge = true;
+                } else if (clickTarget !== this.state.edgeVertex1) {
+                    this.setState({ edgeVertex2: clickTarget });
+                    this.drawEdge(this.state.edgeVertex1, this.state.edgeVertex2, floorId);
+                    this.setState({ edgeVertex1: null, edgeVertex2: null });
+                    this.isDrawingEdge = false;
+                }
+            }
+        } else if (this.state.feature === "find") {
+            if (document.getElementsByClassName("animation-path").length !== 0) {
+                let noAnimation_Path = document.getElementsByClassName("noAnimation-path");
+                for(let i=0;i<noAnimation_Path.length;i++)
+                {
+                    noAnimation_Path[i].parentElement.removeChild(noAnimation_Path[i]);
+                }
+                    
+                
+                let animated_Path = document.getElementsByClassName("animation-path");
+                for(let i=0;i<animated_Path.length;i++)
+                { 
+                    // chưa xóa đường dẫn khi vẽ đường ngắn nhất trên nhiều map
+                    // do dính chung parentElement
+                    animated_Path[i].parentElement.removeChild(animated_Path[i]);
+                }
+                    
+
+                let first_vertex = document.getElementById(this.state.vertex1);
+                first_vertex.removeAttribute("class");
+                let final_vertex = document.getElementById(this.state.vertex2);
+                final_vertex.removeAttribute("class");
+                if(document.getElementById("pin-logo") !== null)
+                {
+                    let pin_logo = document.getElementById("pin-logo");
+                    console.log(pin_logo);
+                    pin_logo.parentElement.removeChild(pin_logo);
+                }
+            }
+            if (!this.isFindingPath) {
+                document
+                    .getElementById("first-vertex")
+                    .setAttribute("value", e.target.id);
+                
+                this.setState({ vertex1: e.target.id });
+                this.isFindingPath = true;
+            } else {
+                if (e.target.id === this.state.vertex1) {
+                    alert("Vertex cannot connect it self");
+                    this.setState({ vertex1: "", vertex2: "" });
+                    this.isFindingPath = false;
+                    return;
+                }
+                document
+                    .getElementById("second-vertex")
+                    .setAttribute("value", e.target.id);
+                this.setState({ vertex2: e.target.id });
+                this.drawShortestPath(this.state.vertex1, this.state.vertex2, floorId);
+                this.isFindingPath = false;
+                // this.setState({ vertex1: "", vertex2: "" });
+            }
+
+            // document.getElementById('first-vertex');
+        }
+    }
+    addClickEventForCircle = (floorId) => {
+        let svg = document.getElementById(`nodes-${floorId}`);
+        const vertices = svg.getElementsByTagName("circle");
+        this.vertices = vertices;
+        for (let i = 0; i < vertices.length; i++) {
+            vertices[i].addEventListener("click", e => {
+                this.handleMouseClick(e, floorId);
+            });
+            vertices[i].setAttribute("style", "cursor: pointer;")
+        }
+    };
+    /********************END LOAD FILE ******************** */
+
+
+    /********************XÓA MAP ĐÃ LOAD - SCROLL ĐẾN MAP ĐÓ ******************** */
     DeleteMap = (floorId, file) => {
         // console.log(this.state.currentNumberOfMap);
         let deleteFile;
@@ -714,6 +677,8 @@ class App extends React.Component {
         let svg = document.getElementById(`svg-${floorId}`);
         svg.scrollIntoView();
     }
+
+    /********************START LOAD FILE ******************** */
     handleSaveGraphs = e => {
         const a = document.createElement("a");
         document.body.appendChild(a);
@@ -727,6 +692,8 @@ class App extends React.Component {
         a.click();
         window.URL.revokeObjectURL(url);
     };
+
+    /********************???? ******************** */
     onRemoveFromChild = (removedObj) => {
         const { graphs } = this.state;
         const { node, neighbor } = removedObj;
