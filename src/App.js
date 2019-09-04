@@ -2,14 +2,11 @@ import React from "react";
 import RelationshipTable from "./components/RelationshipTable/RelationshipTable";
 import "./App.css";
 import _ from "lodash";
-import pinLogo from "./pin-logo.png";
 const Graph = require("node-dijkstra");
 class App extends React.Component {
     isDrawingEdge = false;
     isFindingPath = false;
     vertices = null;
-    componentDidMount() {
-    }
     constructor(props) {
         super(props);
         this.state = {
@@ -23,8 +20,7 @@ class App extends React.Component {
             feature: "",
             route: null,
             currentNumberOfMap: [],
-            
-            svgId_FirstClick:"",
+            svgId_FirstClick: "",
         };
         this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
     }
@@ -40,16 +36,13 @@ class App extends React.Component {
         }
         if (document.getElementsByClassName("animation-path").length !== 0) {
             let noAnimation_Path = document.getElementsByClassName("noAnimation-path");
-            for(let i=0;i<noAnimation_Path.length;i++)
-            {
+            for (let i = 0; i < noAnimation_Path.length; i++) {
                 noAnimation_Path[i].parentElement.removeChild(noAnimation_Path[i]);
-            } 
+            }
             let animated_Path = document.getElementsByClassName("animation-path");
-            for(let i=0;i<animated_Path.length;i++)
-            { 
+            for (let i = 0; i < animated_Path.length; i++) {
                 animated_Path[i].parentElement.removeChild(animated_Path[i]);
             }
-
             let first_vertex = document.getElementById(this.state.vertex1);
             first_vertex.removeAttribute("class");
             let final_vertex = document.getElementById(this.state.vertex2);
@@ -99,14 +92,12 @@ class App extends React.Component {
         }
         // }
     }
-    
 
     /********************XÓA CẠNH ******************** */
     OnDeleteEgde = () => {
         this.setState({ feature: "delete" });
     };
     DeleteEgde = (edge, vertex1Id, vertex2Id) => {
-        console.log(edge)
         const removeVertexFromGraphs = (v1, v2) => {
             const { graphs } = this.state;
             if (_.has(graphs, [v1, v2]) && _.has(graphs, [v2, v1])) {
@@ -130,9 +121,8 @@ class App extends React.Component {
     /********************CHỌN CHỨC NĂNG TÌM ĐƯỜNG ******************** */
     OnWayFinding = () => {
         this.setState({ feature: "find", vertex1: "", vertex2: "" });
-        for(let i =0;i< this.state.currentNumberOfMap.length;i++)
-        {
-            let floorId = this.state.currentNumberOfMap[i].name.substring(0,2);
+        for (let i = 0; i < this.state.currentNumberOfMap.length; i++) {
+            let floorId = this.state.currentNumberOfMap[i].name.substring(0, 2);
             let groupPathNode = document.getElementById(`node-pathline-${floorId}`);
             let clone = groupPathNode.cloneNode(false);
             groupPathNode.replaceWith(clone);
@@ -144,9 +134,7 @@ class App extends React.Component {
                 }
             }
         }
-        
     };
-
 
     /**@description add two vertex to graphs
      * @returns edgeExisted : if exist edge between them, return false, otherwise, null
@@ -226,7 +214,7 @@ class App extends React.Component {
         }
         return edgeExisted;
     }
-    
+
     drawEdgeFromGraphs = () => {
         const loadedGraphs = this.state.graphs;
         console.log('drawEdgeFromGraphs called');
@@ -242,11 +230,11 @@ class App extends React.Component {
         array.forEach(item => {
             //hard code 0 nên k thể vẽ trên nhiều bảng
             // dựa vào item.node và item.neight mà vẽ
-            if(item.node.substring(0,2) === item.neighbor.substring(0,2))
-                this.drawEdge(item.node, item.neighbor, item.node.substring(0,2));
+            if (item.node.substring(0, 2) === item.neighbor.substring(0, 2))
+                this.drawEdge(item.node, item.neighbor, item.node.substring(0, 2));
         })
     }
-    
+
     /**********************START wayFiding***********************/
     async LoadGraphsFile() {
         const el = await document.createElement("div");
@@ -254,7 +242,6 @@ class App extends React.Component {
         const fileInput = await el.firstChild;
         await fileInput.click();
         await fileInput.addEventListener("change", e => {
-            console.log(".");
             if (fileInput.files[0].name.match(/\.(txt|json)$/)) {
                 this.onFileGraphsChange(e);
             } else {
@@ -303,9 +290,9 @@ class App extends React.Component {
         pinLogo.setAttributeNS(null, "height", `30`);
         pinLogo.setAttributeNS(null, "id", "pin-logo");
         pinLogo.setAttributeNS(null, "background", "transparent");
-        
+
         /**vẽ path step by step khi user lên tầng trên hoặc xuống tầng dưới */
-        const drawStepPath = (X, Y,floor_id) => {
+        const drawStepPath = (X, Y, floor_id) => {
             let SVGnodes = document.getElementById(floor_id).lastChild;
             var NoAnimatedPath = document.createElementNS(
                 "http://www.w3.org/2000/svg",
@@ -341,10 +328,10 @@ class App extends React.Component {
          * @param floor_id chứa 2 kí tự đầu để xác định vẽ trên SVG nào
          * @description vẽ path khi user đi đến địa điểm trong tầng đó 
          * */
-        const drawPath = (X, Y,floor_id) => {
+        const drawPath = (X, Y, floor_id) => {
             // console.log('X : ', X);
             // console.log('Y : ', Y);
-            
+
             let SVGnodes = document.getElementById(`nodes-${floor_id}`);
             var NoAnimatedPath = document.createElementNS(
                 "http://www.w3.org/2000/svg",
@@ -374,34 +361,34 @@ class App extends React.Component {
             SVGnodes.appendChild(animatedPath);
             SVGnodes.appendChild(pinLogo);
         }
-        console.log(step,_.size(step));
+        console.log(step, _.size(step));
         if (_.size(step) !== 1) {
             _.forEach(step, (verticesGroup) => {
                 // console.log('verticesGroup : ', verticesGroup);
-                let floor_id = verticesGroup[0].substring(0,2);
+                let floor_id = verticesGroup[0].substring(0, 2);
                 let X = [];
                 let Y = [];
                 for (let i = 0; i < verticesGroup.length; i++) {
                     const vtx = verticesGroup[i];
-                    
+
                     X.push(document.getElementById(vtx).attributes.cx.value);
                     Y.push(document.getElementById(vtx).attributes.cy.value);
                 };
-                drawStepPath(X, Y,floor_id);
+                drawStepPath(X, Y, floor_id);
             });
         }
         else {
             const verticesGroup = _.reduce(step, (firstGroup) => firstGroup);
-            let floor_id = verticesGroup[0].substring(0,2); 
+            let floor_id = verticesGroup[0].substring(0, 2);
             let X = [];
             let Y = [];
             for (let i = 0; i < verticesGroup.length; i++) {
-                const vtx = verticesGroup[i];             
+                const vtx = verticesGroup[i];
                 X.push(document.getElementById(vtx).attributes.cx.value);
                 Y.push(document.getElementById(vtx).attributes.cy.value);
-               
+
             }
-            drawPath(X, Y,floor_id);
+            drawPath(X, Y, floor_id);
         }
     }
     /********************END wayFiding*************************/
@@ -415,7 +402,6 @@ class App extends React.Component {
         fileInput.click();
         await fileInput.addEventListener("change", async () => {
             let promises = [];
-
             for (let file of fileInput.files) {
                 let filePromise = new Promise(resolve => {
                     let reader = new FileReader();
@@ -424,9 +410,7 @@ class App extends React.Component {
                 });
                 promises.push(filePromise);
             }
-
             Promise.all(promises).then(fileContents => {
-
                 let i = 0;
                 let mapsWasLoaded = '';
                 for (let a = 0; a < this.state.currentNumberOfMap.length; a++) {
@@ -440,15 +424,13 @@ class App extends React.Component {
                 if (i !== 0) {
                     alert(`These file was loaded and won't be load again : ${mapsWasLoaded}`);
                 }
-
                 for (i; i < fileContents.length; i++) {
                     if (document.getElementsByTagName("svg").length === 0) {
                         let div = document.createElement("div");
                         div.setAttribute("id", "list-svg");
                         div.innerHTML = fileContents[i].trim();
                         document.getElementsByClassName('App')[0].appendChild(div);
-                        // lấy tên map ra đặt id cho svg
-                        let floorId = fileInput.files[i].name.substring(0,2);
+                        let floorId = fileInput.files[i].name.substring(0, 2);
                         div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
@@ -467,16 +449,8 @@ class App extends React.Component {
                     else {
                         let div = document.createElement("div");
                         div.innerHTML = fileContents[i].trim();
-
-                        let floorId = fileInput.files[i].name.substring(0,2);
-
-                        let listSVG = document.getElementsByTagName("svg");
-                        let oldId = listSVG[listSVG.length - 1].getAttributeNS(null, "id");
-                        let check = /\d+/;
-                        let newId = parseInt(oldId.match(check));
-                        // lấy tên map ra đặt id cho svg
+                        let floorId = fileInput.files[i].name.substring(0, 2);
                         div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);
-
                         document.getElementById("list-svg").appendChild(div.firstChild);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
@@ -492,7 +466,6 @@ class App extends React.Component {
                         node_pathline.replaceWith(nodes_clone);
                         this.addClickEventForCircle(floorId);
                     }
-
                 }
                 // thêm radio button
                 for (let k = 0; k < fileInput.files.length; k++) {
@@ -503,69 +476,31 @@ class App extends React.Component {
                         }
                     }
                     if (check === this.state.currentNumberOfMap.length) {
-
-                        if (document.getElementsByClassName("menuOfMap").length === 0) {
-                            let floorId = fileInput.files[k].name.substring(0,2);
-                            let divMenuOfMap = document.createElement("div");
-                            divMenuOfMap.setAttribute("class", "menuOfMap");
-                            document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
-                            let radio = document.createElement("input");
-                            radio.setAttribute("type", "radio");
-                            radio.setAttribute("name", "radioGroup");
-                            radio.setAttribute("id", `radio-${floorId}`);
-                            radio.addEventListener("change", () => { this.scrollMap(floorId) });
-                            let nameOfMap = document.createElement("span");
-                            nameOfMap.innerHTML = `${fileInput.files[k].name}    `;
-                            let button = document.createElement("button");
-                            button.addEventListener("click", () => { this.DeleteMap(floorId, fileInput.files[k]) });
-                            button.textContent = "Delete";
-                            let space = document.createElement("span");
-                            space.innerText = `     `;
-                            divMenuOfMap.appendChild(radio);
-                            divMenuOfMap.appendChild(nameOfMap);
-                            divMenuOfMap.appendChild(button);
-                            divMenuOfMap.appendChild(space);
-                            this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[k]] });
-                        }
-                        else {
-                            let floorId = fileInput.files[k].name.substring(0,2);
-                            let list_menu = document.getElementsByClassName("menuOfMap");
-                           
-
-                            let lastMenu = list_menu[list_menu.length - 1];
-                            let oldMenuInputId = lastMenu.firstChild.getAttributeNS(null, "id");
-                            let checkCondition = /\d+/;
-                            let newMenuInputId = parseInt(oldMenuInputId.match(checkCondition)) + 1;
-
-
-                            let divMenuOfMap = document.createElement("div");
-                            divMenuOfMap.setAttribute("class", "menuOfMap");
-                            document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
-                            let radio = document.createElement("input");
-                            radio.setAttribute("type", "radio");
-                            radio.setAttribute("name", "radioGroup");
-                            radio.setAttribute("id", `radio-${floorId}`);
-                            radio.addEventListener("change", () => { this.scrollMap(floorId) });
-                            let nameOfMap = document.createElement("span");
-                            nameOfMap.innerHTML = `${fileInput.files[k].name}    `;
-                            let button = document.createElement("button");
-                            button.addEventListener("click", () => { this.DeleteMap(floorId, fileInput.files[k]) });
-                            button.textContent = "Delete";
-                            let space = document.createElement("span");
-                            space.innerText = `     `;
-                            divMenuOfMap.appendChild(radio);
-                            divMenuOfMap.appendChild(nameOfMap);
-                            divMenuOfMap.appendChild(button);
-                            divMenuOfMap.appendChild(space);
-                            this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[k]] });
-                        }
+                        let floorId = fileInput.files[k].name.substring(0, 2);
+                        let divMenuOfMap = document.createElement("div");
+                        divMenuOfMap.setAttribute("class", "menuOfMap");
+                        document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
+                        let radio = document.createElement("input");
+                        radio.setAttribute("type", "radio");
+                        radio.setAttribute("name", "radioGroup");
+                        radio.setAttribute("id", `radio-${floorId}`);
+                        radio.addEventListener("change", () => { this.scrollMap(floorId) });
+                        let nameOfMap = document.createElement("span");
+                        nameOfMap.innerHTML = `${fileInput.files[k].name}    `;
+                        let button = document.createElement("button");
+                        button.addEventListener("click", () => { this.DeleteMap(floorId, fileInput.files[k]) });
+                        button.textContent = "Delete";
+                        let space = document.createElement("span");
+                        space.innerText = `     `;
+                        divMenuOfMap.appendChild(radio);
+                        divMenuOfMap.appendChild(nameOfMap);
+                        divMenuOfMap.appendChild(button);
+                        divMenuOfMap.appendChild(space);
+                        this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[k]] });
                     }
                 }
-
-                console.log(this.state.currentNumberOfMap);
             });
         });
-        
     };
     handleMouseClick(e, floorId) {
         const clickTarget = e.target;
@@ -584,29 +519,21 @@ class App extends React.Component {
         } else if (this.state.feature === "find") {
             if (document.getElementsByClassName("animation-path").length !== 0) {
                 let noAnimation_Path = document.getElementsByClassName("noAnimation-path");
-                for(let i=0;i<noAnimation_Path.length;i++)
-                {
+                for (let i = 0; i < noAnimation_Path.length; i++) {
                     noAnimation_Path[i].parentElement.removeChild(noAnimation_Path[i]);
                 }
-                    
-                
                 let animated_Path = document.getElementsByClassName("animation-path");
-                for(let i=0;i<animated_Path.length;i++)
-                { 
+                for (let i = 0; i < animated_Path.length; i++) {
                     // chưa xóa đường dẫn khi vẽ đường ngắn nhất trên nhiều map
                     // do dính chung parentElement
                     animated_Path[i].parentElement.removeChild(animated_Path[i]);
                 }
-                    
-
                 let first_vertex = document.getElementById(this.state.vertex1);
                 first_vertex.removeAttribute("class");
                 let final_vertex = document.getElementById(this.state.vertex2);
                 final_vertex.removeAttribute("class");
-                if(document.getElementById("pin-logo") !== null)
-                {
+                if (document.getElementById("pin-logo") !== null) {
                     let pin_logo = document.getElementById("pin-logo");
-                    console.log(pin_logo);
                     pin_logo.parentElement.removeChild(pin_logo);
                 }
             }
@@ -614,7 +541,7 @@ class App extends React.Component {
                 document
                     .getElementById("first-vertex")
                     .setAttribute("value", e.target.id);
-                
+
                 this.setState({ vertex1: e.target.id });
                 this.isFindingPath = true;
             } else {
@@ -630,10 +557,7 @@ class App extends React.Component {
                 this.setState({ vertex2: e.target.id });
                 this.drawShortestPath(this.state.vertex1, this.state.vertex2, floorId);
                 this.isFindingPath = false;
-                // this.setState({ vertex1: "", vertex2: "" });
             }
-
-            // document.getElementById('first-vertex');
         }
     }
     addClickEventForCircle = (floorId) => {
@@ -712,58 +636,21 @@ class App extends React.Component {
                     <div id="menu">
                         <button onClick={this.handleFileSelect}>Load map</button>
                         <button onClick={this.handleSaveGraphs}>Save graphs</button>
-                        <div>
-                            <div style={{ textAlign: "center" }}>
-                                <button
-                                    onClick={() => {
-                                        this.LoadGraphsFile();
-                                    }}
-                                >
-                                    Load Graphs File
-                                </button>
-                            </div>
-                        </div>
-                        <div>
-                            <input
-                                type="radio"
-                                id="draw"
-                                onChange={() => {
-                                     
-                                    this.drawEdgeFromGraphs();
-                                    
-                                    this.OnDrawingEgde();
-                                }}
-                                name="chooseFeature"
-                            />
-                            DRAW <br />
-                            <input
-                                type="radio"
-                                id="delete"
-                                onChange={() => {
-                                    this.OnDeleteEgde();
-                                }}
-                                name="chooseFeature"
-                            />
-                            DELETE <br />
-                            <input
-                                type="radio"
-                                id="way-Finding"
-                                onChange={() => {
-                                    this.OnWayFinding();
-                                }}
-                                name="chooseFeature"
-                            />
-                            Way Finding <br />
-                            {
-                                this.state.feature === 'find' ? (
-                                    <div>
-                                        <input type="text" id="first-vertex" />
-                                        <span> </span>
-                                        <input type="text" id="second-vertex" />
-                                    </div>) : null
-                            }
-                        </div>
+                        <button onClick={this.LoadGraphsFile}>Load Graphs File</button>
                     </div>
+                    <div>
+                        <input type="radio" id="draw" onChange={() => {this.drawEdgeFromGraphs(); this.OnDrawingEgde();}}name="chooseFeature"/>DRAW <br />
+                        <input type="radio" id="delete" onChange={() => {this.OnDeleteEgde();}} name="chooseFeature"/>DELETE <br />
+                        <input type="radio" id="way-Finding" onChange={() => {this.OnWayFinding();}} name="chooseFeature"/>Way Finding <br />
+                    </div>
+                    {
+                        this.state.feature === 'find' ? (
+                            <div>
+                                <input type="text" id="first-vertex" />
+                                <span> </span>
+                                <input type="text" id="second-vertex" />
+                            </div>) : null
+                    }
                 </div>
                 <div id="relationship-table">
                     {
