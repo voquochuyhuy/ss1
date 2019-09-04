@@ -2,6 +2,7 @@ import React from "react";
 import RelationshipTable from "./components/RelationshipTable/RelationshipTable";
 import "./App.css";
 import _ from "lodash";
+import Menu from "./components/menu";
 const Graph = require("node-dijkstra");
 class App extends React.Component {
     isDrawingEdge = false;
@@ -595,7 +596,7 @@ class App extends React.Component {
         var cloneState = [...this.state.currentNumberOfMap];
         cloneState.splice(deleteFile, 1);
         this.setState({ currentNumberOfMap: cloneState });
-        console.log(this.state.currentNumberOfMap);
+        // console.log(this.state.currentNumberOfMap);
     }
     scrollMap = (floorId) => {
         let svg = document.getElementById(`svg-${floorId}`);
@@ -633,24 +634,15 @@ class App extends React.Component {
         return (
             <div>
                 <div className="App">
-                    <div id="menu">
-                        <button onClick={this.handleFileSelect}>Load map</button>
-                        <button onClick={this.handleSaveGraphs}>Save graphs</button>
-                        <button onClick={this.LoadGraphsFile}>Load Graphs File</button>
-                    </div>
-                    <div>
-                        <input type="radio" id="draw" onChange={() => {this.drawEdgeFromGraphs(); this.OnDrawingEgde();}}name="chooseFeature"/>DRAW <br />
-                        <input type="radio" id="delete" onChange={() => {this.OnDeleteEgde();}} name="chooseFeature"/>DELETE <br />
-                        <input type="radio" id="way-Finding" onChange={() => {this.OnWayFinding();}} name="chooseFeature"/>Way Finding <br />
-                    </div>
-                    {
-                        this.state.feature === 'find' ? (
-                            <div>
-                                <input type="text" id="first-vertex" />
-                                <span> </span>
-                                <input type="text" id="second-vertex" />
-                            </div>) : null
-                    }
+                    <Menu
+                        handleFileSelect = {this.handleFileSelect}
+                        handleSaveGraphs = {this.handleSaveGraphs}
+                        LoadGraphsFile = {this.LoadGraphsFile}
+                        drawEdgeFromGraphs = {this.drawEdgeFromGraphs}
+                        OnDrawingEgde= {this.OnDrawingEgde}
+                        OnDeleteEgde= {this.OnDeleteEgde}
+                        OnWayFinding= {this.OnWayFinding}
+                    />        
                 </div>
                 <div id="relationship-table">
                     {
