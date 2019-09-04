@@ -23,8 +23,8 @@ class App extends React.Component {
             feature: "",
             route: null,
             currentNumberOfMap: [],
-            isDrawFromGraphs: false,
-            svgId_FirstClick:""
+            
+            svgId_FirstClick:"",
         };
         this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
     }
@@ -149,9 +149,11 @@ class App extends React.Component {
         });
         array.forEach(item => {
             //hard code 0 nên k thể vẽ trên nhiều bảng
-            this.drawEdge(item.node, item.neighbor, '0');
+            // dựa vào item.node và item.neight mà vẽ
+            console.log(item.node.substring(0,2) === item.neighbor.substring(0,2));
+            if(item.node.substring(0,2) === item.neighbor.substring(0,2))
+                this.drawEdge(item.node, item.neighbor, item.node.substring(0,2));
         })
-        this.setState({ isDrawFromGraphs: true });
     }
     drawEdge = (vertex1, vertex2, i) => {
         // if (this.state.feature === "draw") {
@@ -489,6 +491,7 @@ class App extends React.Component {
         this.setState({ feature: "delete" });
     };
     DeleteEgde = (edge, vertex1Id, vertex2Id) => {
+        console.log(edge)
         const removeVertexFromGraphs = (v1, v2) => {
             const { graphs } = this.state;
             if (_.has(graphs, [v1, v2]) && _.has(graphs, [v2, v1])) {
@@ -502,25 +505,30 @@ class App extends React.Component {
         }
         else {
             const edgeEl = document.getElementById(edge);
+            console.log(edgeEl);
+            console.log(edge);
             edgeEl.parentElement.removeChild(edgeEl);
         }
         removeVertexFromGraphs(vertex1Id, vertex2Id);
     };
     OnWayFinding = () => {
         this.setState({ feature: "find", vertex1: "", vertex2: "" });
-        const groupPathNode = document.getElementById('node-pathline-0');
-        let clone = groupPathNode.cloneNode(false);
-        groupPathNode.replaceWith(clone);
-        const pathNodes = document.getElementsByTagName("circle");
-        for (let i = 0; i < pathNodes.length; i++) {
-            if (pathNodes[i].id.startsWith("L4_PATH")) {
-                pathNodes[i].setAttributeNS(null, "fill", "transparent");
-                pathNodes[i].setAttributeNS(null, "stroke", "transparent");
+        for(let i =0;i< this.state.currentNumberOfMap.length;i++)
+        {
+            let floorId = this.state.currentNumberOfMap[i].name.substring(0,2);
+            let groupPathNode = document.getElementById(`node-pathline-${floorId}`);
+            let clone = groupPathNode.cloneNode(false);
+            groupPathNode.replaceWith(clone);
+            let pathNodes = document.getElementsByTagName("circle");
+            for (let y = 0; y < pathNodes.length; y++) {
+                if (pathNodes[y].id.startsWith(`${floorId}_PATH`)) {
+                    pathNodes[y].setAttributeNS(null, "fill", "transparent");
+                    pathNodes[y].setAttributeNS(null, "stroke", "transparent");
+                }
             }
         }
+        
     };
-
-
     handleFileSelect = async e => {
         var element = document.createElement("div");
         element.innerHTML = '<input type="file" multiple>';
@@ -560,43 +568,50 @@ class App extends React.Component {
                         div.setAttribute("id", "list-svg");
                         div.innerHTML = fileContents[i].trim();
                         document.getElementsByClassName('App')[0].appendChild(div);
-                        div.firstChild.setAttributeNS(null, "id", `svg-${i}`);
+                        // lấy tên map ra đặt id cho svg
+                        let floorId = fileInput.files[i].name.substring(0,2);
+                        div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
                             "g"
                         );
-                        node_pathline.setAttributeNS(null, "id", `node-pathline-${this.state.currentNumberOfMap.length + i}`);
+                        node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
                         let nodes = document.getElementById("nodes");
-                        nodes.setAttribute("id", `nodes-${this.state.currentNumberOfMap.length + i}`);
+                        nodes.setAttribute("id", `nodes-${floorId}`);
                         nodes.parentElement.appendChild(node_pathline);
                         let node_pathline_clone = node_pathline.cloneNode(true);
                         let nodes_clone = nodes.cloneNode(true);
                         nodes.replaceWith(node_pathline_clone);
                         node_pathline.replaceWith(nodes_clone);
-                        this.addClickEventForCircle(this.state.currentNumberOfMap.length + i);
+                        this.addClickEventForCircle(floorId);
                     }
                     else {
                         let div = document.createElement("div");
                         div.innerHTML = fileContents[i].trim();
+
+                        let floorId = fileInput.files[i].name.substring(0,2);
+
                         let listSVG = document.getElementsByTagName("svg");
                         let oldId = listSVG[listSVG.length - 1].getAttributeNS(null, "id");
                         let check = /\d+/;
                         let newId = parseInt(oldId.match(check));
-                        div.firstChild.setAttributeNS(null, "id", `svg-${newId + 1}`);
+                        // lấy tên map ra đặt id cho svg
+                        div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);
+
                         document.getElementById("list-svg").appendChild(div.firstChild);
                         let node_pathline = document.createElementNS(
                             "http://www.w3.org/2000/svg",
                             "g"
                         );
-                        node_pathline.setAttributeNS(null, "id", `node-pathline-${newId + 1}`);
+                        node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
                         let nodes = document.getElementById("nodes");
-                        nodes.setAttribute("id", `nodes-${newId + 1}`);
+                        nodes.setAttribute("id", `nodes-${floorId}`);
                         nodes.parentElement.appendChild(node_pathline);
                         let node_pathline_clone = node_pathline.cloneNode(true);
                         let nodes_clone = nodes.cloneNode(true);
                         nodes.replaceWith(node_pathline_clone);
                         node_pathline.replaceWith(nodes_clone);
-                        this.addClickEventForCircle(newId + 1);
+                        this.addClickEventForCircle(floorId);
                     }
 
                 }
@@ -611,18 +626,19 @@ class App extends React.Component {
                     if (check === this.state.currentNumberOfMap.length) {
 
                         if (document.getElementsByClassName("menuOfMap").length === 0) {
+                            let floorId = fileInput.files[k].name.substring(0,2);
                             let divMenuOfMap = document.createElement("div");
                             divMenuOfMap.setAttribute("class", "menuOfMap");
                             document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
                             let radio = document.createElement("input");
                             radio.setAttribute("type", "radio");
                             radio.setAttribute("name", "radioGroup");
-                            radio.setAttribute("id", `radio-${k}`);
-                            radio.addEventListener("change", () => { this.scrollMap(k) });
+                            radio.setAttribute("id", `radio-${floorId}`);
+                            radio.addEventListener("change", () => { this.scrollMap(floorId) });
                             let nameOfMap = document.createElement("span");
                             nameOfMap.innerHTML = `${fileInput.files[k].name}    `;
                             let button = document.createElement("button");
-                            button.addEventListener("click", () => { this.DeleteMap(k, fileInput.files[k]) });
+                            button.addEventListener("click", () => { this.DeleteMap(floorId, fileInput.files[k]) });
                             button.textContent = "Delete";
                             let space = document.createElement("span");
                             space.innerText = `     `;
@@ -633,11 +649,15 @@ class App extends React.Component {
                             this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[k]] });
                         }
                         else {
+                            let floorId = fileInput.files[k].name.substring(0,2);
                             let list_menu = document.getElementsByClassName("menuOfMap");
+                           
+
                             let lastMenu = list_menu[list_menu.length - 1];
                             let oldMenuInputId = lastMenu.firstChild.getAttributeNS(null, "id");
                             let checkCondition = /\d+/;
                             let newMenuInputId = parseInt(oldMenuInputId.match(checkCondition)) + 1;
+
 
                             let divMenuOfMap = document.createElement("div");
                             divMenuOfMap.setAttribute("class", "menuOfMap");
@@ -645,12 +665,12 @@ class App extends React.Component {
                             let radio = document.createElement("input");
                             radio.setAttribute("type", "radio");
                             radio.setAttribute("name", "radioGroup");
-                            radio.setAttribute("id", `radio-${newMenuInputId}`);
-                            radio.addEventListener("change", () => { this.scrollMap(newMenuInputId) });
+                            radio.setAttribute("id", `radio-${floorId}`);
+                            radio.addEventListener("change", () => { this.scrollMap(floorId) });
                             let nameOfMap = document.createElement("span");
                             nameOfMap.innerHTML = `${fileInput.files[k].name}    `;
                             let button = document.createElement("button");
-                            button.addEventListener("click", () => { this.DeleteMap(newMenuInputId, fileInput.files[k]) });
+                            button.addEventListener("click", () => { this.DeleteMap(floorId, fileInput.files[k]) });
                             button.textContent = "Delete";
                             let space = document.createElement("span");
                             space.innerText = `     `;
@@ -662,14 +682,17 @@ class App extends React.Component {
                         }
                     }
                 }
+
+                console.log(this.state.currentNumberOfMap);
             });
         });
+        
     };
-    DeleteMap = (k, file) => {
+    DeleteMap = (floorId, file) => {
         // console.log(this.state.currentNumberOfMap);
         let deleteFile;
-        document.getElementById("list-svg").removeChild(document.getElementById(`svg-${k}`));
-        let radioElement = document.getElementById(`radio-${k}`);
+        document.getElementById("list-svg").removeChild(document.getElementById(`svg-${floorId}`));
+        let radioElement = document.getElementById(`radio-${floorId}`);
         document.getElementsByClassName("App")[0].removeChild(radioElement.parentElement);
         if (document.getElementsByTagName("svg").length === 0) {
             let list_svg = document.getElementById("list-svg");
@@ -685,10 +708,10 @@ class App extends React.Component {
         var cloneState = [...this.state.currentNumberOfMap];
         cloneState.splice(deleteFile, 1);
         this.setState({ currentNumberOfMap: cloneState });
-        // console.log(this.state.currentNumberOfMap);
+        console.log(this.state.currentNumberOfMap);
     }
-    scrollMap = (k) => {
-        let svg = document.getElementById(`svg-${k}`);
+    scrollMap = (floorId) => {
+        let svg = document.getElementById(`svg-${floorId}`);
         svg.scrollIntoView();
     }
     handleSaveGraphs = e => {
@@ -738,9 +761,9 @@ class App extends React.Component {
                                 type="radio"
                                 id="draw"
                                 onChange={() => {
-                                    if (!this.state.isDrawFromGraphs) {
-                                        this.drawEdgeFromGraphs();
-                                    }
+                                     
+                                    this.drawEdgeFromGraphs();
+                                    
                                     this.OnDrawingEgde();
                                 }}
                                 name="chooseFeature"
