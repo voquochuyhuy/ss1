@@ -1,3 +1,5 @@
+import equals from 'deep-equal';
+
 /**@param node : id of node element
  * @return type of node
  */
@@ -38,4 +40,37 @@ export const transformNeighborsOfNode = (object) => {
         }
         return neighbor;
     })
+}
+export const serializeGraphsToData = (graphs) => {
+    const graphsArray = Object.keys(graphs).map(node => {
+        const type = getTypeOfNode(node);
+        const neighbors = transformNeighborsOfNode(graphs[node]);
+        const relation = {
+            node: {
+                id: node,
+                type: type,
+                name: type === 'path' || type === 'facility' ? node : getNameOfNode(node)
+            },
+            neighbors: neighbors
+        }
+        return relation;
+    });
+    return graphsArray;
+}
+export const deserializeDataToGraphs = (data) => {
+    let graphs = {};
+    data.forEach(items => {
+        const arrayNeighbor = items.neighbors.map(neighbor => {
+            return [[neighbor.id], neighbor.cost]
+        });
+        const nb = arrayNeighbor.reduce((prev, curr) => { prev[curr[0]] = curr[1]; return prev; }, {})
+        const item = {
+            [items.node.id]: {
+                ...nb
+            }
+        };
+        graphs = { ...graphs, ...item }
+    });
+    console.log('result save : ', graphs);
+    return graphs;
 }

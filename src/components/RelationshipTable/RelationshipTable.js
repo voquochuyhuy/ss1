@@ -2,8 +2,8 @@ import React from 'react';
 import ReactTable from 'react-table';
 import _ from 'lodash';
 import matchSorter from 'match-sorter';
-import equal from 'deep-equal';
-import { getNameOfNode, getTypeOfNode, transformNeighborsOfNode } from './Utils'
+import equals from 'deep-equal';
+import { getNameOfNode, getTypeOfNode, transformNeighborsOfNode, serializeGraphsToData, deserializeDataToGraphs } from './Utils'
 import 'react-table/react-table.css';
 class RelationshipTable extends React.Component {
     constructor(props) {
@@ -37,62 +37,42 @@ class RelationshipTable extends React.Component {
     }
     componentDidMount() {
         const { graphs } = this.props;
-        this.transformGraphs(graphs);
+        const graphArr = serializeGraphsToData(graphs);
+        this.setState({ graphs: graphs, data: graphArr });
     }
-    componentDidUpdate(prevProps) {
-        if (!equal(prevProps.graphs, this.props.graphs)) {
-            console.log('2 graphs khac nhau, re-render');
-            this.transformGraphs(this.props.graphs);
-        }
-    }
-    transformGraphs(graphs) {
-        const graphsArray = Object.keys(graphs).map(node => {
-            const type = getTypeOfNode(node);
-            const relation = {
-                node: {
-                    id: node,
-                    type: type,
-                    name: type === 'path' || type === 'facility' ? node : getNameOfNode(node)
-                },
-                neighbors: transformNeighborsOfNode(graphs[node])
+    static getDerivedStateFromProps(nextProps, currentState) {
+        if (!equals(nextProps.graphs, currentState.graphs)) {
+            console.log('khac nhau :', nextProps);
+            const { graphs } = nextProps;
+            const graphsArray = serializeGraphsToData(graphs);
+            return {
+                data: graphsArray,
+                graphs: graphs
             }
-            return relation;
-        });
-        this.setState({ data: graphsArray });
+        }
+        return null;
     }
     handleRemoveNeighbor = (node, neighbor) => {
         const { data } = this.state;
-        for (let i = 0; i < data.length; i++) {
-            if (data[i].node === node && data[i].neighbors.includes(neighbor)) {
-                const nodeRemoved = _.remove(data[i].neighbors, neighbor);
-                console.log(node.id,nodeRemoved[0].id);
-                this.props.removeRelationship({ node: node.id, neighbor: nodeRemoved[0].id })
+        data.forEach(item => {
+            //tìm node để xóa neighbor & tìm neighbor để xóa node 
+            if (item.node === node || item.node.id === neighbor.id) {
+                const nodeRemoved = _.remove(item.neighbors, nb => nb === neighbor || nb.id === node.id);
+                console.log('removed node and neighbor: ', nodeRemoved);
+                if (_.isEmpty(item.neighbors)) {
+                    const itemRemoved = _.remove(data, nodeNoNeighbor => nodeNoNeighbor.node.id === item.node.id);
+                    console.log('item removed: ', itemRemoved);
+                }
+                this.props.removeRelationship({ node: node.id, neighbor: nodeRemoved[0].id });
             }
-        }
-        this.setState({ data });
+        });
+        // this.setState({ data: data });
     }
     handleSave = () => {
-        const serializeData = (data) => {
-            let graphs = {};
-            data.forEach(items => {
-                const arrayNeighbor = items.neighbors.map(neighbor => {
-                    return [[neighbor.id], neighbor.cost]
-                });
-                const nb = arrayNeighbor.reduce((prev, curr) => { prev[curr[0]] = curr[1]; return prev; }, {})
-                const item = {
-                    [items.node.id]: {
-                        ...nb
-                    }
-                };
-                graphs = { ...graphs, ...item }
-            });
-            console.log('result save : ', graphs);
-            return graphs;
-        }
         const a = document.createElement("a");
         document.body.appendChild(a);
         const { data } = this.state;
-        const serializedData = serializeData(data)
+        const serializedData = deserializeDataToGraphs(data);
         const fileName = "graphs.json";
         const json = JSON.stringify(serializedData);
         const blob = new Blob([json], { type: "octet/stream" });
@@ -110,19 +90,20 @@ class RelationshipTable extends React.Component {
         const CellEditable = (props) => {
             const { node, neighbor, propertyToEdit } = props;
             const handleButtonAdd = () => {
-                let counter = this.state.count++;
+                let { count } = this.state;
+                this.setState({ count: count++ });
                 const { data } = this.state;
-                data.map(item => {
+                data.forEach(item => {
                     if (item.node === node) {
                         const newNeighbor = {
-                            id: 'new-neighbor-' + counter,
-                            name: 'new Neighbor ' + counter,
+                            id: 'new-neighbor-' + count,
+                            name: 'new Neighbor ' + count,
                             type: 'path',
                             cost: 1
                         }
                         item.neighbors.push(newNeighbor);;
                     }
-                })
+                });
                 this.setState({ data });
             }
             const CellEdit = (props) => {
@@ -166,7 +147,8 @@ class RelationshipTable extends React.Component {
         const columns = [{
             Header: 'Node',
             id: 'node-root',
-            Cell: props => <Cell node={props.original.node} property='name' />,
+            accessor: d => d.node.id,
+            Cell: props => <Cell node={props.original.node} property='id' />,
             filterMethod: (filter, rows) => matchSorter(rows, filter.value, { keys: ["node-root"] }),
             filterAll: true
         }, {
@@ -193,6 +175,7 @@ class RelationshipTable extends React.Component {
         }, {
             Header: props => <span>Type</span>,
             id: 'nb-type',
+            accessor: d => d.neighbors.map(neighbor => neighbor.type),
             Cell: props => {
                 const { node, neighbors } = props.original;
                 return neighbors.map(neighbor => {
@@ -208,6 +191,7 @@ class RelationshipTable extends React.Component {
             id: 'cost',
             Header: 'Cost',
             width: 100,
+            accessor: d => d.neighbors.map(neighbor => neighbor.cost),
             Cell: props => {
                 const { node, neighbors } = props.original;
                 return neighbors.map(neighbor => {
@@ -244,6 +228,7 @@ class RelationshipTable extends React.Component {
                 defaultFilterMethod={(filter, row) =>
                     String(row[filter.id]) === filter.value}
                 data={this.state.data}
+                // data={serializeGraphsToData(this.state.graphs)}
                 columns={columns}
                 defaultPageSize={5}
                 showPagination={true}

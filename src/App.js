@@ -77,7 +77,6 @@ class App extends React.Component {
                 this.DeleteEgde(edge, v1.id, v2.id);
             });
             node_path.appendChild(edge);
-            console.log('Draw edges id :', `${v1.id}:${v2.id}`);
         }
         if (typeof vertex1 !== "string") {
             const edgeExisted = this.addVertexToGraphs(vertex1, vertex2);
@@ -623,11 +622,16 @@ class App extends React.Component {
     onRemoveFromChild = (removedObj) => {
         const { graphs } = this.state;
         const { node, neighbor } = removedObj;
-        console.log('onRemoveFromChild : ', node, neighbor);
         if ((_.has(graphs, [node, neighbor]) && _.has(graphs, [neighbor, node]))) {
             this.DeleteEgde(`${node}:${neighbor}`, node, neighbor);
             delete graphs[node][neighbor];
             delete graphs[neighbor][node];
+            if (_.isEmpty(graphs[node])) {
+                delete graphs[node];
+            }
+            if (_.isEmpty(graphs[neighbor])) {
+                delete graphs[neighbor];
+            }
             this.setState({ graphs });
         }
     }
