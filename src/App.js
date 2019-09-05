@@ -62,10 +62,7 @@ class App extends React.Component {
             const y1 = v1.getAttributeNS(null, "cy");
             const x2 = v2.getAttributeNS(null, "cx");
             const y2 = v2.getAttributeNS(null, "cy");
-            let edge = document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "line"
-            );
+            let edge = document.createElementNS("http://www.w3.org/2000/svg", "line");
             edge.setAttributeNS(null, "id", `${v1.id}:${v2.id}`);
             edge.setAttributeNS(null, "x1", x1);
             edge.setAttributeNS(null, "y1", y1);
@@ -80,6 +77,7 @@ class App extends React.Component {
                 this.DeleteEgde(edge, v1.id, v2.id);
             });
             node_path.appendChild(edge);
+            console.log('Draw edges id :', `${v1.id}:${v2.id}`);
         }
         if (typeof vertex1 !== "string") {
             const edgeExisted = this.addVertexToGraphs(vertex1, vertex2);
@@ -104,16 +102,21 @@ class App extends React.Component {
             if (_.has(graphs, [v1, v2]) && _.has(graphs, [v2, v1])) {
                 delete graphs[v1][v2];
                 delete graphs[v2][v1];
-                this.setState({ graphs })
+                this.setState({ graphs });
             }
         }
         if (this.state.feature === "delete" && typeof edge !== "string") {
             edge.parentElement.removeChild(edge);
         }
-        else {
-            const edgeEl = document.getElementById(edge);
+        else if (typeof edge === "string") {
+            const edgeId = edge;
+            let edgeEl = document.getElementById(edgeId);
+            if (!edgeEl) {
+                const tryEdgeId = edgeId.split(':').reverse().join(':');
+                edgeEl = document.getElementById(tryEdgeId);
+            }
             console.log(edgeEl);//bị null khi nhấn nút remove từ bảng
-            console.log(edge);
+            console.log(edgeId);
             edgeEl.parentElement.removeChild(edgeEl);
         }
         removeVertexFromGraphs(vertex1Id, vertex2Id);
@@ -137,8 +140,9 @@ class App extends React.Component {
         }
     };
 
-    /**@description add two vertex to graphs
-     * @returns edgeExisted : if exist edge between them, return false, otherwise, null
+    /**
+     * @description add two vertex to graphs
+     * @return edgeExisted : if exist edge between them, return false, otherwise, null
      */
     addVertexToGraphs(vertex1, vertex2) {
         const { graphs } = this.state;
@@ -237,7 +241,7 @@ class App extends React.Component {
     }
 
     /**********************START wayFiding***********************/
-    LoadGraphsFile = async ()=> {
+    LoadGraphsFile = async () => {
         const el = await document.createElement("div");
         el.innerHTML = "<input type='file'/>";
         const fileInput = await el.firstChild;
@@ -273,7 +277,7 @@ class App extends React.Component {
     drawShortestPath(vertex1, vertex2, node_path_id) {
         const pathArr = this.findShortestPath(vertex1, vertex2);
         if (!pathArr) {
-            alert("Not found shotest path, check model graphs");
+            alert("Not found shortest path, check model graphs");
             return;
         }
         const step = _.groupBy(pathArr, (vertexId) => {
@@ -350,10 +354,7 @@ class App extends React.Component {
             NoAnimatedPath.setAttributeNS(null, "class", "noAnimation-path");
             SVGnodes.appendChild(NoAnimatedPath);
 
-            var animatedPath = document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "path"
-            );
+            var animatedPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
             animatedPath.setAttributeNS(null, "d", `${M}`);
             animatedPath.setAttributeNS(null, "class", "animation-path");
             animatedPath.setAttributeNS(null, "stroke-width", "3");
@@ -618,7 +619,7 @@ class App extends React.Component {
         window.URL.revokeObjectURL(url);
     };
 
-    /********************???? ******************** */
+    /********************REMOVE ONCLICK IN RELATIONSHIP TABLE******************** */
     onRemoveFromChild = (removedObj) => {
         const { graphs } = this.state;
         const { node, neighbor } = removedObj;
@@ -635,14 +636,14 @@ class App extends React.Component {
             <div>
                 <div className="App">
                     <Menu
-                        handleFileSelect = {this.handleFileSelect}
-                        handleSaveGraphs = {this.handleSaveGraphs}
-                        LoadGraphsFile = {this.LoadGraphsFile}
-                        drawEdgeFromGraphs = {this.drawEdgeFromGraphs}
-                        OnDrawingEgde= {this.OnDrawingEgde}
-                        OnDeleteEgde= {this.OnDeleteEgde}
-                        OnWayFinding= {this.OnWayFinding}
-                    />        
+                        handleFileSelect={this.handleFileSelect}
+                        handleSaveGraphs={this.handleSaveGraphs}
+                        LoadGraphsFile={this.LoadGraphsFile}
+                        drawEdgeFromGraphs={this.drawEdgeFromGraphs}
+                        OnDrawingEgde={this.OnDrawingEgde}
+                        OnDeleteEgde={this.OnDeleteEgde}
+                        OnWayFinding={this.OnWayFinding}
+                    />
                 </div>
                 <div id="relationship-table">
                     {
