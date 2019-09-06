@@ -3,6 +3,9 @@ import RelationshipTable from "./components/RelationshipTable/RelationshipTable"
 import "./App.css";
 import _ from "lodash";
 import Menu from "./components/menu";
+import SaveGraph from "./components/SaveGraph";
+import LoadGraph from "./components/LoadGraph";
+import WayFindRadioButton from "./components/WayFindRadioButton";
 const Graph = require("node-dijkstra");
 class App extends React.Component {
     isDrawingEdge = false;
@@ -15,7 +18,6 @@ class App extends React.Component {
             vertex2: "",
             edges: [],
             graphs: {},
-            loadedGraphs: {},
             edgeVertex1: null,
             edgeVertex2: null,
             feature: "",
@@ -24,7 +26,6 @@ class App extends React.Component {
             listIDOfMap:[],
             svgId_FirstClick: "",
         };
-        this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
     }
     /********************VẼ CẠNH ******************** */
     OnDrawingEgde = () => {
@@ -125,19 +126,6 @@ class App extends React.Component {
     /********************CHỌN CHỨC NĂNG TÌM ĐƯỜNG ******************** */
     OnWayFinding = () => {
         this.setState({ feature: "find", vertex1: "", vertex2: "" });
-        for (let i = 0; i < this.state.listIDOfMap.length; i++) {
-            let floorId = this.state.listIDOfMap[i];
-            let groupPathNode = document.getElementById(`node-pathline-${floorId}`);
-            let clone = groupPathNode.cloneNode(false);
-            groupPathNode.replaceWith(clone);
-            let pathNodes = document.getElementsByTagName("circle");
-            for (let y = 0; y < pathNodes.length; y++) {
-                if (pathNodes[y].id.startsWith(`${floorId}_PATH`)) {
-                    pathNodes[y].setAttributeNS(null, "fill", "transparent");
-                    pathNodes[y].setAttributeNS(null, "stroke", "transparent");
-                }
-            }
-        }
     };
 
     /**
@@ -241,19 +229,6 @@ class App extends React.Component {
     }
 
     /**********************START wayFiding***********************/
-    LoadGraphsFile = async () => {
-        const el = await document.createElement("div");
-        el.innerHTML = "<input type='file'/>";
-        const fileInput = await el.firstChild;
-        await fileInput.click();
-        await fileInput.addEventListener("change", e => {
-            if (fileInput.files[0].name.match(/\.(txt|json)$/)) {
-                this.onFileGraphsChange(e);
-            } else {
-                alert(`File not supported, .txt or .json files only`);
-            }
-        });
-    }
     onFileGraphsChange = e => {
         const reader = new FileReader();
         reader.onload = async e => {
@@ -529,9 +504,6 @@ class App extends React.Component {
 
     /********************XÓA MAP ĐÃ LOAD - SCROLL ĐẾN MAP ĐÓ ******************** */
     DeleteMap = (floorId, file) => {
-        console.log(file);
-        console.log(this.state.currentNumberOfMap);
-        // console.log(this.state.currentNumberOfMap);
         let deleteFile;
         document.getElementById("list-svg").removeChild(document.getElementById(`svg-${floorId}`));
         let radioElement = document.getElementById(`radio-${floorId}`);
@@ -540,7 +512,6 @@ class App extends React.Component {
             let list_svg = document.getElementById("list-svg");
             list_svg.parentElement.removeChild(list_svg);
         }
-        // console.log(file.name);
         for (let i = 0; i < this.state.currentNumberOfMap.length; i++) {
             if (file.name === this.state.currentNumberOfMap[i].name) {
                 deleteFile = i;
@@ -550,27 +521,12 @@ class App extends React.Component {
         var cloneState = [...this.state.currentNumberOfMap];
         cloneState.splice(deleteFile, 1);
         this.setState({ currentNumberOfMap: cloneState });
-        // console.log(this.state.currentNumberOfMap);
     }
     scrollMap = (floorId) => {
         let svg = document.getElementById(`svg-${floorId}`);
         svg.scrollIntoView();
     }
-
-    /********************START LOAD FILE ******************** */
-    handleSaveGraphs = e => {
-        const a = document.createElement("a");
-        document.body.appendChild(a);
-        const data = this.state.graphs;
-        const fileName = "graphs.json";
-        const json = JSON.stringify(data);
-        const blob = new Blob([json], { type: "octet/stream" });
-        const url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        window.URL.revokeObjectURL(url);
-    };
+    /********************START LOAD FILE ******************** */ 
 
     /********************REMOVE ONCLICK IN RELATIONSHIP TABLE******************** */
     onRemoveFromChild = (removedObj) => {
@@ -592,16 +548,19 @@ class App extends React.Component {
     render() {
         return (
             <div>
-                <div className="App">
-                    <Menu
-                        handleFileSelect={this.handleFileSelect}
-                        handleSaveGraphs={this.handleSaveGraphs}
-                        LoadGraphsFile={this.LoadGraphsFile}
-                        drawEdgeFromGraphs={this.drawEdgeFromGraphs}
-                        OnDrawingEgde={this.OnDrawingEgde}
-                        OnDeleteEgde={this.OnDeleteEgde}
-                        OnWayFinding={this.OnWayFinding}
-                    />
+                <div className="App">            
+                    <button onClick={this.handleFileSelect}>Load map</button>
+                    <LoadGraph onFileGraphsChange={this.onFileGraphsChange}></LoadGraph>
+                    <SaveGraph data={this.state.graphs}></SaveGraph>
+                    <div>
+                        <input type="radio" id="draw" onChange={() => {this.drawEdgeFromGraphs(); this.OnDrawingEgde();}}name="chooseFeature"/>DRAW <br />
+                        <input type="radio" id="delete" onChange={() => {this.OnDeleteEgde()}} name="chooseFeature"/>DELETE <br />
+                        <WayFindRadioButton 
+                            feature={this.state.feature} 
+                            listIDOfMap={this.state.listIDOfMap} 
+                            OnWayFinding={this.OnWayFinding}
+                        />
+                    </div>                   
                 </div>
                 <div id="relationship-table">
                     {
@@ -612,5 +571,4 @@ class App extends React.Component {
         );
     }
 }
-
 export default App;
