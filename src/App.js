@@ -294,10 +294,9 @@ class App extends React.Component {
         pinLogo.setAttributeNS(null, "height", `30`);
         pinLogo.setAttributeNS(null, "id", "pin-logo");
         pinLogo.setAttributeNS(null, "background", "transparent");
-
-        /**vẽ path step by step khi user lên tầng trên hoặc xuống tầng dưới */
-        const drawStepPath = (X, Y, floor_id) => {
-            let SVGnodes = document.getElementById(floor_id).lastChild;
+        
+        
+        const draw = (X,Y,SVGnodes)=>{
             var NoAnimatedPath = document.createElementNS(
                 "http://www.w3.org/2000/svg",
                 "path"
@@ -322,46 +321,10 @@ class App extends React.Component {
             animatedPath.setAttributeNS(null, "class", "animation-path");//
             animatedPath.setAttributeNS(null, "stroke-width", "3");
             animatedPath.setAttributeNS(null, "fill", "transparent");
-
             SVGnodes.appendChild(animatedPath);
             SVGnodes.appendChild(pinLogo);
         }
-        /**
-         * @param X array chứa tọa độ x
-         * @param Y array chứa tọa độ y
-         * @param floor_id chứa 2 kí tự đầu để xác định vẽ trên SVG nào
-         * @description vẽ path khi user đi đến địa điểm trong tầng đó 
-         * */
-        const drawPath = (X, Y, floor_id) => {
-            // console.log('X : ', X);
-            // console.log('Y : ', Y);
 
-            let SVGnodes = document.getElementById(`node-${floor_id}`);
-            var NoAnimatedPath = document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "path"
-            );
-            let M = `M ${X[0]} ${Y[0]}`;
-            for (let i = 1; i < X.length; i++) {
-                M += `L ${X[i]} ${Y[i]} `;
-            }
-            NoAnimatedPath.setAttributeNS(null, "d", `${M}`);
-            NoAnimatedPath.setAttributeNS(null, "stroke", "rgb(247, 199, 0)");
-            NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
-            NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
-            NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
-            NoAnimatedPath.setAttributeNS(null, "class", "noAnimation-path");
-            SVGnodes.appendChild(NoAnimatedPath);
-
-            var animatedPath = document.createElementNS("http://www.w3.org/2000/svg", "path");
-            animatedPath.setAttributeNS(null, "d", `${M}`);
-            animatedPath.setAttributeNS(null, "class", "animation-path");
-            animatedPath.setAttributeNS(null, "stroke-width", "3");
-            animatedPath.setAttributeNS(null, "fill", "transparent");
-
-            SVGnodes.appendChild(animatedPath);
-            SVGnodes.appendChild(pinLogo);
-        }
         console.log(step, _.size(step));
         if (_.size(step) !== 1) {
             _.forEach(step, (verticesGroup) => {
@@ -375,7 +338,8 @@ class App extends React.Component {
                     X.push(document.getElementById(vtx).attributes.cx.value);
                     Y.push(document.getElementById(vtx).attributes.cy.value);
                 };
-                drawStepPath(X, Y, floor_id);
+                let SVGnodes = document.getElementById(floor_id).lastChild;
+                draw(X, Y,SVGnodes);
             });
         }
         else {
@@ -389,7 +353,8 @@ class App extends React.Component {
                 Y.push(document.getElementById(vtx).attributes.cy.value);
 
             }
-            drawPath(X, Y, floor_id);
+            let SVGnodes = document.getElementById(`nodes-${floor_id}`);
+            draw(X, Y,SVGnodes);
         }
     }
     /********************END wayFiding*************************/
