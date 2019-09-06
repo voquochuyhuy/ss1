@@ -1,10 +1,24 @@
 import React from 'react';
 import ReactTable from 'react-table';
 import _ from 'lodash';
-import matchSorter from 'match-sorter';
 import equals from 'deep-equal';
-import { getNameOfNode, getTypeOfNode, transformNeighborsOfNode, serializeGraphsToData, deserializeDataToGraphs } from './Utils'
+import { serializeGraphsToData } from './Utils';
+import { deserializeDataToGraphs, handleSaveRelationship } from '../../Utils'
+import COLUMNS from './Columns';
 import 'react-table/react-table.css';
+
+function ButtonFeature({ handleAddRelationship, handleSaveRelationship }) {
+    const styles = {
+        backgroundColor: '#dadada',
+        borderRadius: '2px'
+    }
+    return (
+        <div style={{ textAlign: 'right' }}>
+            <button style={styles} onClick={() => handleAddRelationship}>Add</button>
+            <button style={styles} onClick={() => handleSaveRelationship} >Save</button>
+        </div>
+    )
+}
 class RelationshipTable extends React.Component {
     constructor(props) {
         super(props);
@@ -63,173 +77,55 @@ class RelationshipTable extends React.Component {
                     const itemRemoved = _.remove(data, nodeNoNeighbor => nodeNoNeighbor.node.id === item.node.id);
                     console.log('item removed: ', itemRemoved);
                 }
+                if (!nodeRemoved[0]) {
+                    alert("Not found neighbor of node has id : " + node.id);
+                    return;
+                }
                 this.props.removeRelationship({ node: node.id, neighbor: nodeRemoved[0].id });
             }
         });
-        // this.setState({ data: data });
-    }
-    handleSave = () => {
-        const a = document.createElement("a");
-        document.body.appendChild(a);
-        const { data } = this.state;
-        const serializedData = deserializeDataToGraphs(data);
-        const fileName = "graphs.json";
-        const json = JSON.stringify(serializedData);
-        const blob = new Blob([json], { type: "octet/stream" });
-        const url = window.URL.createObjectURL(blob);
-        a.href = url;
-        a.download = fileName;
-        a.click();
-        window.URL.revokeObjectURL(url);
     };
+    handleAddRelationship = () => {
+        alert("This feature will be available in next version");
+    }
+    onChangeData = (data) => {
+        this.setState({ data });
+    }
+    getColumns = () => {
+        const columns = [
+            {
+                ...COLUMNS.Node
+            },
+            {
+                ...COLUMNS.Type
+            },
+            {
+                ...COLUMNS.Neighbors(this.state.data, this.onChangeData)
+            },
+            {
+                ...COLUMNS.NeighborsType(this.state.data, this.onChangeData)
+            },
+            {
+                ...COLUMNS.Cost(this.state.data, this.onChangeData)
+            },
+            {
+                ...COLUMNS.Action(this.handleRemoveNeighbor)
+            }
+        ];
+        return columns;
+    }
     render() {
-        const styles = {
-            backgroundColor: '#dadada',
-            borderRadius: '2px'
-        }
-        const CellEditable = (props) => {
-            const { node, neighbor, propertyToEdit } = props;
-            const handleButtonAdd = () => {
-                let { count } = this.state;
-                this.setState({ count: count++ });
-                const { data } = this.state;
-                data.forEach(item => {
-                    if (item.node === node) {
-                        const newNeighbor = {
-                            id: 'new-neighbor-' + count,
-                            name: 'new Neighbor ' + count,
-                            type: 'path',
-                            cost: 1
-                        }
-                        item.neighbors.push(newNeighbor);;
-                    }
-                });
-                this.setState({ data });
-            }
-            const CellEdit = (props) => {
-                const { neighbor, propertyToEdit } = props;
-                return (<div
-                    style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={e => {
-                        const { data } = this.state;
-                        if (neighbor[`${propertyToEdit}`] !== e.target.innerHTML) {
-                            if (propertyToEdit === 'cost')
-                                neighbor[`${propertyToEdit}`] = Number(e.target.innerHTML);
-                            else neighbor[`${propertyToEdit}`] = e.target.innerHTML;
-                            this.setState({ data });
-                        }
-                    }}
-                    dangerouslySetInnerHTML={{
-                        __html: neighbor[`${propertyToEdit}`]
-                    }}
-                />)
-            }
-            return (
-                <div>
-                    {propertyToEdit === 'id' ? (<button style={{ float: 'right' }} onClick={() => handleButtonAdd()} >+</button>) : null}
-                    <CellEdit neighbor={neighbor} propertyToEdit={propertyToEdit} />
-                </div>
-            )
-        }
-        const Cell = (props) => {
-            const { node, property } = props;
-            return (
-                <div
-                    style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
-                    dangerouslySetInnerHTML={{
-                        __html: node[property]
-                    }}
-                />
-            )
-        }
-        const columns = [{
-            Header: 'Node',
-            id: 'node-root',
-            accessor: d => d.node.id,
-            Cell: props => <Cell node={props.original.node} property='id' />,
-            filterMethod: (filter, rows) => matchSorter(rows, filter.value, { keys: ["node-root"] }),
-            filterAll: true
-        }, {
-            Header: 'Type',
-            accessor: 'node.type',
-            id: 'node-type',
-            width: 150,
-            Cell: props => <Cell node={props.original.node} property='type' />,
-            filterMethod: (filter, rows) => matchSorter(rows, filter.value, { keys: ["node-type"] }),
-            filterAll: true
-        }, {
-            id: 'neighbors',
-            Header: 'Neighbors',
-            accessor: d => d.neighbors.map(neighbor => neighbor.id),
-            Cell: props => {
-                const { node, neighbors } = props.original;
-                return neighbors.map(neighbor => {
-                    return <CellEditable node={node} neighbor={neighbor} propertyToEdit='id' />
-                })
-            },
-            filterMethod: (filter, rows) =>
-                matchSorter(rows, filter.value, { keys: ["neighbors"] }),
-            filterAll: true
-        }, {
-            Header: props => <span>Type</span>,
-            id: 'nb-type',
-            accessor: d => d.neighbors.map(neighbor => neighbor.type),
-            Cell: props => {
-                const { node, neighbors } = props.original;
-                return neighbors.map(neighbor => {
-                    return <CellEditable node={node} neighbor={neighbor} propertyToEdit='type' />;
-                })
-            },
-            filterMethod: (filter, rows) =>
-                matchSorter(rows, filter.value, { keys: ["nb-type"] }),
-            filterAll: true,
-            width: 150,
-        },
-        {
-            id: 'cost',
-            Header: 'Cost',
-            width: 100,
-            accessor: d => d.neighbors.map(neighbor => neighbor.cost),
-            Cell: props => {
-                const { node, neighbors } = props.original;
-                return neighbors.map(neighbor => {
-                    return <CellEditable node={node} neighbor={neighbor} propertyToEdit='cost' />
-                })
-            },
-            filterMethod: (filter, rows) =>
-                matchSorter(rows, filter.value, { keys: ["cost"] }),
-            filterAll: true,
-        },
-        {
-            Header: 'Action',
-            id: 'action',
-            Cell: props => {
-                const { node, neighbors } = props.original;
-                return neighbors.map(neighbor => {
-                    return <div>
-                        <button style={styles} onClick={() => this.handleRemoveNeighbor(node, neighbor)}>Remove</button>
-                    </div>
-                })
-            },
-            filterMethod: (filter, rows) =>
-                matchSorter(rows, filter.value, { keys: ["action"] }),
-            filterAll: true,
-            width: 150
-        }];
         return <div>
-            <div style={{ textAlign: 'right' }}>
-                <button style={styles} onClick={() => alert("This feature will be available in next version")}>Add</button>
-                <button style={styles} onClick={() => this.handleSave()} >Save</button>
-            </div>
+            <ButtonFeature
+                handleSaveRelationship={() => handleSaveRelationship(this.state.data, "data")}
+                handleAddRelationship={() => this.handleAddRelationship()}
+            />
             <ReactTable
                 filterable
                 defaultFilterMethod={(filter, row) =>
                     String(row[filter.id]) === filter.value}
                 data={this.state.data}
-                // data={serializeGraphsToData(this.state.graphs)}
-                columns={columns}
+                columns={this.getColumns()}
                 defaultPageSize={5}
                 showPagination={true}
                 className="-striped -highlight"

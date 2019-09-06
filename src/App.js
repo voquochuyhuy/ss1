@@ -23,7 +23,7 @@ class App extends React.Component {
             feature: "",
             route: null,
             currentNumberOfMap: [],
-            listIDOfMap:[],
+            listIDOfMap: [],
             svgId_FirstClick: "",
         };
     }
@@ -270,9 +270,9 @@ class App extends React.Component {
         pinLogo.setAttributeNS(null, "height", `30`);
         pinLogo.setAttributeNS(null, "id", "pin-logo");
         pinLogo.setAttributeNS(null, "background", "transparent");
-        
-        
-        const draw = (X,Y,SVGnodes)=>{
+
+
+        const draw = (X, Y, SVGnodes) => {
             var NoAnimatedPath = document.createElementNS(
                 "http://www.w3.org/2000/svg",
                 "path"
@@ -315,7 +315,7 @@ class App extends React.Component {
                     Y.push(document.getElementById(vtx).attributes.cy.value);
                 };
                 let SVGnodes = document.getElementById(floor_id).lastChild;
-                draw(X, Y,SVGnodes);
+                draw(X, Y, SVGnodes);
             });
         }
         else {
@@ -332,7 +332,7 @@ class App extends React.Component {
             console.log(floor_id);
             let SVGnodes = document.getElementById(`node-${floor_id}`);
             console.log(SVGnodes);
-            draw(X, Y,SVGnodes);
+            draw(X, Y, SVGnodes);
         }
     }
     /********************END wayFiding*************************/
@@ -356,14 +356,14 @@ class App extends React.Component {
             }
             Promise.all(promises).then(fileContents => {
                 let i = 0;
-                let check =0;
+                let check = 0;
                 let mapsWasLoaded = '';
                 for (let a = 0; a < this.state.currentNumberOfMap.length; a++) {
-                    
+
                     for (let b = 0; b < fileInput.files.length; b++) {
                         if (this.state.currentNumberOfMap[a].name === fileInput.files[b].name) {
                             i++;
-                            check ++;
+                            check++;
                             mapsWasLoaded += `${fileInput.files[b].name}`;
                         }
                     }
@@ -371,19 +371,19 @@ class App extends React.Component {
                 if (i !== 0) {
                     alert(`These file was loaded and won't be load again : ${mapsWasLoaded}`);
                 }
-                for (i; i < fileContents.length; i++) {               
+                for (i; i < fileContents.length; i++) {
                     let div = document.createElement("div");
                     div.innerHTML = fileContents[i].trim();
-                    let floorId = div.firstChild.getElementById("background").parentElement.attributes.id.value;         
+                    let floorId = div.firstChild.getElementById("background").parentElement.attributes.id.value;
                     if (document.getElementsByTagName("svg").length === 0) {
-                        div.setAttribute("id", "list-svg");  
-                        div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);       
+                        div.setAttribute("id", "list-svg");
+                        div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);
                         document.getElementsByClassName('App')[0].appendChild(div);
                     }
                     else {
                         div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);
-                        document.getElementById("list-svg").appendChild(div.firstChild);             
-                    }                       
+                        document.getElementById("list-svg").appendChild(div.firstChild);
+                    }
                     let node_pathline = document.createElementNS(
                         "http://www.w3.org/2000/svg",
                         "g"
