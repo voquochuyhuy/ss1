@@ -2,10 +2,12 @@ import React from "react";
 import RelationshipTable from "./components/RelationshipTable/RelationshipTable";
 import "./App.css";
 import _ from "lodash";
-import Menu from "./components/menu";
 import SaveGraph from "./components/SaveGraph";
 import LoadGraph from "./components/LoadGraph";
 import WayFindRadioButton from "./components/WayFindRadioButton";
+import { from } from "array-flatten";
+import DrawRadioButton from "./components/DrawRadioButton";
+import DeleteRadioButton from "./components/DeleteRadioButton";
 const Graph = require("node-dijkstra");
 class App extends React.Component {
     isDrawingEdge = false;
@@ -30,29 +32,6 @@ class App extends React.Component {
     /********************VẼ CẠNH ******************** */
     OnDrawingEgde = () => {
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
-        const pathNodes = document.getElementsByTagName("circle");
-        for (let i = 0; i < pathNodes.length; i++) {
-            if (pathNodes[i].id.includes("PATH")) {
-                pathNodes[i].setAttributeNS(null, "fill", "rgb(101, 95, 84)");
-                pathNodes[i].setAttributeNS(null, "stroke", "rgb(230, 231, 232)");
-            }
-        }
-        if (document.getElementsByClassName("animation-path").length !== 0) {
-            let noAnimation_Path = document.getElementsByClassName("noAnimation-path");
-            for (let i = 0; i < noAnimation_Path.length; i++) {
-                noAnimation_Path[i].parentElement.removeChild(noAnimation_Path[i]);
-            }
-            let animated_Path = document.getElementsByClassName("animation-path");
-            for (let i = 0; i < animated_Path.length; i++) {
-                animated_Path[i].parentElement.removeChild(animated_Path[i]);
-            }
-            let first_vertex = document.getElementById(this.state.vertex1);
-            first_vertex.removeAttribute("class");
-            let final_vertex = document.getElementById(this.state.vertex2);
-            final_vertex.removeAttribute("class");
-            let pin_logo = document.getElementById("pin-logo");
-            pin_logo.parentElement.removeChild(pin_logo);
-        }
     };
     drawEdge = (vertex1, vertex2, floorId) => {
         // if (this.state.feature === "draw") {
@@ -116,8 +95,6 @@ class App extends React.Component {
                 const tryEdgeId = edgeId.split(':').reverse().join(':');
                 edgeEl = document.getElementById(tryEdgeId);
             }
-            console.log(edgeEl);//bị null khi nhấn nút remove từ bảng
-            console.log(edgeId);
             edgeEl.parentElement.removeChild(edgeEl);
         }
         removeVertexFromGraphs(vertex1Id, vertex2Id);
@@ -206,26 +183,6 @@ class App extends React.Component {
             }
         }
         return edgeExisted;
-    }
-
-    drawEdgeFromGraphs = () => {
-        const loadedGraphs = this.state.graphs;
-        console.log('drawEdgeFromGraphs called');
-        const array = [];
-        Object.keys(loadedGraphs).forEach(nodeId => {
-            Object.keys(loadedGraphs[nodeId]).forEach(nodeNeighborId => {
-                // this.drawEdge(node, nodeNeighbor, '0');
-                if (_.findIndex(array, { 'node': nodeNeighborId, 'neighbor': nodeId }) === -1) {
-                    array.push({ 'node': nodeId, 'neighbor': nodeNeighborId });
-                }
-            });
-        });
-        array.forEach(item => {
-            //hard code 0 nên k thể vẽ trên nhiều bảng
-            // dựa vào item.node và item.neight mà vẽ
-            if (item.node.substring(0, 2) === item.neighbor.substring(0, 2))
-                this.drawEdge(item.node, item.neighbor, item.node.substring(0, 2));
-        })
     }
 
     /**********************START wayFiding***********************/
@@ -552,15 +509,11 @@ class App extends React.Component {
                     <button onClick={this.handleFileSelect}>Load map</button>
                     <LoadGraph onFileGraphsChange={this.onFileGraphsChange}></LoadGraph>
                     <SaveGraph data={this.state.graphs}></SaveGraph>
-                    <div>
-                        <input type="radio" id="draw" onChange={() => {this.drawEdgeFromGraphs(); this.OnDrawingEgde();}}name="chooseFeature"/>DRAW <br />
-                        <input type="radio" id="delete" onChange={() => {this.OnDeleteEgde()}} name="chooseFeature"/>DELETE <br />
-                        <WayFindRadioButton 
-                            feature={this.state.feature} 
-                            listIDOfMap={this.state.listIDOfMap} 
-                            OnWayFinding={this.OnWayFinding}
-                        />
-                    </div>                   
+                    
+                    <DrawRadioButton OnDrawingEgde={this.OnDrawingEgde} graphs={this.state.graphs} drawEdge={this.drawEdge}/>  
+                    <DeleteRadioButton OnDeleteEgde={this.OnDeleteEgde}/>
+                    <WayFindRadioButton feature={this.state.feature} listIDOfMap={this.state.listIDOfMap} OnWayFinding={this.OnWayFinding}/>
+                                      
                 </div>
                 <div id="relationship-table">
                     {
