@@ -336,7 +336,7 @@ class App extends React.Component {
             // console.log('X : ', X);
             // console.log('Y : ', Y);
 
-            let SVGnodes = document.getElementById(`nodes-${floor_id}`);
+            let SVGnodes = document.getElementById(`node-${floor_id}`);
             var NoAnimatedPath = document.createElementNS(
                 "http://www.w3.org/2000/svg",
                 "path"
@@ -438,8 +438,12 @@ class App extends React.Component {
                             "g"
                         );
                         node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
-                        let nodes = document.getElementById("nodes");
-                        nodes.setAttribute("id", `nodes-${floorId}`);
+                        let nodes = document.getElementById("node");
+                        if (!nodes) {
+                            alert("Map don't have any elements node");
+                            return;
+                        }
+                        nodes.setAttribute("id", `node-${floorId}`);
                         nodes.parentElement.appendChild(node_pathline);
                         let node_pathline_clone = node_pathline.cloneNode(true);
                         let nodes_clone = nodes.cloneNode(true);
@@ -458,8 +462,12 @@ class App extends React.Component {
                             "g"
                         );
                         node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
-                        let nodes = document.getElementById("nodes");
-                        nodes.setAttribute("id", `nodes-${floorId}`);
+                        let nodes = document.getElementById("node");
+                        if (!nodes) {
+                            alert("Map don't have any elements node");
+                            return;
+                        }
+                        nodes.setAttribute("id", `node-${floorId}`);
                         nodes.parentElement.appendChild(node_pathline);
                         let node_pathline_clone = node_pathline.cloneNode(true);
                         let nodes_clone = nodes.cloneNode(true);
@@ -562,7 +570,7 @@ class App extends React.Component {
         }
     }
     addClickEventForCircle = (floorId) => {
-        let svg = document.getElementById(`nodes-${floorId}`);
+        let svg = document.getElementById(`node-${floorId}`);
         const vertices = svg.getElementsByTagName("circle");
         this.vertices = vertices;
         for (let i = 0; i < vertices.length; i++) {
