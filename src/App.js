@@ -2,7 +2,7 @@ import React from "react";
 import RelationshipTable from "./components/RelationshipTable/RelationshipTable";
 import "./App.css";
 import _ from "lodash";
-import Menu from "./components/menu";
+import Menu from "./components/Menu/Menu";
 const Graph = require("node-dijkstra");
 class App extends React.Component {
     isDrawingEdge = false;
@@ -294,9 +294,9 @@ class App extends React.Component {
         pinLogo.setAttributeNS(null, "height", `30`);
         pinLogo.setAttributeNS(null, "id", "pin-logo");
         pinLogo.setAttributeNS(null, "background", "transparent");
-        
-        
-        const draw = (X,Y,SVGnodes)=>{
+
+
+        const draw = (X, Y, SVGnodes) => {
             var NoAnimatedPath = document.createElementNS(
                 "http://www.w3.org/2000/svg",
                 "path"
@@ -339,7 +339,7 @@ class App extends React.Component {
                     Y.push(document.getElementById(vtx).attributes.cy.value);
                 };
                 let SVGnodes = document.getElementById(floor_id).lastChild;
-                draw(X, Y,SVGnodes);
+                draw(X, Y, SVGnodes);
             });
         }
         else {
@@ -356,7 +356,7 @@ class App extends React.Component {
             console.log(floor_id);
             let SVGnodes = document.getElementById(`node-${floor_id}`);
             console.log(SVGnodes);
-            draw(X, Y,SVGnodes);
+            draw(X, Y, SVGnodes);
         }
     }
     /********************END wayFiding*************************/
@@ -397,18 +397,15 @@ class App extends React.Component {
                     let div = document.createElement("div");
                     div.innerHTML = fileContents[i].trim();
                     if (document.getElementsByTagName("svg").length === 0) {
-                        div.setAttribute("id", "list-svg");    
-                        div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);               
+                        div.setAttribute("id", "list-svg");
+                        div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);
                         document.getElementsByClassName('App')[0].appendChild(div);
                     }
                     else {
                         div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);
-                        document.getElementById("list-svg").appendChild(div.firstChild);             
+                        document.getElementById("list-svg").appendChild(div.firstChild);
                     }
-                    let node_pathline = document.createElementNS(
-                        "http://www.w3.org/2000/svg",
-                        "g"
-                    );
+                    let node_pathline = document.createElementNS("http://www.w3.org/2000/svg", "g");
                     node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
                     let nodes = document.getElementById("nodes");
                     if (!nodes) {

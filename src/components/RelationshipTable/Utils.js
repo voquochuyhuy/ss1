@@ -3,7 +3,7 @@ import equals from 'deep-equal';
 /**@param node : id of node element
  * @return type of node
  */
-export const getTypeOfNode = (node) => {
+function getTypeOfNode(node) {
     const doc = document.getElementById(node);
     if (!doc) return null;
     const parentElement = doc.parentElement;
@@ -15,7 +15,7 @@ export const getTypeOfNode = (node) => {
     else type = 'path';
     return type;
 }
-export const getNameOfNode = (node) => {
+function getNameOfNode(node) {
     const doc = document.getElementById(node); //node = L4_29_NODE
     if (!doc) return null;
     const docTitle = document.getElementById('storetitle');
@@ -29,7 +29,7 @@ export const getNameOfNode = (node) => {
         }
     }
 }
-export const transformNeighborsOfNode = (object) => {
+function transformNeighborsOfNode(object) {
     return Object.keys(object).map(node => {
         const type = getTypeOfNode(node);
         const neighbor = {

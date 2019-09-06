@@ -3,7 +3,9 @@ import ReactTable from 'react-table';
 import _ from 'lodash';
 import matchSorter from 'match-sorter';
 import equals from 'deep-equal';
-import { getNameOfNode, getTypeOfNode, transformNeighborsOfNode, serializeGraphsToData, deserializeDataToGraphs } from './Utils'
+import { serializeGraphsToData, deserializeDataToGraphs } from './Utils';
+import { Cell } from './Cell';
+import CellEditable from './CellEditable';
 import 'react-table/react-table.css';
 class RelationshipTable extends React.Component {
     constructor(props) {
@@ -82,67 +84,13 @@ class RelationshipTable extends React.Component {
         a.click();
         window.URL.revokeObjectURL(url);
     };
+    onChangeData = (data) => {
+        this.setState({ data });
+    }
     render() {
         const styles = {
             backgroundColor: '#dadada',
             borderRadius: '2px'
-        }
-        const CellEditable = (props) => {
-            const { node, neighbor, propertyToEdit } = props;
-            const handleButtonAdd = () => {
-                let { count } = this.state;
-                this.setState({ count: count++ });
-                const { data } = this.state;
-                data.forEach(item => {
-                    if (item.node === node) {
-                        const newNeighbor = {
-                            id: 'new-neighbor-' + count,
-                            name: 'new Neighbor ' + count,
-                            type: 'path',
-                            cost: 1
-                        }
-                        item.neighbors.push(newNeighbor);;
-                    }
-                });
-                this.setState({ data });
-            }
-            const CellEdit = (props) => {
-                const { neighbor, propertyToEdit } = props;
-                return (<div
-                    style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
-                    contentEditable
-                    suppressContentEditableWarning
-                    onBlur={e => {
-                        const { data } = this.state;
-                        if (neighbor[`${propertyToEdit}`] !== e.target.innerHTML) {
-                            if (propertyToEdit === 'cost')
-                                neighbor[`${propertyToEdit}`] = Number(e.target.innerHTML);
-                            else neighbor[`${propertyToEdit}`] = e.target.innerHTML;
-                            this.setState({ data });
-                        }
-                    }}
-                    dangerouslySetInnerHTML={{
-                        __html: neighbor[`${propertyToEdit}`]
-                    }}
-                />)
-            }
-            return (
-                <div>
-                    {propertyToEdit === 'id' ? (<button style={{ float: 'right' }} onClick={() => handleButtonAdd()} >+</button>) : null}
-                    <CellEdit neighbor={neighbor} propertyToEdit={propertyToEdit} />
-                </div>
-            )
-        }
-        const Cell = (props) => {
-            const { node, property } = props;
-            return (
-                <div
-                    style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
-                    dangerouslySetInnerHTML={{
-                        __html: node[property]
-                    }}
-                />
-            )
         }
         const columns = [{
             Header: 'Node',
@@ -166,7 +114,7 @@ class RelationshipTable extends React.Component {
             Cell: props => {
                 const { node, neighbors } = props.original;
                 return neighbors.map(neighbor => {
-                    return <CellEditable node={node} neighbor={neighbor} propertyToEdit='id' />
+                    return <CellEditable data={this.state.data} node={node} neighbor={neighbor} propertyToEdit='id' onChangeData={this.onChangeData} />
                 })
             },
             filterMethod: (filter, rows) =>
@@ -179,7 +127,7 @@ class RelationshipTable extends React.Component {
             Cell: props => {
                 const { node, neighbors } = props.original;
                 return neighbors.map(neighbor => {
-                    return <CellEditable node={node} neighbor={neighbor} propertyToEdit='type' />;
+                    return <CellEditable data={this.state.data} node={node} neighbor={neighbor} propertyToEdit='type' onChangeData={this.onChangeData} />
                 })
             },
             filterMethod: (filter, rows) =>
@@ -195,7 +143,7 @@ class RelationshipTable extends React.Component {
             Cell: props => {
                 const { node, neighbors } = props.original;
                 return neighbors.map(neighbor => {
-                    return <CellEditable node={node} neighbor={neighbor} propertyToEdit='cost' />
+                    return <CellEditable data={this.state.data} node={node} neighbor={neighbor} propertyToEdit='cost' onChangeData={this.onChangeData} />
                 })
             },
             filterMethod: (filter, rows) =>
@@ -228,7 +176,6 @@ class RelationshipTable extends React.Component {
                 defaultFilterMethod={(filter, row) =>
                     String(row[filter.id]) === filter.value}
                 data={this.state.data}
-                // data={serializeGraphsToData(this.state.graphs)}
                 columns={columns}
                 defaultPageSize={5}
                 showPagination={true}
