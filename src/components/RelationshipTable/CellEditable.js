@@ -1,17 +1,13 @@
 import React, { Component } from 'react';
 import { If } from '../../Utils';
 import { Cell } from './Cell';
-// const styles = { backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' };
 
 const CellEdit = ({ data, neighbor, propertyToEdit, onChangeData }) => {
-    // const { neighbor, propertyToEdit } = props;
     const onBlur = (e) => {
-        // const { data } = this.state;
         if (neighbor[`${propertyToEdit}`] !== e.target.innerHTML) {
             if (propertyToEdit === 'cost')
                 neighbor[`${propertyToEdit}`] = Number(e.target.innerHTML);
             else neighbor[`${propertyToEdit}`] = e.target.innerHTML;
-            // this.setState({ data });
             onChangeData(data);
         }
     }
@@ -33,7 +29,6 @@ class CellEditable extends Component {
     handleButtonAdd(data, node, onChangeData) {
         let { count } = this.state;
         this.setState({ count: count++ });
-        // const { data } = this.state;
         data.forEach(item => {
             if (item.node === node) {
                 const newNeighbor = {

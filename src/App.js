@@ -3,6 +3,7 @@ import RelationshipTable from "./components/RelationshipTable/RelationshipTable"
 import "./App.css";
 import _ from "lodash";
 import Menu from "./components/Menu/Menu";
+import { handleSaveRelationship } from "./Utils";
 const Graph = require("node-dijkstra");
 class App extends React.Component {
     isDrawingEdge = false;
@@ -21,7 +22,7 @@ class App extends React.Component {
             feature: "",
             route: null,
             currentNumberOfMap: [],
-            listIDOfMap:[],
+            listIDOfMap: [],
             svgId_FirstClick: "",
         };
         this.addClickEventForCircle = this.addClickEventForCircle.bind(this);
@@ -381,14 +382,14 @@ class App extends React.Component {
             }
             Promise.all(promises).then(fileContents => {
                 let i = 0;
-                let check =0;
+                let check = 0;
                 let mapsWasLoaded = '';
                 for (let a = 0; a < this.state.currentNumberOfMap.length; a++) {
-                    
+
                     for (let b = 0; b < fileInput.files.length; b++) {
                         if (this.state.currentNumberOfMap[a].name === fileInput.files[b].name) {
                             i++;
-                            check ++;
+                            check++;
                             mapsWasLoaded += `${fileInput.files[b].name}`;
                         }
                     }
@@ -396,19 +397,19 @@ class App extends React.Component {
                 if (i !== 0) {
                     alert(`These file was loaded and won't be load again : ${mapsWasLoaded}`);
                 }
-                for (i; i < fileContents.length; i++) {               
+                for (i; i < fileContents.length; i++) {
                     let div = document.createElement("div");
                     div.innerHTML = fileContents[i].trim();
-                    let floorId = div.firstChild.getElementById("background").parentElement.attributes.id.value;         
+                    let floorId = div.firstChild.getElementById("background").parentElement.attributes.id.value;
                     if (document.getElementsByTagName("svg").length === 0) {
-                        div.setAttribute("id", "list-svg");  
-                        div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);       
+                        div.setAttribute("id", "list-svg");
+                        div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);
                         document.getElementsByClassName('App')[0].appendChild(div);
                     }
                     else {
                         div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);
-                        document.getElementById("list-svg").appendChild(div.firstChild);             
-                    }                       
+                        document.getElementById("list-svg").appendChild(div.firstChild);
+                    }
                     let node_pathline = document.createElementNS(
                         "http://www.w3.org/2000/svg",
                         "g"
@@ -595,7 +596,8 @@ class App extends React.Component {
                 <div className="App">
                     <Menu
                         handleFileSelect={this.handleFileSelect}
-                        handleSaveGraphs={this.handleSaveGraphs}
+                        // handleSaveGraphs={this.handleSaveGraphs}
+                        handleSaveGraphs={() => handleSaveRelationship(this.state.graphs, "graphs")}
                         LoadGraphsFile={this.LoadGraphsFile}
                         drawEdgeFromGraphs={this.drawEdgeFromGraphs}
                         OnDrawingEgde={this.OnDrawingEgde}

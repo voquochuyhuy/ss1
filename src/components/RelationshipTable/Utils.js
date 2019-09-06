@@ -57,20 +57,3 @@ export const serializeGraphsToData = (graphs) => {
     });
     return graphsArray;
 }
-export const deserializeDataToGraphs = (data) => {
-    let graphs = {};
-    data.forEach(items => {
-        const arrayNeighbor = items.neighbors.map(neighbor => {
-            return [[neighbor.id], neighbor.cost]
-        });
-        const nb = arrayNeighbor.reduce((prev, curr) => { prev[curr[0]] = curr[1]; return prev; }, {})
-        const item = {
-            [items.node.id]: {
-                ...nb
-            }
-        };
-        graphs = { ...graphs, ...item }
-    });
-    console.log('result save : ', graphs);
-    return graphs;
-}
