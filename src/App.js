@@ -56,9 +56,8 @@ class App extends React.Component {
         };
         reader.readAsText(e.target.files[0]);
     };
-    findShortestPath(vertex1, vertex2) {
+    findShortestPath(vertex1, vertex2 ,route) {
         //vertex1 is id of element's circle vertex1
-        const { route } = this.state;
         if (!route) return null;
         const path = route.path(vertex1, vertex2);
         return path;
@@ -194,7 +193,8 @@ class App extends React.Component {
                         listIdOfMap={this.ListIdOfMap} 
                         DeleteEgde= {this.DeleteEgde}
                         addVertexToGraphs={this.addVertexToGraphs}
-                        findShortestPath={this.findShortestPath} >
+                        findShortestPath={this.findShortestPath}
+                        route = {this.state.route} >
                     </LoadMap>
                     <LoadGraph onFileGraphsChange={this.onFileGraphsChange}></LoadGraph>
                     <SaveGraph data={this.state.graphs}></SaveGraph> 

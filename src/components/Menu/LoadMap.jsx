@@ -195,7 +195,7 @@ export default class LoadMap extends Component {
         svg.scrollIntoView();
     }
     drawShortestPath(vertex1, vertex2) {
-        const pathArr = this.props.findShortestPath(vertex1, vertex2);
+        const pathArr = this.props.findShortestPath(vertex1, vertex2,this.props.route);
         if (!pathArr) {
             alert("Not found shortest path, check model graphs");
             return;
