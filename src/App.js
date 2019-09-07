@@ -9,6 +9,7 @@ import WayFindRadioButton from "./components/Menu/WayFindRadioButton";
 import DrawRadioButton from "./components/Menu/DrawRadioButton";
 import DeleteRadioButton from "./components/Menu/DeleteRadioButton";
 import { If } from "./Utils";
+import {drawEdge} from "./Utils/index";
 const Graph = require("node-dijkstra");
 class App extends React.Component {
     isDrawingEdge = false;
@@ -34,20 +35,16 @@ class App extends React.Component {
     OnDrawingEgde = () => {
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
     };
-    
     /********************XÓA CẠNH ******************** */
-    OnDeleteEgde = () => {
-        this.setState({ feature: "delete" });
+    OnDeleteEgde = async () => {
+        await this.setState({ feature: "delete" });
+        console.log("co chay vo day k v")
+        console.log(this.state.feature);
     };
     /********************CHỌN CHỨC NĂNG TÌM ĐƯỜNG ******************** */
     OnWayFinding = () => {
         this.setState({ feature: "find", vertex1: "", vertex2: "" });
     };
-
-    /**
-     * @description add two vertex to graphs
-     * @return edgeExisted : if exist edge between them, return false, otherwise, null
-     */
 
     /**********************START wayFiding***********************/
     onFileGraphsChange = e => {
@@ -68,8 +65,7 @@ class App extends React.Component {
         if (!route) return null;
         const path = route.path(vertex1, vertex2);
         return path;
-    }
-
+    };
     drawShortestPath(vertex1, vertex2, node_path_id) {
         const pathArr = this.findShortestPath(vertex1, vertex2);
         if (!pathArr) {
@@ -91,8 +87,6 @@ class App extends React.Component {
         pinLogo.setAttributeNS(null, "height", `30`);
         pinLogo.setAttributeNS(null, "id", "pin-logo");
         pinLogo.setAttributeNS(null, "background", "transparent");
-
-
         const draw = (X, Y, SVGnodes) => {
             var NoAnimatedPath = document.createElementNS(
                 "http://www.w3.org/2000/svg",
@@ -155,7 +149,7 @@ class App extends React.Component {
             console.log(SVGnodes);
             draw(X, Y, SVGnodes);
         }
-    }
+    };
     /********************END wayFiding*************************/
 
 
@@ -246,8 +240,6 @@ class App extends React.Component {
                     this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, fileInput.files[indexOfFile]] });
                     this.setState({ listIDOfMap: [...this.state.listIDOfMap, floorId] });
                 }
-                // thêm radio button
-
             });
         });
     };
@@ -260,7 +252,7 @@ class App extends React.Component {
                     this.isDrawingEdge = true;
                 } else if (clickTarget !== this.state.edgeVertex1) {
                     this.setState({ edgeVertex2: clickTarget });
-                    this.drawEdge(this.state.edgeVertex1, this.state.edgeVertex2, floorId);
+                    drawEdge(this.state.edgeVertex1, this.state.edgeVertex2, floorId,this.DeleteEgde,this.addVertexToGraphs);
                     this.setState({ edgeVertex1: null, edgeVertex2: null });
                     this.isDrawingEdge = false;
                 }
@@ -367,6 +359,105 @@ class App extends React.Component {
         }
     }
 
+
+    DeleteEgde = (edge, vertex1Id, vertex2Id) => {
+        const removeVertexFromGraphs = (v1, v2) => {
+            const  {graphs}  = this.state;
+            if (_.has(graphs, [v1, v2]) && _.has(graphs, [v2, v1])) {
+                delete graphs[v1][v2];
+                delete graphs[v2][v1];
+                this.setState({ graphs });//gọi hàm
+            }
+        }
+        if (this.state.feature === "delete" && typeof edge !== "string") {
+            edge.parentElement.removeChild(edge);
+        }
+        else if (typeof edge === "string") {
+            const edgeId = edge;
+            let edgeEl = document.getElementById(edgeId);
+            if (!edgeEl) {
+                const tryEdgeId = edgeId.split(':').reverse().join(':');
+                edgeEl = document.getElementById(tryEdgeId);
+            }
+            edgeEl.parentElement.removeChild(edgeEl);
+        }
+        removeVertexFromGraphs(vertex1Id, vertex2Id);
+    };
+    addVertexToGraphs=(vertex1, vertex2) =>{
+        const  {graphs}  = this.state;
+        const x1 = vertex1.getAttributeNS(null, "cx");
+        const y1 = vertex1.getAttributeNS(null, "cy");
+        const x2 = vertex2.getAttributeNS(null, "cx");
+        const y2 = vertex2.getAttributeNS(null, "cy");
+        const deltaX = Math.abs(parseInt(x2) - parseInt(x1));
+        const deltaY = Math.abs(parseInt(y2) - parseInt(y1));
+        const cost = Math.round(
+            Math.sqrt(Math.pow(deltaX, 2) + Math.pow(deltaY, 2))
+        );
+        const idVertex1 = vertex1.id;
+        const idVertex2 = vertex2.id;
+        let edgeExisted = false;
+        //check idVertex1 is existed in graphs
+        if (graphs[idVertex1]) {
+            if (graphs[idVertex2] && graphs[idVertex2][idVertex1]) {
+                console.log("ton tai v1, v2 va v1 co v2 => trung nhau");
+                edgeExisted = true;
+                return edgeExisted;
+            } else if (graphs[idVertex2] && !graphs[idVertex2][idVertex1]) {
+                console.log("ton tai v1, v2 nhung v1 chua co v2");
+                graphs[idVertex2] = { ...graphs[idVertex2], [idVertex1]: cost };
+                graphs[idVertex1] = { ...graphs[idVertex1], [idVertex2]: cost };
+                this.setState({ graphs });//
+            } else if (!graphs[idVertex2]) {
+                console.log("ton tai v1 va ko ton tai v2");
+                graphs[idVertex1] = { ...graphs[idVertex1], [idVertex2]: cost };
+                const graph = {
+                    [idVertex2]: {
+                        [idVertex1]: cost
+                    }
+                };
+                this.setState({ graphs: { ...graphs, ...graph } });//
+            } else {
+                graphs[idVertex1] = { ...graphs[idVertex1], [idVertex2]: cost };
+                const graph = {
+                    [idVertex2]: {
+                        [idVertex1]: cost
+                    },
+                    [idVertex1]: {
+                        [idVertex2]: cost
+                    }
+                };
+                this.setState({ graphs: { ...graphs, ...graph } });//
+            }
+            return edgeExisted;
+        } else {
+            //v1 chua co nhung v2 da co
+            console.log("v1 chua co nhung v2 da co ");
+            if (graphs[idVertex2]) {
+                graphs[idVertex2] = { ...graphs[idVertex2], [idVertex1]: cost };
+                //them v1 vao graphs
+                const graph = {
+                    [idVertex1]: {
+                        [idVertex2]: cost
+                    }
+                };
+                this.setState({ graphs: { ...graphs, ...graph } });//
+            } else {
+                //ca 2 cung chua co
+                console.log("ca 2 cung chua co");
+                const graph = {
+                    [idVertex1]: {
+                        [idVertex2]: cost
+                    },
+                    [idVertex2]: {
+                        [idVertex1]: cost
+                    }
+                };
+                this.setState({ graphs: { ...graphs, ...graph } });//
+            }
+        }
+        return edgeExisted;
+    }
     render() {
         return (
             <div>
@@ -374,7 +465,13 @@ class App extends React.Component {
                     <button onClick={this.handleFileSelect}>Load map</button>
                     <LoadGraph onFileGraphsChange={this.onFileGraphsChange}></LoadGraph>
                     <SaveGraph data={this.state.graphs}></SaveGraph> 
-                    <DrawRadioButton OnDrawingEgde={this.OnDrawingEgde} graphs={this.state.graphs} DeleteEgde={this.DeleteEgde} addVertexToGraphs={this.addVertexToGraphs}/>  
+                    <DrawRadioButton 
+                        OnDrawingEgde={this.OnDrawingEgde} 
+                        DeleteEgde= {this.DeleteEgde}
+                        addVertexToGraphs={this.addVertexToGraphs}
+                        graphs={this.state.graphs} 
+                        feature={this.state.feature} 
+                    />  
                     <DeleteRadioButton OnDeleteEgde={this.OnDeleteEgde}/>
                     <WayFindRadioButton feature={this.state.feature} listIDOfMap={this.state.listIDOfMap} OnWayFinding={this.OnWayFinding}/>                    
                 </div>
