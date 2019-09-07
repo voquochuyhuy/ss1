@@ -54,11 +54,10 @@ export const handleSaveRelationship = (data, type) => {
  * @param {HTMLElement} vertex1 
  * @param {HTMLElement} vertex2 
  * @param {String} floorId 
+ * @param {function} DeleteEgde
+ * @param {function} addVertexToGraphs
  */
 export const drawEdge = (vertex1, vertex2, floorId,DeleteEgde,addVertexToGraphs) => {
-    // if (this.state.feature === "draw") {
-    //check vertex1 and vertex2 là 1 HMTLElement hay 1 string
-    //Nếu là string (id của 1 Element) thì vẽ dựa vào graphs có sẵn, k thì tạo graphs mới
     const node_path = document.getElementById(`node-pathline-${floorId}`);
     const draw = (v1, v2) => {
         const x1 = v1.getAttributeNS(null, "cx");
