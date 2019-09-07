@@ -53,7 +53,7 @@ class CellEditable extends Component {
                 <If
                     condition={propertyToEdit === "id"}
                     component={this.ButtonAddRelations}
-                    propsForComponent={{ data: data, onChangeData: onChangeData, node: node }}
+                    props={{ data: data, onChangeData: onChangeData, node: node }}
                 />
                 <CellEdit data={data} node={node} neighbor={neighbor} propertyToEdit={propertyToEdit} onChangeData={onChangeData} />
             </div>

@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import _ from "lodash";
 export default function DrawRadioButton(props) {
     const OnDrawingEgde=()=>{

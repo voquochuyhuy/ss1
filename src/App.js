@@ -2,12 +2,13 @@ import React from "react";
 import RelationshipTable from "./components/RelationshipTable/RelationshipTable";
 import "./App.css";
 import _ from "lodash";
-import SaveGraph from "./components/SaveGraph";
-import LoadGraph from "./components/LoadGraph";
-import WayFindRadioButton from "./components/WayFindRadioButton";
-import { from } from "array-flatten";
-import DrawRadioButton from "./components/DrawRadioButton";
-import DeleteRadioButton from "./components/DeleteRadioButton";
+import SaveGraph from "./components/Menu/SaveGraph";
+import LoadGraph from "./components/Menu/LoadGraph";
+import WayFindRadioButton from "./components/Menu/WayFindRadioButton";
+// import { from } from "array-flatten";
+import DrawRadioButton from "./components/Menu/DrawRadioButton";
+import DeleteRadioButton from "./components/Menu/DeleteRadioButton";
+import { If } from "./Utils";
 const Graph = require("node-dijkstra");
 class App extends React.Component {
     isDrawingEdge = false;
@@ -483,7 +484,7 @@ class App extends React.Component {
         let svg = document.getElementById(`svg-${floorId}`);
         svg.scrollIntoView();
     }
-    /********************START LOAD FILE ******************** */ 
+    /********************START LOAD FILE ******************** */
 
     /********************REMOVE ONCLICK IN RELATIONSHIP TABLE******************** */
     onRemoveFromChild = (removedObj) => {
@@ -502,23 +503,28 @@ class App extends React.Component {
             this.setState({ graphs });
         }
     }
+
     render() {
         return (
             <div>
-                <div className="App">            
+                <div className="App">
                     <button onClick={this.handleFileSelect}>Load map</button>
                     <LoadGraph onFileGraphsChange={this.onFileGraphsChange}></LoadGraph>
                     <SaveGraph data={this.state.graphs}></SaveGraph>
-                    
-                    <DrawRadioButton OnDrawingEgde={this.OnDrawingEgde} graphs={this.state.graphs} drawEdge={this.drawEdge}/>  
-                    <DeleteRadioButton OnDeleteEgde={this.OnDeleteEgde}/>
-                    <WayFindRadioButton feature={this.state.feature} listIDOfMap={this.state.listIDOfMap} OnWayFinding={this.OnWayFinding}/>
-                                      
+                    <DrawRadioButton OnDrawingEgde={this.OnDrawingEgde} graphs={this.state.graphs} drawEdge={this.drawEdge} />
+                    <DeleteRadioButton OnDeleteEgde={this.OnDeleteEgde} />
+                    <WayFindRadioButton feature={this.state.feature} listIDOfMap={this.state.listIDOfMap} OnWayFinding={this.OnWayFinding} />
+
                 </div>
                 <div id="relationship-table">
-                    {
-                        this.state.feature === 'draw' ? (<RelationshipTable removeRelationship={(removedObj) => this.onRemoveFromChild(removedObj)} graphs={this.state.graphs} />) : null
-                    }
+                    <If
+                        condition={this.state.feature === 'draw'}
+                        component={RelationshipTable}
+                        props={{
+                            removeRelationship: (removedObj) => this.onRemoveFromChild(removedObj),
+                            graphs: this.state.graphs
+                        }}
+                    />
                 </div>
             </div>
         );
