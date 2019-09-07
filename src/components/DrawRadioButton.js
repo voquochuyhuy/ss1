@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import _ from "lodash";
+import {drawEdge} from "../Utils/index";
 export default function DrawRadioButton(props) {
     const OnDrawingEgde=()=>{
         props.OnDrawingEgde();
@@ -40,10 +41,8 @@ export default function DrawRadioButton(props) {
             });
         });
         array.forEach(item => {
-            //hard code 0 nên k thể vẽ trên nhiều bảng
-            // dựa vào item.node và item.neight mà vẽ
             if (item.node.substring(0, 2) === item.neighbor.substring(0, 2))
-                props.drawEdge(item.node, item.neighbor, item.node.substring(0, 2));
+                drawEdge(item.node, item.neighbor, item.node.substring(0, 2));
         })
     }
         return (
