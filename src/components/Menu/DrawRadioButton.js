@@ -1,4 +1,4 @@
-import React, { Component } from 'react'
+import React from 'react'
 import _ from "lodash";
 import {drawEdge} from "../Utils/index";
 export default function DrawRadioButton(props) {

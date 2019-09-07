@@ -3,7 +3,7 @@ import ReactTable from 'react-table';
 import _ from 'lodash';
 import equals from 'deep-equal';
 import { serializeGraphsToData } from './Utils';
-import { deserializeDataToGraphs, handleSaveRelationship } from '../../Utils'
+import { handleSaveRelationship } from '../../Utils';
 import COLUMNS from './Columns';
 import 'react-table/react-table.css';
 
@@ -56,7 +56,6 @@ class RelationshipTable extends React.Component {
     }
     static getDerivedStateFromProps(nextProps, currentState) {
         if (!equals(nextProps.graphs, currentState.graphs)) {
-            console.log('khac nhau :', nextProps);
             const { graphs } = nextProps;
             const graphsArray = serializeGraphsToData(graphs);
             return {

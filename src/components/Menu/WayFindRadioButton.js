@@ -1,6 +1,14 @@
-import React, { Component } from 'react'
-
-export default function WayFindRadioButton (props) {
+import React from 'react'
+import { If } from '../../Utils';
+const VertextureComponent = () => {
+    return (
+        <div>
+            <input type="text" id="first-vertex" />
+            <span> </span>
+            <input type="text" id="second-vertex" />
+        </div>)
+}
+export default function WayFindRadioButton(props) {
     const OnWayFinding = () => {
         props.OnWayFinding();
         for (let i = 0; i < props.listIDOfMap.length; i++) {
@@ -17,19 +25,11 @@ export default function WayFindRadioButton (props) {
             }
         }
     };
-        return (
-            <div>
-            <input type="radio" id="way-Finding" onChange={() => {OnWayFinding()}} name="chooseFeature"/>Way Finding <br />
-            {
-                props.feature === 'find' ? (
-                <div>
-                    <input type="text" id="first-vertex" />
-                    <span> </span>
-                    <input type="text" id="second-vertex" />
-                </div>) : null
-            }
-            </div>
-           
-        )
-    
+    const condition = props.feature === 'find'
+    return (
+        <div>
+            <input type="radio" id="way-Finding" onChange={() => { OnWayFinding() }} name="chooseFeature" />Way Finding <br />
+            <If condition={condition} component={VertextureComponent} />
+        </div>
+    )
 }

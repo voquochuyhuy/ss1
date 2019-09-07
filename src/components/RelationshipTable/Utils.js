@@ -1,4 +1,3 @@
-import equals from 'deep-equal';
 
 /**@param node : id of node element
  * @return type of node

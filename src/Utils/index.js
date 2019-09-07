@@ -3,7 +3,7 @@ import _ from "lodash";
 export const If = ({ component: Component, condition, propsForComponent }) => {
     if (!propsForComponent)
         return condition ? <Component /> : null;
-    return condition ? <Component {...propsForComponent} /> : null;
+    return condition ? <Component {...props} /> : null;
 }
 /**
  * 
@@ -32,7 +32,7 @@ export const deserializeDataToGraphs = (data) => {
  * 
  * @param {Array} data : graphs hoặc data có cấu trúc như data của RelationshipTable
  * @param {String} type :  "graphs"/"data"
- * @description lưu graphs hoặc data xuống file JSON, nếu là data, deserialize trước khi lưu.
+ * @description lưu graphs hoặc data xuống file JSON, nếu là data, deserialize thành graphs trước khi lưu.
  */
 export const handleSaveRelationship = (data, type) => {
     let newData = data;
