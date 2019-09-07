@@ -1,7 +1,7 @@
 import React from 'react';
 import _ from "lodash";
-export const If = ({ component: Component, condition, propsForComponent }) => {
-    if (!propsForComponent)
+export const If = ({ component: Component, condition, props }) => {
+    if (!props)
         return condition ? <Component /> : null;
     return condition ? <Component {...props} /> : null;
 }
@@ -49,6 +49,12 @@ export const handleSaveRelationship = (data, type) => {
     a.click();
     window.URL.revokeObjectURL(url);
 };
+/**
+ * 
+ * @param {HTMLElement} vertex1 
+ * @param {HTMLElement} vertex2 
+ * @param {String} floorId 
+ */
 export const drawEdge = (vertex1, vertex2, floorId) => {
     // if (this.state.feature === "draw") {
     //check vertex1 and vertex2 là 1 HMTLElement hay 1 string
