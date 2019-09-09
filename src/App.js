@@ -24,7 +24,7 @@ class App extends React.Component {
             svgId_FirstClick: "",
         };
     }
-    /******************** VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS******************** */
+    /******************** CHỌN VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS******************** */
     OnDrawingEgde = () => {
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
     };
@@ -103,7 +103,7 @@ class App extends React.Component {
         }
         return edgeExisted;
     }
-    /********************XÓA CẠNH - XÓA ĐỈNH CỦA CẠNH VỪA XÓA TRONG GRAPHS ******************** */
+    /******************** CHỌN XÓA CẠNH - XÓA ĐỈNH CỦA CẠNH VỪA XÓA TRONG GRAPHS ******************** */
     OnDeleteEgde = async () => {
         await this.setState({ feature: "delete" });
     };
