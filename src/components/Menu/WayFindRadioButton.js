@@ -9,6 +9,7 @@ const VertextureComponent = () => {
         </div>)
 }
 export default function WayFindRadioButton(props) {
+    /*ĐỔI feature (state của component cha và transparent các node-path đi) */
     const OnWayFinding = () => {
         props.OnWayFinding();
         for (let i = 0; i < props.listIDOfMap.length; i++) {

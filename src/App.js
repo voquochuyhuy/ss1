@@ -9,13 +9,9 @@ import WayFindRadioButton from "./components/Menu/WayFindRadioButton";
 import DrawRadioButton from "./components/Menu/DrawRadioButton";
 import DeleteRadioButton from "./components/Menu/DeleteRadioButton";
 import { If } from "./Utils";
-import {drawEdge} from "./Utils/index";
 import LoadMap from "./components/Menu/LoadMap";
 const Graph = require("node-dijkstra");
 class App extends React.Component {
-    isDrawingEdge = false;
-    isFindingPath = false;
-    vertices = null;
     constructor(props) {
         super(props);
         this.state = {
@@ -28,81 +24,9 @@ class App extends React.Component {
             svgId_FirstClick: "",
         };
     }
-    /********************VẼ CẠNH ******************** */
+    /******************** VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS******************** */
     OnDrawingEgde = () => {
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
-    };
-    /********************XÓA CẠNH ******************** */
-    OnDeleteEgde = async () => {
-        await this.setState({ feature: "delete" });
-        console.log("co chay vo day k v")
-        console.log(this.state.feature);
-    };
-    /********************CHỌN CHỨC NĂNG TÌM ĐƯỜNG ******************** */
-    OnWayFinding = () => {
-        this.setState({ feature: "find", vertex1: "", vertex2: "" });
-    };
-
-    /**********************START wayFiding***********************/
-    onFileGraphsChange = e => {
-        const reader = new FileReader();
-        reader.onload = async e => {
-            const graphsStr = await e.target.result;
-            const graphsJson = JSON.parse(graphsStr);
-            this.setState({
-                graphs: graphsJson,
-                route: new Graph({ ...graphsJson })
-            });
-        };
-        reader.readAsText(e.target.files[0]);
-    };
-    findShortestPath(vertex1, vertex2 ,route) {
-        //vertex1 is id of element's circle vertex1
-        if (!route) return null;
-        const path = route.path(vertex1, vertex2);
-        return path;
-    };
-
-    /********************REMOVE ONCLICK IN RELATIONSHIP TABLE******************** */
-    onRemoveFromChild = (removedObj) => {
-        const { graphs } = this.state;
-        const { node, neighbor } = removedObj;
-        if ((_.has(graphs, [node, neighbor]) && _.has(graphs, [neighbor, node]))) {
-            this.DeleteEgde(`${node}:${neighbor}`, node, neighbor);
-            delete graphs[node][neighbor];
-            delete graphs[neighbor][node];
-            if (_.isEmpty(graphs[node])) {
-                delete graphs[node];
-            }
-            if (_.isEmpty(graphs[neighbor])) {
-                delete graphs[neighbor];
-            }
-            this.setState({ graphs });
-        }
-    }
-
-    DeleteEgde = (edge, vertex1Id, vertex2Id) => {
-        const removeVertexFromGraphs = (v1, v2) => {
-            const  {graphs}  = this.state;
-            if (_.has(graphs, [v1, v2]) && _.has(graphs, [v2, v1])) {
-                delete graphs[v1][v2];
-                delete graphs[v2][v1];
-                this.setState({ graphs });//gọi hàm
-            }
-        }
-        if (this.state.feature === "delete" && typeof edge !== "string") {
-            edge.parentElement.removeChild(edge);
-        }
-        else if (typeof edge === "string") {
-            const edgeId = edge;
-            let edgeEl = document.getElementById(edgeId);
-            if (!edgeEl) {
-                const tryEdgeId = edgeId.split(':').reverse().join(':');
-                edgeEl = document.getElementById(tryEdgeId);
-            }
-            edgeEl.parentElement.removeChild(edgeEl);
-        }
-        removeVertexFromGraphs(vertex1Id, vertex2Id);
     };
     addVertexToGraphs=(vertex1, vertex2) =>{
         const  {graphs}  = this.state;
@@ -162,7 +86,7 @@ class App extends React.Component {
                         [idVertex2]: cost
                     }
                 };
-                this.setState({ graphs: { ...graphs, ...graph } });//
+                this.setState({ graphs: { ...graphs, ...graph } });
             } else {
                 //ca 2 cung chua co
                 console.log("ca 2 cung chua co");
@@ -179,7 +103,77 @@ class App extends React.Component {
         }
         return edgeExisted;
     }
+    /********************XÓA CẠNH - XÓA ĐỈNH CỦA CẠNH VỪA XÓA TRONG GRAPHS ******************** */
+    OnDeleteEgde = async () => {
+        await this.setState({ feature: "delete" });
+    };
+    DeleteEgde = (edge, vertex1Id, vertex2Id) => {
+        const removeVertexFromGraphs = (v1, v2) => {
+            const  {graphs}  = this.state;
+            if (_.has(graphs, [v1, v2]) && _.has(graphs, [v2, v1])) {
+                delete graphs[v1][v2];
+                delete graphs[v2][v1];
+                this.setState({ graphs });
+            }
+        }
+        if (this.state.feature === "delete" && typeof edge !== "string") {
+            edge.parentElement.removeChild(edge);
+        }
+        else if (typeof edge === "string") {
+            const edgeId = edge;
+            let edgeEl = document.getElementById(edgeId);
+            if (!edgeEl) {
+                const tryEdgeId = edgeId.split(':').reverse().join(':');
+                edgeEl = document.getElementById(tryEdgeId);
+            }
+            edgeEl.parentElement.removeChild(edgeEl);
+        }
+        removeVertexFromGraphs(vertex1Id, vertex2Id);
+    };
+    /********************CHỌN CHỨC NĂNG TÌM ĐƯỜNG ******************** */
+    OnWayFinding = () => {
+        this.setState({ feature: "find", vertex1: "", vertex2: "" });
+    };
 
+    /**********************START wayFiding***********************/
+    onFileGraphsChange = e => {
+        const reader = new FileReader();
+        reader.onload = async e => {
+            const graphsStr = await e.target.result;
+            const graphsJson = JSON.parse(graphsStr);
+            this.setState({
+                graphs: graphsJson,
+                route: new Graph({ ...graphsJson })
+            });
+        };
+        reader.readAsText(e.target.files[0]);
+    };
+    findShortestPath(vertex1, vertex2 ,route) {
+        //vertex1 is id of element's circle vertex1
+        if (!route) return null;
+        const path = route.path(vertex1, vertex2);
+        return path;
+    };
+
+    /********************REMOVE ONCLICK IN RELATIONSHIP TABLE******************** */
+    onRemoveFromChild = (removedObj) => {
+        const { graphs } = this.state;
+        const { node, neighbor } = removedObj;
+        if ((_.has(graphs, [node, neighbor]) && _.has(graphs, [neighbor, node]))) {
+            this.DeleteEgde(`${node}:${neighbor}`, node, neighbor);
+            delete graphs[node][neighbor];
+            delete graphs[neighbor][node];
+            if (_.isEmpty(graphs[node])) {
+                delete graphs[node];
+            }
+            if (_.isEmpty(graphs[neighbor])) {
+                delete graphs[neighbor];
+            }
+            this.setState({ graphs });
+        }
+    }
+
+    /*lưu ID của những map đã load */
     ListIdOfMap = (floorId)=>{
         this.setState({ listIDOfMap: [...this.state.listIDOfMap, floorId] });
     }
@@ -187,7 +181,6 @@ class App extends React.Component {
         return (
             <div>
                 <div className="App">
-                    {/* <button onClick={this.handleFileSelect}>Load map</button> */}
                     <LoadMap 
                         feature={this.state.feature} 
                         listIdOfMap={this.ListIdOfMap} 

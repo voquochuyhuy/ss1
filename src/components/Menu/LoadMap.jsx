@@ -11,6 +11,9 @@ export default class LoadMap extends Component {
             currentNumberOfMap: [],
         }
     }
+    /*LOAD FILE,THÊM VÀO DOM VÀ ADD SỰ KIỆN CHO CÁC NODE TRÊN SVG */
+    
+    /*LOAD FILE ,THỀM VÀO DOM */
     handleFileSelect = async e => {
         var element = document.createElement("div");
         element.innerHTML = '<input type="file" multiple>';
@@ -102,6 +105,7 @@ export default class LoadMap extends Component {
             });
         });
     };
+    /*ADD SỰ KIỆN CHO CÁC NODE */
     addClickEventForCircle = (floorId) => {
         let svg = document.getElementById(`node-${floorId}`);
         const vertices = svg.getElementsByTagName("circle");
@@ -113,6 +117,7 @@ export default class LoadMap extends Component {
             vertices[i].setAttribute("style", "cursor: pointer;")
         }
     };
+    /*XỬ LÍ SỰ KIÊN KHI CLICK TRÊN SVG, FINDING-DRAW */
     handleMouseClick(e, floorId) {
         const clickTarget = e.target;
         if (this.props.feature === "draw") {
@@ -171,29 +176,7 @@ export default class LoadMap extends Component {
             }
         }
     }
-    DeleteMap = (floorId, file) => {
-        let deleteFile;
-        document.getElementById("list-svg").removeChild(document.getElementById(`svg-${floorId}`));
-        let radioElement = document.getElementById(`radio-${floorId}`);
-        document.getElementsByClassName("App")[0].removeChild(radioElement.parentElement);
-        if (document.getElementsByTagName("svg").length === 0) {
-            let list_svg = document.getElementById("list-svg");
-            list_svg.parentElement.removeChild(list_svg);
-        }
-        for (let i = 0; i < this.state.currentNumberOfMap.length; i++) {
-            if (file.name === this.state.currentNumberOfMap[i].name) {
-                deleteFile = i;
-                break;
-            }
-        }
-        var cloneState = [...this.state.currentNumberOfMap];
-        cloneState.splice(deleteFile, 1);
-        this.setState({ currentNumberOfMap: cloneState });
-    }
-    scrollMap = (floorId) => {
-        let svg = document.getElementById(`svg-${floorId}`);
-        svg.scrollIntoView();
-    }
+    /*TÌM ĐƯỜNG NGẮN NHẤT */
     drawShortestPath(vertex1, vertex2) {
         const pathArr = this.props.findShortestPath(vertex1, vertex2,this.props.route);
         if (!pathArr) {
@@ -278,10 +261,36 @@ export default class LoadMap extends Component {
             draw(X, Y, SVGnodes);
         }
     };
+
+    /*MENU CHO CÁC MAP KHI LOAD MAP LÊN */
+    DeleteMap = (floorId, file) => {
+        let deleteFile;
+        document.getElementById("list-svg").removeChild(document.getElementById(`svg-${floorId}`));
+        let radioElement = document.getElementById(`radio-${floorId}`);
+        document.getElementsByClassName("App")[0].removeChild(radioElement.parentElement);
+        if (document.getElementsByTagName("svg").length === 0) {
+            let list_svg = document.getElementById("list-svg");
+            list_svg.parentElement.removeChild(list_svg);
+        }
+        for (let i = 0; i < this.state.currentNumberOfMap.length; i++) {
+            if (file.name === this.state.currentNumberOfMap[i].name) {
+                deleteFile = i;
+                break;
+            }
+        }
+        var cloneState = [...this.state.currentNumberOfMap];
+        cloneState.splice(deleteFile, 1);
+        this.setState({ currentNumberOfMap: cloneState });
+    }
+    scrollMap = (floorId) => {
+        let svg = document.getElementById(`svg-${floorId}`);
+        svg.scrollIntoView();
+    }
+
     render() {
         return (
             <button onClick={this.handleFileSelect}>Load map</button>
- 
+
         )
     }
 }
