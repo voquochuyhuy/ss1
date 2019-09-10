@@ -5,9 +5,9 @@ export default function DeleteRadioButton (props) {
         props.OnDeleteEgde()
     }
         return (
-            <div>
+            <>
                 <input type="radio" id="delete" onChange={() => {OnDeleteEgde()}} name="chooseFeature"/>DELETE <br />
-            </div>
+            </>
         )
     
 }

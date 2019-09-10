@@ -9,11 +9,11 @@ const VertextureComponent = () => {
         </div>)
 }
 export default function WayFindRadioButton(props) {
-    /*ĐỔI feature (state của component cha và transparent các node-path đi) */
+    /*ĐỔI feature (state của component cha và transparent các node-path) */
     const OnWayFinding = () => {
         props.OnWayFinding();
-        for (let i = 0; i < props.listIDOfMap.length; i++) {
-            let floorId = props.listIDOfMap[i];
+        for (let i = 0; i < props.listIdOfMap.length; i++) {
+            let floorId = props.listIdOfMap[i];
             let groupPathNode = document.getElementById(`node-pathline-${floorId}`);
             let clone = groupPathNode.cloneNode(false);
             groupPathNode.replaceWith(clone);
@@ -26,11 +26,11 @@ export default function WayFindRadioButton(props) {
             }
         }
     };
-    const condition = props.feature === 'find'
+    const condition = props.feature === 'find';
     return (
-        <div>
+        <>
             <input type="radio" id="way-Finding" onChange={() => { OnWayFinding() }} name="chooseFeature" />Way Finding <br />
             <If condition={condition} component={VertextureComponent} />
-        </div>
+        </>
     )
 }

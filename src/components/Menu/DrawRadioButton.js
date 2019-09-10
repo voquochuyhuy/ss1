@@ -3,7 +3,8 @@ import _ from "lodash";
 import {drawEdge} from "../../Utils";
 export default function DrawRadioButton(props) {
     const OnDrawingEgde=()=>{
-        props.OnDrawingEgde();//chuyển state của component cha
+        props.OnDrawingEgde();
+        //chuyển state của component cha
         //hiển thị lại các node path
         const pathNodes = document.getElementsByTagName("circle");
         for (let i = 0; i < pathNodes.length; i++) {
@@ -48,9 +49,9 @@ export default function DrawRadioButton(props) {
     }
 
     return (
-        <div>
-                <input type="radio" id="draw" onChange={() => {drawEdgeFromGraphs(); OnDrawingEgde();}}name="chooseFeature"/>DRAW <br />
-        </div>
+        <>
+            <input type="radio" id="draw" onChange={() => {drawEdgeFromGraphs(); OnDrawingEgde();}}name="chooseFeature"/>DRAW <br />
+        </>
     )
     
 }
