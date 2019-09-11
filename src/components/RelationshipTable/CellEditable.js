@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { If } from '../../Utils';
+import { If } from '../../utils';
 import { Cell } from './Cell';
 
 const CellEdit = ({ data, neighbor, propertyToEdit, onChangeData }) => {
