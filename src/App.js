@@ -29,17 +29,19 @@ class App extends React.Component {
             route: null,
             listIdOfMap: [],
             svgId_FirstClick: "",
-            svgContents:[],
+            svgContents: [],
             currentNumberOfMap: [],
-            listURLpathOfSVG :[]
         };
     }
     /******************** CHỌN VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS ******************** */
     OnDrawingEgde = () => {
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
     };
-    addVertexToGraphs=(vertex1, vertex2) =>{
-        const  {graphs}  = this.state;
+    onChangeGraphs(graphs) {
+        this.setState({ graphs: graphs });
+    }
+    addVertexToGraphs = (vertex1, vertex2) => {
+        const { graphs } = this.state;
         const x1 = vertex1.getAttributeNS(null, "cx");
         const y1 = vertex1.getAttributeNS(null, "cy");
         const x2 = vertex2.getAttributeNS(null, "cx");
@@ -119,7 +121,7 @@ class App extends React.Component {
     };
     DeleteEgde = (edge, vertex1Id, vertex2Id) => {
         const removeVertexFromGraphs = (v1, v2) => {
-            const  {graphs}  = this.state;
+            const { graphs } = this.state;
             if (_.has(graphs, [v1, v2]) && _.has(graphs, [v2, v1])) {
                 delete graphs[v1][v2];
                 delete graphs[v2][v1];
@@ -158,9 +160,9 @@ class App extends React.Component {
         };
         reader.readAsText(e.target.files[0]);
     };
-    findShortestPath(vertex1, vertex2 ) {
+    findShortestPath(vertex1, vertex2) {
         //vertex1 is id of element's circle vertex1
-        const {route} = this.state;
+        const { route } = this.state;
         if (!route) return null;
         const path = route.path(vertex1, vertex2);
         return path;
@@ -184,7 +186,7 @@ class App extends React.Component {
         }
     }
     /*lưu ID của những map đã load */
-    ListIdOfMap = (floorId)=>{
+    ListIdOfMap = (floorId) => {
         this.setState({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
     }
     getSvgContent = (svgContents)=>{   
@@ -271,7 +273,7 @@ class App extends React.Component {
                     this.isDrawingEdge = true;
                 } else if (clickTarget !== this.state.edgeVertex1) {
                     this.setState({ edgeVertex2: clickTarget });
-                    drawEdge(this.state.edgeVertex1, this.state.edgeVertex2, floorId,this.DeleteEgde,this.addVertexToGraphs);
+                    drawEdge(this.state.edgeVertex1, this.state.edgeVertex2, floorId, this.DeleteEgde, this.addVertexToGraphs);
                     this.setState({ edgeVertex1: null, edgeVertex2: null });
                     this.isDrawingEdge = false;
                 }
@@ -431,23 +433,21 @@ class App extends React.Component {
         svg.scrollIntoView();
     }
     render() {
-        
         return (
             <div>
                 <div className="App">
-                    <LoadSvgButton onLoadFinish={this.getSvgContent}/>
+                    <LoadSvgButton onLoadFinish={this.getSvgContent} />
                     <LoadGraphButton onFileGraphsChange={this.onFileGraphsChange}></LoadGraphButton>
-                    <SaveGraphButton data={this.state.graphs}></SaveGraphButton> 
-                    <DrawRadioButton 
-                        OnDrawingEgde={this.OnDrawingEgde} 
-                        DeleteEgde= {this.DeleteEgde}
+                    <SaveGraphButton data={this.state.graphs}></SaveGraphButton>
+                    <DrawRadioButton
+                        OnDrawingEgde={this.OnDrawingEgde}
+                        DeleteEgde={this.DeleteEgde}
                         addVertexToGraphs={this.addVertexToGraphs}
-                        graphs={this.state.graphs} 
-                        feature={this.state.feature} 
-                    />  
-                    <DeleteRadioButton OnDeleteEgde={this.OnDeleteEgde}/>                  
-                    <WayFindRadioButton feature={this.state.feature} listIdOfMap={this.state.listIdOfMap} OnWayFinding={this.OnWayFinding}/>  
-                    {/* <ListSVG listURLpathOfSVG={this.state.listURLpathOfSVG} /> */}
+                        graphs={this.state.graphs}
+                        feature={this.state.feature}
+                    />
+                    <DeleteRadioButton OnDeleteEgde={this.OnDeleteEgde} />
+                    <WayFindRadioButton feature={this.state.feature} listIdOfMap={this.state.listIdOfMap} OnWayFinding={this.OnWayFinding} />
                 </div>
                 <div id="relationship-table">
                     <If
