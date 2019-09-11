@@ -35,7 +35,7 @@ class App extends React.Component {
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
     };
     onChangeGraphs(graphs) {
-        this.setState({graphs: graphs});
+        this.setState({ graphs: graphs });
     }
     addVertexToGraphs = (vertex1, vertex2) => {
         const { graphs } = this.state;

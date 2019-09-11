@@ -1,5 +1,4 @@
 /**
- * 
  * @param {HTMLElement} vertex1 đỉnh thứ nhất 
  * @param {HTMLElement} vertex2 đỉnh thứ hai 
  * @param {{}} graphs graphs input cho node-dijkstra
