@@ -1,4 +1,4 @@
-import { If, drawEdge, handleSaveRelationship, deserializeDataToGraphs } from './common';
+import { If, drawEdge, handleSaveRelationship, deserializeDataToGraphs } from './common'
 import { serializeGraphsToData } from './relationshipTable';
 export {
     If,

@@ -39,27 +39,29 @@ import Files from 'react-files'
         let arrUrlSvg = [];
         for(let i= 0;i<files.length ;i++)
         {    
-            arrUrlSvg.push(files[i]);
+            arrUrlSvg.push(files[i].preview.url);
         }
             
-         return   props.onLoadFinish(arrUrlSvg)
+         return  props.onLoadFinish(arrUrlSvg)
     }
 
     const onFilesError = ()=>{
 
     }
-    return <Files
-            className='files-dropzone'
-            onChange={onFilesChange}
-            onError={onFilesError}
-            accepts={[".svg"]}
-            multiple
-            maxFiles={3}
-            maxFileSize={10000000}
-            minFileSize={0}
-            clickable
-        >
-            Drop files here or click to upload
-        </Files>
+    // return <Files
+    //         className='files-dropzone'
+    //         onChange={onFilesChange}
+    //         onError={onFilesError}
+    //         accepts={[".svg"]}
+    //         multiple
+    //         maxFiles={3}
+    //         maxFileSize={10000000}
+    //         minFileSize={0}
+    //         clickable
+    //     >
+    //         Drop files here or click to upload
+    //     </Files>
+    
+     return <button onClick={handleLoadSvgClick}>Load Map</button>   
 }
 export default LoadSvgButton
