@@ -1,8 +1,8 @@
 import React from 'react'
 import _ from "lodash";
-import {drawEdge} from "../../Utils";
+import { drawEdge } from "../../utils";
 export default function DrawRadioButton(props) {
-    const OnDrawingEgde=()=>{
+    const OnDrawingEgde = () => {
         props.OnDrawingEgde();
         //chuyển state của component cha
         //hiển thị lại các node path
@@ -31,7 +31,7 @@ export default function DrawRadioButton(props) {
             pin_logo.parentElement.removeChild(pin_logo);
         }
     }
-    const drawEdgeFromGraphs = ()=>{
+    const drawEdgeFromGraphs = () => {
         const loadedGraphs = props.graphs;
         console.log('drawEdgeFromGraphs called');
         const array = [];
@@ -44,14 +44,14 @@ export default function DrawRadioButton(props) {
         });
         array.forEach(item => {
             if (item.node.substring(0, 2) === item.neighbor.substring(0, 2))
-                drawEdge(item.node, item.neighbor, item.node.substring(0, 2),props.DeleteEgde,props.addVertexToGraphs);
+                drawEdge(item.node, item.neighbor, item.node.substring(0, 2), props.DeleteEgde, props.addVertexToGraphs);
         })
     }
 
     return (
         <>
-            <input type="radio" id="draw" onChange={() => {drawEdgeFromGraphs(); OnDrawingEgde();}}name="chooseFeature"/>DRAW <br />
+            <input type="radio" id="draw" onChange={() => { drawEdgeFromGraphs(); OnDrawingEgde(); }} name="chooseFeature" />DRAW <br />
         </>
     )
-    
+
 }

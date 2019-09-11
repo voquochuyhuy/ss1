@@ -40,7 +40,7 @@ function transformNeighborsOfNode(object) {
         return neighbor;
     })
 }
-export const serializeGraphsToData = (graphs) => {
+const serializeGraphsToData = (graphs) => {
     const graphsArray = Object.keys(graphs).map(node => {
         const type = getTypeOfNode(node);
         const neighbors = transformNeighborsOfNode(graphs[node]);
@@ -56,3 +56,4 @@ export const serializeGraphsToData = (graphs) => {
     });
     return graphsArray;
 }
+export { serializeGraphsToData }

@@ -8,9 +8,9 @@ import WayFindRadioButton from "./components/Menu/WayFindRadioButton";
 // import { from } from "array-flatten";
 import DrawRadioButton from "./components/Menu/DrawRadioButton";
 import DeleteRadioButton from "./components/Menu/DeleteRadioButton";
-import { If } from "./Utils";
+import { If } from "./utils";
 import LoadSvgButton from "./components/Menu/LoadSvgButton.jsx";
-import {drawEdge} from "./Utils/index"
+import {drawEdge} from "./utils/index"
 const Graph = require("node-dijkstra");
 class App extends React.Component {
     isDrawingEdge = false;
