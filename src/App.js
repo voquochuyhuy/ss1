@@ -7,7 +7,7 @@ import LoadGraphButton from "./components/Menu/LoadGraphButton";
 import WayFindRadioButton from "./components/Menu/WayFindRadioButton";
 import DrawRadioButton from "./components/Menu/DrawRadioButton";
 import DeleteRadioButton from "./components/Menu/DeleteRadioButton";
-import { If, drawEdge, addVertexToGraphs, drawShortestPath, removeVertexFromGraphs } from "./Utils";
+import { If, addVertexToGraphs, removeVertexFromGraphs, findShortestPath } from "./utils";
 import LoadSvgButton from "./components/Menu/LoadSvgButton.jsx";
 import ListSVG from "./components/ListSVG";
 const Graph = require("node-dijkstra");
@@ -27,7 +27,7 @@ class App extends React.Component {
             svgId_FirstClick: "",
             svgContents: [],
             currentNumberOfMap: 0,
-            listURLpathOfSVG :[],
+            listURLpathOfSVG: [],
         };
     }
     /******************** CHỌN VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS ******************** */
@@ -78,14 +78,6 @@ class App extends React.Component {
         };
         reader.readAsText(e.target.files[0]);
     };
-    findShortestPath(vertex1, vertex2,route) {
-        //vertex1 is id of element's circle vertex1
-        // const { route } = this.state;
-        if (!route) return null;
-        const path = route.path(vertex1, vertex2);
-        return path;
-    };
-
     /********************REMOVE ONCLICK IN RELATIONSHIP TABLE******************** */
     onRemoveFromChild = (removedObj) => {
         const { graphs } = this.state;
@@ -104,20 +96,20 @@ class App extends React.Component {
         }
     }
     /*lưu ID của những map đã load */
-    SetlistIdForMap =  (floorId) => {
-     this.setState({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
+    SetlistIdForMap = (floorId) => {
+        this.setState({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
     }
-    getSvgContent = async (arrUrlSvg,startIndex)=>{ 
-        console.log(startIndex,"lastNumberOfMap-getSvgContent")
-        this.setState({startIndex : startIndex});
-        for(let i =0;i<arrUrlSvg.length;i++)
-            await this.setState({ listURLpathOfSVG: [...this.state.listURLpathOfSVG,arrUrlSvg[i]]});       
+    getSvgContent = async (arrUrlSvg, startIndex) => {
+        console.log(startIndex, "lastNumberOfMap-getSvgContent")
+        this.setState({ startIndex: startIndex });
+        for (let i = 0; i < arrUrlSvg.length; i++)
+            await this.setState({ listURLpathOfSVG: [...this.state.listURLpathOfSVG, arrUrlSvg[i]] });
     }
-    AdjustNumberOfMap = (index)=>{
+    AdjustNumberOfMap = (index) => {
         console.log(index);
         var cloneState = [...this.state.listURLpathOfSVG];
         cloneState.splice(index, 1);
-        this.setState({ listURLpathOfSVG: cloneState  });
+        this.setState({ listURLpathOfSVG: cloneState });
     }
     render() {
         return (
@@ -135,14 +127,14 @@ class App extends React.Component {
                     />
                     <DeleteRadioButton OnDeleteEgde={this.OnDeleteEgde} />
                     <WayFindRadioButton feature={this.state.feature} listIdOfMap={this.state.listIdOfMap} OnWayFinding={this.OnWayFinding} />
-                    <ListSVG 
-                        route={this.state.route} 
-                        findShortestPath={this.findShortestPath} 
-                        feature={this.state.feature} 
-                        listURLpathOfSVG={this.state.listURLpathOfSVG} 
+                    <ListSVG
+                        route={this.state.route}
+                        findShortestPath={findShortestPath}
+                        feature={this.state.feature}
+                        listURLpathOfSVG={this.state.listURLpathOfSVG}
                         listIdOfMap={this.SetlistIdForMap}
                         startIndex={this.state.startIndex}
-                        AdjustNumberOfMap= {this.AdjustNumberOfMap}
+                        AdjustNumberOfMap={this.AdjustNumberOfMap}
                         addVertexToGraphs={this.addVertexToGraphs}
                         DeleteEgde={this.DeleteEgde}
                     />

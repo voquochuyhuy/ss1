@@ -1,7 +1,7 @@
 import { If, drawEdge, handleSaveRelationship, deserializeDataToGraphs } from './common'
 import { serializeGraphsToData } from './relationshipTable';
 import { addVertexToGraphs, removeVertexFromGraphs } from './graphs';
-import { drawShortestPath } from './wayFinding';
+import { drawShortestPath, findShortestPath } from './wayFinding';
 export {
     If,
     drawEdge,
@@ -11,4 +11,5 @@ export {
     addVertexToGraphs,
     removeVertexFromGraphs,
     drawShortestPath,
+    findShortestPath,
 }

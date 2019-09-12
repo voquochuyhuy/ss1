@@ -1,8 +1,14 @@
 import _ from 'lodash';
+const Graph = require('node-dijkstra');
+/**
+ * @param {string} vertex1 vertex1 HTMLElement id
+ * @param {string} vertex2 vertex2 HTMLElement id
+ * @param {Graph} route route for Graph
+ * @returns path : Array of path
+ */
 function findShortestPath(vertex1, vertex2, route) {
     if (!route) return null;
-    const path = route.path(vertex1, vertex2);
-    return path;
+    return route.path(vertex1, vertex2);
 };
 
 /**
@@ -96,4 +102,4 @@ function drawShortestPath(vertex1, vertex2, route) {
     }
 };
 
-export { drawShortestPath }
+export { drawShortestPath, findShortestPath }

@@ -1,38 +1,36 @@
 import React, { Component } from 'react'
 import ReactSVG from 'react-inlinesvg';
 import _ from "lodash";
-import {drawEdge} from "../Utils/index.js";
+import { drawEdge } from "../utils";
 export default class ListSVG extends Component {
-    constructor(props){
+    constructor(props) {
         super(props);
-        this.state={
-            listIdOfMap:[],
-            numberOfMap :0,
-            listURLpathOfSVG:[],
+        this.state = {
+            listIdOfMap: [],
+            numberOfMap: 0,
+            listURLpathOfSVG: [],
         }
-    }      
+    }
 
-    handleSVG = async (src, hasCache)=>{ 
+    handleSVG = async (src, hasCache) => {
         // const {numberOfMap} = this.state;
         // await this.setState({numberOfMap:this.state.numberOfMap + 1}) ;
 
-        let listsvg = document.getElementsByTagName("svg"); 
-        
-        if(listsvg.length < this.state.listURLpathOfSVG.length)
-        {  
+        let listsvg = document.getElementsByTagName("svg");
+
+        if (listsvg.length < this.state.listURLpathOfSVG.length) {
             return;
         }
-      
+
         let index = this.props.startIndex;
-        for(let i = index;i< this.state.listURLpathOfSVG.length;i++)
-        {
+        for (let i = index; i < this.state.listURLpathOfSVG.length; i++) {
             let floorId = listsvg[i].getElementById("background").parentElement.attributes.id.value;
-            listsvg[i].setAttribute("id",`svg-${floorId}`);
-            let node_pathline = document.createElementNS("http://www.w3.org/2000/svg","g");
+            listsvg[i].setAttribute("id", `svg-${floorId}`);
+            let node_pathline = document.createElementNS("http://www.w3.org/2000/svg", "g");
             node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
-           
+
             let nodes = listsvg[i].getElementById("nodes");
-            
+
             nodes.setAttribute("id", `node-${floorId}`);
             nodes.parentElement.appendChild(node_pathline);
             let node_pathline_clone = node_pathline.cloneNode(true);
@@ -63,7 +61,7 @@ export default class ListSVG extends Component {
             divMenuOfMap.appendChild(space);
             await this.setState({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
         }
-        
+
     }
     addClickEventForCircle = (floorId) => {
         let svg = document.getElementById(`node-${floorId}`);
@@ -130,14 +128,14 @@ export default class ListSVG extends Component {
                     .getElementById("second-vertex")
                     .setAttribute("value", e.target.id);
                 this.setState({ vertex2: e.target.id });
-                this.drawShortestPath(this.state.vertex1, this.state.vertex2,this.props.route);
+                this.drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route);
                 this.isFindingPath = false;
             }
         }
     }
     /*TÌM ĐƯỜNG NGẮN NHẤT */
     drawShortestPath(vertex1, vertex2) {
-        const pathArr = this.props.findShortestPath(vertex1, vertex2,this.props.route);
+        const pathArr = this.props.findShortestPath(vertex1, vertex2, this.props.route);
         if (!pathArr) {
             alert("Not found shortest path, check model graphs");
             return;
@@ -239,30 +237,30 @@ export default class ListSVG extends Component {
         }
         var cloneState = [...this.state.listIdOfMap];
         cloneState.splice(deleteFile, 1);
-        this.setState({ listIdOfMap: cloneState  });
-        
+        this.setState({ listIdOfMap: cloneState });
+
     }
     scrollMap = (floorId) => {
         let svg = document.getElementById(`svg-${floorId}`);
         svg.scrollIntoView();
     }
-    componentWillReceiveProps(newProps){
-        this.setState({listURLpathOfSVG:newProps.listURLpathOfSVG});
+    componentWillReceiveProps(newProps) {
+        this.setState({ listURLpathOfSVG: newProps.listURLpathOfSVG });
     }
     render() {
-        const {listURLpathOfSVG } = this.props;
-    
-        return( 
+        const { listURLpathOfSVG } = this.props;
+
+        return (
             <div id="list-svg">
-               {listURLpathOfSVG ?  this.state.listURLpathOfSVG.map((value,i)=>(
-                <ReactSVG
-                    src={value}
-                    onLoad={(src, hasCache) => this.handleSVG(src, hasCache)}
-                    preProcessor={code => code}
-                    cacheRequests= {false}
-                />        
+                {listURLpathOfSVG ? this.state.listURLpathOfSVG.map((value, i) => (
+                    <ReactSVG
+                        src={value}
+                        onLoad={(src, hasCache) => this.handleSVG(src, hasCache)}
+                        preProcessor={code => code}
+                        cacheRequests={false}
+                    />
                 )) : null}
             </div>
-            )
+        )
     }
 }

@@ -1,5 +1,5 @@
 import React from 'react'
-import { handleSaveRelationship } from '../../Utils';
+import { handleSaveRelationship } from  "../../utils";
 export default function SaveGraph({ data }) {
     return (
         <>
