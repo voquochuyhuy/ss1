@@ -12,7 +12,6 @@ import { If } from "./Utils/index";
 import LoadSvgButton from "./components/Menu/LoadSvgButton.jsx";
 import {drawEdge} from "./Utils/index.js";
 import ListSVG from "./components/ListSVG";
-import MenuOfMap from "./components/Menu/MenuOfMap";
 
 const Graph = require("node-dijkstra");
 class App extends React.Component {
@@ -30,7 +29,8 @@ class App extends React.Component {
             listIdOfMap: [],
             svgId_FirstClick: "",
             svgContents: [],
-            currentNumberOfMap: [],
+            currentNumberOfMap: 0,
+            listURLpathOfSVG :[],
         };
     }
     /******************** CHỌN VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS ******************** */
@@ -160,9 +160,9 @@ class App extends React.Component {
         };
         reader.readAsText(e.target.files[0]);
     };
-    findShortestPath(vertex1, vertex2) {
+    findShortestPath(vertex1, vertex2,route) {
         //vertex1 is id of element's circle vertex1
-        const { route } = this.state;
+        // const { route } = this.state;
         if (!route) return null;
         const path = route.path(vertex1, vertex2);
         return path;
@@ -186,70 +186,14 @@ class App extends React.Component {
         }
     }
     /*lưu ID của những map đã load */
-    ListIdOfMap = (floorId) => {
-        this.setState({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
+    SetlistIdForMap =  (floorId) => {
+     this.setState({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
     }
-    getSvgContent = (svgContents)=>{   
-        for(let i = 0;i<svgContents.length;i++)
-        {
-            let div = document.createElement("div");
-            div.innerHTML = svgContents[i].trim();
-            // get floor id
-            let floorId = div.firstChild.getElementById("background").parentElement.attributes.id.value;
-
-            // check svg existed on page
-            // and Add new svg element into dom
-            const isSvgExisted = document.getElementsByTagName("svg").length !== 0
-            if (isSvgExisted) {
-                div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);
-                document.getElementById("list-svg").appendChild(div.firstChild);
-            }
-            else {
-                div.setAttribute("id", "list-svg");
-                div.firstChild.setAttributeNS(null, "id", `svg-${floorId}`);
-                document.getElementsByClassName('App')[0].appendChild(div);
-            }
-            let node_pathline = document.createElementNS("http://www.w3.org/2000/svg","g");
-            node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
-            let nodes = document.getElementById("nodes");
-            if (!nodes) {
-                alert("Map don't have any elements node");
-                return;
-            }
-            nodes.setAttribute("id", `node-${floorId}`);
-            nodes.parentElement.appendChild(node_pathline);
-            let node_pathline_clone = node_pathline.cloneNode(true);
-            let nodes_clone = nodes.cloneNode(true);
-            nodes.replaceWith(node_pathline_clone);
-            node_pathline.replaceWith(nodes_clone);
-
-            this.addClickEventForCircle(floorId);
-
-            let divMenuOfMap = document.createElement("div");
-            divMenuOfMap.setAttribute("class", "menuOfMap");
-            document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
-            let radio = document.createElement("input");
-            radio.setAttribute("type", "radio");
-            radio.setAttribute("name", "radioGroup");
-            radio.setAttribute("id", `radio-${floorId}`);
-            radio.addEventListener("change", () => { this.scrollMap(floorId) });
-            let nameOfMap = document.createElement("span");
-            nameOfMap.innerHTML = `${floorId}`;
-            let button = document.createElement("button");
-            button.addEventListener("click", () => { this.DeleteMap(floorId) });
-            button.textContent = "Delete";
-            let space = document.createElement("span");
-            space.innerText = `     `;
-            divMenuOfMap.appendChild(radio);
-            divMenuOfMap.appendChild(nameOfMap);
-            divMenuOfMap.appendChild(button);
-            divMenuOfMap.appendChild(space);
-
-            this.setState({ currentNumberOfMap: [...this.state.currentNumberOfMap, floorId] });
-            this.ListIdOfMap(floorId);
-        }
-        // this.setState({ listURLpathOfSVG: [...this.state.listURLpathOfSVG, svgContents] });
-        // console.log(svgContents);
+    getSvgContent = async (arrUrlSvg,startIndex)=>{ 
+        console.log(startIndex,"lastNumberOfMap-getSvgContent")
+        this.setState({startIndex : startIndex});
+        for(let i =0;i<arrUrlSvg.length;i++)
+            await this.setState({ listURLpathOfSVG: [...this.state.listURLpathOfSVG,arrUrlSvg[i]]});       
     }
     // /*ADD SỰ KIỆN CHO CÁC NODE */
     addClickEventForCircle = (floorId) => {
@@ -432,6 +376,12 @@ class App extends React.Component {
         let svg = document.getElementById(`svg-${floorId}`);
         svg.scrollIntoView();
     }
+    AdjustNumberOfMap = (index)=>{
+        console.log(index);
+        var cloneState = [...this.state.listURLpathOfSVG];
+        cloneState.splice(index, 1);
+        this.setState({ listURLpathOfSVG: cloneState  });
+    }
     render() {
         return (
             <div>
@@ -448,6 +398,18 @@ class App extends React.Component {
                     />
                     <DeleteRadioButton OnDeleteEgde={this.OnDeleteEgde} />
                     <WayFindRadioButton feature={this.state.feature} listIdOfMap={this.state.listIdOfMap} OnWayFinding={this.OnWayFinding} />
+                    <ListSVG 
+                        route={this.state.route} 
+                        findShortestPath={this.findShortestPath} 
+                        feature={this.state.feature} 
+                        listURLpathOfSVG={this.state.listURLpathOfSVG} 
+                        listIdOfMap={this.SetlistIdForMap}
+                        startIndex={this.state.startIndex}
+                        AdjustNumberOfMap= {this.AdjustNumberOfMap}
+                        addVertexToGraphs={this.addVertexToGraphs}
+                        DeleteEgde={this.DeleteEgde}
+                    />
+
                 </div>
                 <div id="relationship-table">
                     <If
