@@ -2,7 +2,7 @@ import React from 'react';
 import ReactTable from 'react-table';
 import _ from 'lodash';
 import equals from 'deep-equal';
-import { handleSaveRelationship, serializeGraphsToData } from '../../utils';
+import { handleSaveRelationship, serializeGraphsToData } from '../../Utils';
 import COLUMNS from './Columns';
 import 'react-table/react-table.css';
 

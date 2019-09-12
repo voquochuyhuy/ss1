@@ -11,10 +11,7 @@ export default class ListSVG extends Component {
             listURLpathOfSVG:[],
         }
     }      
-    
-    componentDidMount(){
 
-    }
     handleSVG = async (src, hasCache)=>{ 
         // const {numberOfMap} = this.state;
         // await this.setState({numberOfMap:this.state.numberOfMap + 1}) ;
