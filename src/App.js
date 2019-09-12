@@ -7,7 +7,7 @@ import LoadGraphButton from "./components/Menu/LoadGraphButton";
 import WayFindRadioButton from "./components/Menu/WayFindRadioButton";
 import DrawRadioButton from "./components/Menu/DrawRadioButton";
 import DeleteRadioButton from "./components/Menu/DeleteRadioButton";
-import { If, addVertexToGraphs, removeVertexFromGraphs, hideNodes, showNodes, hideEdges, showEdges } from "./utils";
+import { If, addVertexToGraphs, removeVertexFromGraphs, hideNodes, showNodes, hideEdges, showEdges } from "./Utils";
 import LoadSvgButton from "./components/Menu/LoadSvgButton.jsx";
 import ListSVG from "./components/ListSVG";
 const Graph = require("node-dijkstra");

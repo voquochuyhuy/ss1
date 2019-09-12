@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ReactSVG from 'react-inlinesvg';
 import _ from 'lodash';
-import { drawEdge, drawShortestPath } from "../utils";
+import { drawEdge, drawShortestPath } from "../Utils";
 export default class ListSVG extends Component {
     constructor(props) {
         super(props);
