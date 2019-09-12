@@ -1,14 +1,14 @@
 import React, { Component } from 'react'
 import _ from "lodash";
 import Files from 'react-files'
-  class LoadSvgButton extends React.Component { 
-      constructor(props){
-          super(props);
-          this.state={
-            numberOfMap :0,
-            startIndex :0,
-          }
-      }
+class LoadSvgButton extends Component {
+    constructor(props) {
+        super(props);
+        this.state = {
+            numberOfMap: 0,
+            startIndex: 0,
+        }
+    }
     // handleLoadSvgClick = async e => {
     //     const svgLoaderElement = await this.renderFormLoader();
     //     if (!svgLoaderElement) return ;
@@ -39,24 +39,31 @@ import Files from 'react-files'
     //     }
     //     return promises
     // }
-    
-     onFilesChange = async (files)=>{
-         
-        let arrUrlSvg = [];  
-        console.log(files)
-        for(let i= this.state.numberOfMap;i<files.length  ;i++)
-        {
-            arrUrlSvg.push(files[i].preview.url);   
-        }  
-        await this.setState({startIndex:this.state.numberOfMap}) ;
-        await this.setState({numberOfMap:files.length}) ;
-        return  this.props.onLoadFinish(arrUrlSvg,this.state.startIndex);
+
+
+    onFilesChange = async (files) => {
+        const arrUrlSvg = [];
+        const { numberOfMap, startIndex } = this.state;
+        let tempFiles = _.uniqBy(files, file => file.name);
+        // for (let i = numberOfMap; i < tempFiles.length; i++) {
+        //     console.log('name : ', tempFiles[i].name);
+        //     arrUrlSvg.push(tempFiles[i].preview.url);
+        // }
+        // await this.setState({ startIndex: numberOfMap });
+        // await this.setState({ numberOfMap: tempFiles.length });
+        for (let i = numberOfMap; i < files.length; i++) {
+            console.log('name : ', files[i].name);
+            arrUrlSvg.push(files[i].preview.url);
+        }
+        await this.setState({ startIndex: numberOfMap });
+        await this.setState({ numberOfMap: files.length });
+        return this.props.onLoadFinish(arrUrlSvg, startIndex);
     }
 
-    onFilesError = ()=>{
+    onFilesError = () => {
 
     }
-    render(){
+    render() {
         return <Files
             className='files-dropzone'
             onChange={this.onFilesChange}
@@ -71,8 +78,8 @@ import Files from 'react-files'
             Drop files here or click to upload
         </Files>
     }
-    
-    
+
+
     //  return <button onClick={handleLoadSvgClick}>Load Map</button>   
 }
 export default LoadSvgButton
