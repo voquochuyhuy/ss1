@@ -66,7 +66,7 @@ class App extends React.Component {
     /********************CHỌN CHỨC NĂNG TÌM ĐƯỜNG ******************** */
     OnWayFinding = () => {
         this.setState({ feature: "find", vertex1: "", vertex2: "" });
-        showNodes();
+        showNodes(true);
         hideEdges();
     };
 

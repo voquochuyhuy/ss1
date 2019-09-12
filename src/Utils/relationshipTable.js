@@ -18,6 +18,7 @@ function getNameOfNode(node) {
     const doc = document.getElementById(node); //node = L4_29_NODE
     if (!doc) return null;
     const docTitle = document.getElementById('storetitle');
+    if (!docTitle) return node;
     const storeTitle = docTitle.children;
     const nodeId = doc.id.split('_NODE')[0];//nodeis = L4_29
     if (nodeId.includes('YAH') || nodeId === 'youarehere')

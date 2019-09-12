@@ -114,9 +114,7 @@ function setNodesStyle(nodes, type, mode) {
         }
     }
 }
-const showNodes = () => {
-    //store_node  facility_node  path_node
-    // const nodes = document.getElementById(`node-${floorId}`);
+const showNodes = (excludePath) => {
     const nodes = document.querySelectorAll("[id^='node-']");
     nodes.forEach(nodeFloor => {
         const storeNodes = nodeFloor.querySelector("#store_node");
@@ -126,6 +124,7 @@ const showNodes = () => {
             setNodesStyle(storeNodes, "store", "show");
             setNodesStyle(facilityNodes, "facility", "show");
             setNodesStyle(pathNodes, "path", "show");
+            if (excludePath) setNodesStyle(pathNodes, "path", "hide");
         }
     });
 }
