@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ReactSVG from 'react-inlinesvg';
-import _ from "lodash";
-import { drawEdge } from "../utils";
+import _ from 'lodash';
+import { drawEdge, drawShortestPath } from "../utils";
 export default class ListSVG extends Component {
     constructor(props) {
         super(props);
@@ -29,8 +29,11 @@ export default class ListSVG extends Component {
             let node_pathline = document.createElementNS("http://www.w3.org/2000/svg", "g");
             node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
 
-            let nodes = listsvg[i].getElementById("nodes");
-
+            let nodes = listsvg[i].getElementById("node");
+            if (!nodes) {
+                alert("No nodes found");
+                return;
+            }
             nodes.setAttribute("id", `node-${floorId}`);
             nodes.parentElement.appendChild(node_pathline);
             let node_pathline_clone = node_pathline.cloneNode(true);
@@ -74,6 +77,7 @@ export default class ListSVG extends Component {
             vertices[i].setAttribute("style", "cursor: pointer;")
         }
     };
+
     /*XỬ LÍ SỰ KIÊN KHI CLICK TRÊN SVG, DRAW EGDE- DRAW SHORTEST PATH */
     handleMouseClick(e, floorId) {
         const clickTarget = e.target;
@@ -128,100 +132,15 @@ export default class ListSVG extends Component {
                     .getElementById("second-vertex")
                     .setAttribute("value", e.target.id);
                 this.setState({ vertex2: e.target.id });
-                this.drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route);
+                // this.drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route);
+                drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route)
                 this.isFindingPath = false;
             }
         }
     }
-    /*TÌM ĐƯỜNG NGẮN NHẤT */
-    drawShortestPath(vertex1, vertex2) {
-        const pathArr = this.props.findShortestPath(vertex1, vertex2, this.props.route);
-        if (!pathArr) {
-            alert("Not found shortest path, check model graphs");
-            return;
-        }
-        const step = _.groupBy(pathArr, (vertexId) => {
-            return vertexId.substring(0, 2);
-        });
-        let first_vertex = document.getElementById(pathArr[0]);
-        first_vertex.setAttributeNS(null, "class", "highlight-circle");
-        let final_vertex = document.getElementById(pathArr[pathArr.length - 1]);
-        final_vertex.setAttributeNS(null, "class", "highlight-circle");
-        const pinLogo = document.createElementNS("http://www.w3.org/2000/svg", "image")
-        pinLogo.setAttributeNS('http://www.w3.org/1999/xlink', 'href', "./pin-logo.png");
-        pinLogo.setAttributeNS(null, "x", `${final_vertex.attributes.cx.value - 15}`);
-        pinLogo.setAttributeNS(null, "y", `${final_vertex.attributes.cy.value - 30}`);
-        pinLogo.setAttributeNS(null, "width", `30`);
-        pinLogo.setAttributeNS(null, "height", `30`);
-        pinLogo.setAttributeNS(null, "id", "pin-logo");
-        pinLogo.setAttributeNS(null, "background", "transparent");
-        const draw = (X, Y, SVGnodes) => {
-            var NoAnimatedPath = document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "path"
-            );
-            let M = `M ${X[0]} ${Y[0]}`;
-            for (let i = 1; i < X.length; i++) {
-                M += `L ${X[i]} ${Y[i]} `;
-            }
-            NoAnimatedPath.setAttributeNS(null, "d", `${M}`);
-            NoAnimatedPath.setAttributeNS(null, "stroke", "rgb(247, 199, 0)");
-            NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
-            NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
-            NoAnimatedPath.setAttributeNS(null, "stroke-dasharray", "10");
-            NoAnimatedPath.setAttributeNS(null, "class", "noAnimation-path");
-            SVGnodes.appendChild(NoAnimatedPath);
-
-            var animatedPath = document.createElementNS(
-                "http://www.w3.org/2000/svg",
-                "path"
-            );
-            animatedPath.setAttributeNS(null, "d", `${M}`);
-            animatedPath.setAttributeNS(null, "class", "animation-path");//
-            animatedPath.setAttributeNS(null, "stroke-width", "3");
-            animatedPath.setAttributeNS(null, "fill", "transparent");
-            SVGnodes.appendChild(animatedPath);
-            SVGnodes.appendChild(pinLogo);
-        }
-
-        console.log(step, _.size(step));
-        if (_.size(step) !== 1) {
-            _.forEach(step, (verticesGroup) => {
-                // console.log('verticesGroup : ', verticesGroup);
-                let floor_id = verticesGroup[0].substring(0, 2);
-                let X = [];
-                let Y = [];
-                for (let i = 0; i < verticesGroup.length; i++) {
-                    const vtx = verticesGroup[i];
-
-                    X.push(document.getElementById(vtx).attributes.cx.value);
-                    Y.push(document.getElementById(vtx).attributes.cy.value);
-                };
-                let SVGnodes = document.getElementById(floor_id).lastChild;
-                draw(X, Y, SVGnodes);
-            });
-        }
-        else {
-            const verticesGroup = _.reduce(step, (firstGroup) => firstGroup);
-            let floor_id = verticesGroup[0].substring(0, 2);
-            let X = [];
-            let Y = [];
-            for (let i = 0; i < verticesGroup.length; i++) {
-                const vtx = verticesGroup[i];
-                X.push(document.getElementById(vtx).attributes.cx.value);
-                Y.push(document.getElementById(vtx).attributes.cy.value);
-
-            }
-            console.log(floor_id);
-            let SVGnodes = document.getElementById(`node-${floor_id}`);
-            console.log(SVGnodes);
-            draw(X, Y, SVGnodes);
-        }
-    };
-
     /*MENU CHO MAP KHI LOAD MAP LÊN */
     DeleteMap = (floorId) => {
-        let deleteFile;
+        //remove HTMLElement
         document.getElementById("list-svg").removeChild(document.getElementById(`svg-${floorId}`));
         let radioElement = document.getElementById(`radio-${floorId}`);
         document.getElementsByClassName("App")[0].removeChild(radioElement.parentElement);
@@ -229,15 +148,23 @@ export default class ListSVG extends Component {
             let list_svg = document.getElementById("list-svg");
             list_svg.parentElement.removeChild(list_svg);
         }
-        for (let i = 0; i < this.state.listIdOfMap.length; i++) {
-            if (floorId === this.state.listIdOfMap[i]) {
-                deleteFile = i;
-                break;
-            }
-        }
-        var cloneState = [...this.state.listIdOfMap];
-        cloneState.splice(deleteFile, 1);
-        this.setState({ listIdOfMap: cloneState });
+        //remove file
+        let deleteFileIndex;
+        const { listURLpathOfSVG, listIdOfMap } = this.state;
+        const tempArrayId = listIdOfMap;
+        const removed = _.remove(tempArrayId, id => id === floorId);
+        console.log('removed id : ', removed);
+        this.setState({ listIdOfMap: tempArrayId });
+
+        // for (let i = 0; i < listIdOfMap.length; i++) {
+        //     if (listIdOfMap[i] === floorId) {
+        //         deleteFileIndex = i;
+        //         break;
+        //     }
+        // }
+        // var cloneState = [...listIdOfMap];
+        // cloneState.splice(deleteFileIndex, 1);
+        // this.setState({ listIdOfMap: cloneState });
 
     }
     scrollMap = (floorId) => {
@@ -249,7 +176,6 @@ export default class ListSVG extends Component {
     }
     render() {
         const { listURLpathOfSVG } = this.props;
-
         return (
             <div id="list-svg">
                 {listURLpathOfSVG ? this.state.listURLpathOfSVG.map((value, i) => (

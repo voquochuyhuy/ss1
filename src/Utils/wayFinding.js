@@ -1,5 +1,4 @@
 import _ from 'lodash';
-const Graph = require('node-dijkstra');
 /**
  * @param {string} vertex1 vertex1 HTMLElement id
  * @param {string} vertex2 vertex2 HTMLElement id
@@ -102,4 +101,4 @@ function drawShortestPath(vertex1, vertex2, route) {
     }
 };
 
-export { drawShortestPath, findShortestPath }
+export { drawShortestPath }

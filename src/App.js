@@ -7,7 +7,7 @@ import LoadGraphButton from "./components/Menu/LoadGraphButton";
 import WayFindRadioButton from "./components/Menu/WayFindRadioButton";
 import DrawRadioButton from "./components/Menu/DrawRadioButton";
 import DeleteRadioButton from "./components/Menu/DeleteRadioButton";
-import { If, addVertexToGraphs, removeVertexFromGraphs, findShortestPath } from "./utils";
+import { If, addVertexToGraphs, removeVertexFromGraphs, hideNodes, showNodes, hideEdges, showEdges } from "./utils";
 import LoadSvgButton from "./components/Menu/LoadSvgButton.jsx";
 import ListSVG from "./components/ListSVG";
 const Graph = require("node-dijkstra");
@@ -33,6 +33,8 @@ class App extends React.Component {
     /******************** CHỌN VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS ******************** */
     OnDrawingEgde = () => {
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
+        showNodes();
+        showEdges();
     };
     onChangeGraphs = (graphs) => {
         this.setState({ graphs: graphs });
@@ -44,6 +46,7 @@ class App extends React.Component {
     /******************** CHỌN XÓA CẠNH - XÓA ĐỈNH CỦA CẠNH VỪA XÓA TRONG GRAPHS ******************** */
     OnDeleteEgde = () => {
         this.setState({ feature: "delete" });
+        showEdges();
     };
     DeleteEgde = (edge, vertex1Id, vertex2Id) => {
         if (this.state.feature === "delete" && typeof edge !== "string") {
@@ -63,6 +66,8 @@ class App extends React.Component {
     /********************CHỌN CHỨC NĂNG TÌM ĐƯỜNG ******************** */
     OnWayFinding = () => {
         this.setState({ feature: "find", vertex1: "", vertex2: "" });
+        showNodes();
+        hideEdges();
     };
 
     /**********************START wayFiding***********************/
@@ -129,7 +134,6 @@ class App extends React.Component {
                     <WayFindRadioButton feature={this.state.feature} listIdOfMap={this.state.listIdOfMap} OnWayFinding={this.OnWayFinding} />
                     <ListSVG
                         route={this.state.route}
-                        findShortestPath={findShortestPath}
                         feature={this.state.feature}
                         listURLpathOfSVG={this.state.listURLpathOfSVG}
                         listIdOfMap={this.SetlistIdForMap}
