@@ -91,4 +91,76 @@ const drawEdge = (vertex1, vertex2, floorId, DeleteEgde, addVertexToGraphs) => {
             draw(vtx1, vtx2);
     }
 }
-export { If, drawEdge, handleSaveRelationship, deserializeDataToGraphs }
+function setNodesStyle(nodes, type, mode) {
+    const circles = nodes.getElementsByTagName("circle");
+    if (mode === "show") {
+        let color;
+        if (type === "store") color = "green";
+        else if (type === "facility") color = "blue";
+        else color = "gray";
+        for (let i = 0; i < circles.length; i++) {
+            circles[i].setAttribute("style", "cursor: pointer");
+            circles[i].setAttribute("stroke", "black");
+            circles[i].setAttribute("stroke-width", 0.5);
+            circles[i].setAttribute("fill", color);
+        }
+    }
+    else {
+        for (let i = 0; i < circles.length; i++) {
+            circles[i].setAttribute("style", "cursor: pointer");
+            circles[i].setAttribute("stroke", "none");
+            circles[i].setAttribute("stroke-width", 0);
+            circles[i].setAttribute("fill", "transparent");
+        }
+    }
+}
+const showNodes = () => {
+    //store_node  facility_node  path_node
+    // const nodes = document.getElementById(`node-${floorId}`);
+    const nodes = document.querySelectorAll("[id^='node-']");
+    nodes.forEach(nodeFloor => {
+        const storeNodes = nodeFloor.querySelector("#store_node");
+        const facilityNodes = nodeFloor.querySelector("#facility_node");
+        const pathNodes = nodeFloor.querySelector("#path_node");
+        if (storeNodes && facilityNodes && pathNodes) {
+            setNodesStyle(storeNodes, "store", "show");
+            setNodesStyle(facilityNodes, "facility", "show");
+            setNodesStyle(pathNodes, "path", "show");
+        }
+    });
+}
+const hideNodes = () => {
+    const nodes = document.querySelectorAll("[id^='node-']");
+    nodes.forEach(nodeFloor => {
+        const storeNodes = nodeFloor.querySelector("#store_node");
+        const facilityNodes = nodeFloor.querySelector("#facility_node");
+        const pathNodes = nodeFloor.querySelector("#path_node");
+        if (storeNodes && facilityNodes && pathNodes) {
+            setNodesStyle(storeNodes, "store", "hide");
+            setNodesStyle(facilityNodes, "facility", "hide");
+            setNodesStyle(pathNodes, "path", "hide");
+        }
+    });
+}
+const showEdges = () => {
+    const edges = document.querySelector("[id^='node-pathline']");
+    const lines = edges.getElementsByTagName("line");
+    for (let i = 0; i < lines.length; i++) {
+        lines[i].setAttributeNS(null, "stroke", "red");
+        lines[i].setAttributeNS(null, "stroke-width", "3");
+        lines[i].setAttributeNS(null, "fill", "none");
+        lines[i].setAttributeNS(null, "stroke-dasharray", "5,5");
+        lines[i].setAttributeNS(null, "style", "cursor: pointer;");
+    }
+}
+const hideEdges = () => {
+    const edges = document.querySelector("[id^='node-pathline']");
+    const lines = edges.getElementsByTagName("line");
+    for (let i = 0; i < lines.length; i++) {
+        lines[i].setAttribute("fill", "transparent");
+        lines[i].setAttribute("stroke", "none");
+        lines[i].setAttribute("stroke-width", 0);
+        lines[i].setAttributeNS(null, "style", "cursor: normal;");
+    }
+}
+export { If, drawEdge, handleSaveRelationship, deserializeDataToGraphs, hideNodes, showNodes, showEdges, hideEdges }
