@@ -69,12 +69,23 @@ export default class ListSVG extends Component {
     addClickEventForCircle = (floorId) => {
         let svg = document.getElementById(`node-${floorId}`);
         const vertices = svg.getElementsByTagName("circle");
-        this.vertices = vertices;
+        const ellipses = document.querySelectorAll("ellipse[id*='YAH']");
+        console.log(ellipses);
+        
+        // this.vertices = vertices;
         for (let i = 0; i < vertices.length; i++) {
             vertices[i].addEventListener("click", e => {
                 this.handleMouseClick(e, floorId);
             });
-            vertices[i].setAttribute("style", "cursor: pointer;")
+            vertices[i].setAttribute("style", "cursor: pointer;");
+        }
+        for (let i = 0; i < ellipses.length; i++) {
+            if (ellipses[i].id) {
+                ellipses[i].addEventListener("click", e => {
+                    this.handleMouseClick(e, floorId);
+                });
+            }
+            ellipses[i].setAttribute("style", "cursor: pointer;");
         }
     };
 
@@ -82,7 +93,7 @@ export default class ListSVG extends Component {
     handleMouseClick(e, floorId) {
         const clickTarget = e.target;
         if (this.props.feature === "draw") {
-            if (clickTarget.nodeName === "circle") {
+            if (clickTarget.nodeName === "circle" || clickTarget.nodeName === "ellipse") {
                 if (!this.isDrawingEdge) {
                     this.setState({ edgeVertex1: clickTarget });
                     this.isDrawingEdge = true;

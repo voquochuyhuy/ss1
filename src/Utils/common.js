@@ -103,6 +103,7 @@ function setNodesStyle(nodes, type, mode) {
             circles[i].setAttribute("stroke", "black");
             circles[i].setAttribute("stroke-width", 0.5);
             circles[i].setAttribute("fill", color);
+            circles[i].setAttribute("fill-opacity", 0.7);
         }
     }
     else {
@@ -115,6 +116,7 @@ function setNodesStyle(nodes, type, mode) {
     }
 }
 const showNodes = (excludePath) => {
+    //show nodes
     const nodes = document.querySelectorAll("[id^='node-']");
     nodes.forEach(nodeFloor => {
         const storeNodes = nodeFloor.querySelector("#store_node");
@@ -127,6 +129,14 @@ const showNodes = (excludePath) => {
             if (excludePath) setNodesStyle(pathNodes, "path", "hide");
         }
     });
+    //show YAH nodes
+    const YAHNodes = document.querySelectorAll("[id*='YAH']");
+    YAHNodes.forEach(YAHnode => {
+        YAHnode.setAttributeNS(null, "stroke", "black");
+        YAHnode.setAttributeNS(null, "stroke-width", 0.5);
+        YAHnode.setAttributeNS(null, "fill", "orange");
+        YAHnode.setAttributeNS(null, "fill-opacity", 0.7);
+    })
 }
 const hideNodes = () => {
     const nodes = document.querySelectorAll("[id^='node-']");
