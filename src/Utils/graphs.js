@@ -1,3 +1,5 @@
+import _ from 'lodash';
+
 /**
  * @param {HTMLElement} vertex1 đỉnh thứ nhất 
  * @param {HTMLElement} vertex2 đỉnh thứ hai 
@@ -27,7 +29,7 @@ function addVertexToGraphs(vertex1, vertex2, graphs, onChangeGraphs) {
             graphs[idVertex2] = { ...graphs[idVertex2], [idVertex1]: cost };
             graphs[idVertex1] = { ...graphs[idVertex1], [idVertex2]: cost };
             // this.setState({ graphs });//
-            onChangeGraphs(graphs)
+            onChangeGraphs({ ...graphs });
         } else if (!graphs[idVertex2]) {
             console.log("ton tai v1 va ko ton tai v2");
             graphs[idVertex1] = { ...graphs[idVertex1], [idVertex2]: cost };
@@ -93,7 +95,25 @@ function removeVertexFromGraphs(v1, v2, graphs, onChangeGraphs) {
     if (_.has(graphs, [v1, v2]) && _.has(graphs, [v2, v1])) {
         delete graphs[v1][v2];
         delete graphs[v2][v1];
+        if (_.isEmpty(graphs[v1])) {
+            delete graphs[v1];
+        }
+        if (_.isEmpty(graphs[v2])) {
+            delete graphs[v2];
+        }
         onChangeGraphs(graphs);
     }
 }
-export { addVertexToGraphs, removeVertexFromGraphs }
+/**
+ * 
+ * @param {{}} graphs object graphs
+ * @param {string} v1 vertex1 HTMLElement id 
+ * @param {string} v2 vertex2 HTMLElement id
+ */
+function checkEdgesExist(graphs, v1, v2) {
+    if (graphs[v1] && graphs[v2] && (graphs[v1][v2] || graphs[v2][v1])) {
+        return true;
+    }
+    return false;
+}
+export { addVertexToGraphs, removeVertexFromGraphs, checkEdgesExist }

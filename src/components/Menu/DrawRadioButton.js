@@ -1,6 +1,6 @@
 import React from 'react'
 import _ from "lodash";
-import { drawEdge } from "../../Utils/index";
+import { drawEdge } from "../../utils";
 export default function DrawRadioButton(props) {
     const OnDrawingEgde = () => {
         props.OnDrawingEgde();
