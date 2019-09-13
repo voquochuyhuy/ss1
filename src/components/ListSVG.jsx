@@ -1,7 +1,7 @@
 import React, { Component } from 'react'
 import ReactSVG from 'react-inlinesvg';
 import _ from 'lodash';
-import { drawEdge, drawShortestPath } from "../Utils";
+import { drawEdge, drawShortestPath, removeShortestPathEl } from "../Utils";
 import { isFulfilled } from 'q';
 export default class ListSVG extends Component {
     constructor(props) {
@@ -113,6 +113,9 @@ export default class ListSVG extends Component {
                 }
             }
         } else if (this.props.feature === "find") {
+            if (document.getElementsByClassName("animation-path").length !== 0) {
+                removeShortestPathEl(this.state.vertex1, this.state.vertex2);
+            }
             if (!this.isFindingPath) {
                 document
                     .getElementById("first-vertex")
