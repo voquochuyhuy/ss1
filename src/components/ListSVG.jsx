@@ -8,7 +8,6 @@ export default class ListSVG extends Component {
         super(props);
         this.state = {
             listIdOfMap: [],
-            numberOfMap: 0,
             listURLpathOfSVG: [],
             vertex1: "",
             vertex2: "",
@@ -17,16 +16,15 @@ export default class ListSVG extends Component {
     }
 
     handleSVG = async (src, hasCache) => {
-        // const {numberOfMap} = this.state;
-        // await this.setState({numberOfMap:this.state.numberOfMap + 1}) ;
         if(this.props.isLoading === false)
         {
             return;
         }
             
         let listsvg = document.getElementsByTagName("svg");
-       
-        if (listsvg.length < this.props.listURLpathOfSVG.length) {
+        let notFinishLoad = listsvg.length < this.props.listURLpathOfSVG.length;
+
+        if (notFinishLoad === true) {
             return;
         }
 
@@ -35,42 +33,13 @@ export default class ListSVG extends Component {
         for (let i = index - this.state.numDeleted; i < this.state.listURLpathOfSVG.length; i++) {
             let floorId = listsvg[i].getElementById("background").parentElement.attributes.id.value;
             listsvg[i].setAttribute("id", `svg-${floorId}`);
-            let node_pathline = document.createElementNS("http://www.w3.org/2000/svg", "g");
-            node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
 
-            let nodes = listsvg[i].getElementById("node");
-            if (!nodes) {
-                alert("No nodes found");
-                return;
-            }
-            nodes.setAttribute("id", `node-${floorId}`);
-            nodes.parentElement.appendChild(node_pathline);
-            let node_pathline_clone = node_pathline.cloneNode(true);
-            let nodes_clone = nodes.cloneNode(true);
-            nodes.replaceWith(node_pathline_clone);
-            node_pathline.replaceWith(nodes_clone);
-
+            this.createNode_Pathline(listsvg[i],floorId);
+            
             this.addClickEventForCircle(floorId);
 
-            let divMenuOfMap = document.createElement("div");
-            divMenuOfMap.setAttribute("class", "menuOfMap");
-            document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
-            let radio = document.createElement("input");
-            radio.setAttribute("type", "radio");
-            radio.setAttribute("name", "radioGroup");
-            radio.setAttribute("id", `radio-${floorId}`);
-            radio.addEventListener("change", () => { this.scrollMap(floorId) });
-            let nameOfMap = document.createElement("span");
-            nameOfMap.innerHTML = `${floorId}`;
-            let button = document.createElement("button");
-            button.addEventListener("click", () => { this.DeleteMap(floorId) });
-            button.textContent = "Delete";
-            let space = document.createElement("span");
-            space.innerText = `     `;
-            divMenuOfMap.appendChild(radio);
-            divMenuOfMap.appendChild(nameOfMap);
-            divMenuOfMap.appendChild(button);
-            divMenuOfMap.appendChild(space);
+            this.addMenuForMap(floorId);
+
             await this.setState({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
         }
     }
@@ -96,7 +65,43 @@ export default class ListSVG extends Component {
             ellipses[i].setAttribute("style", "cursor: pointer;");
         }
     };
+    addMenuForMap = (floorId)=>{
+        let divMenuOfMap = document.createElement("div");
+        divMenuOfMap.setAttribute("class", "menuOfMap");
+        document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
+        let radio = document.createElement("input");
+        radio.setAttribute("type", "radio");
+        radio.setAttribute("name", "radioGroup");
+        radio.setAttribute("id", `radio-${floorId}`);
+        radio.addEventListener("change", () => { this.scrollMap(floorId) });
+        let nameOfMap = document.createElement("span");
+        nameOfMap.innerHTML = `${floorId}`;
+        let button = document.createElement("button");
+        button.addEventListener("click", () => { this.DeleteMap(floorId) });
+        button.textContent = "Delete";
+        let space = document.createElement("span");
+        space.innerText = `     `;
+        divMenuOfMap.appendChild(radio);
+        divMenuOfMap.appendChild(nameOfMap);
+        divMenuOfMap.appendChild(button);
+        divMenuOfMap.appendChild(space);
+    }
+    createNode_Pathline = (svgElement,floorId)=>{
+        let node_pathline = document.createElementNS("http://www.w3.org/2000/svg", "g");
+        node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
 
+        let nodes = svgElement.getElementById("node");
+        if (!nodes) {
+            alert("No nodes found");
+            return;
+        }
+        nodes.setAttribute("id", `node-${floorId}`);
+        nodes.parentElement.appendChild(node_pathline);
+        let node_pathline_clone = node_pathline.cloneNode(true);
+        let nodes_clone = nodes.cloneNode(true);
+        nodes.replaceWith(node_pathline_clone);
+        node_pathline.replaceWith(nodes_clone);
+    }
     /*XỬ LÍ SỰ KIÊN KHI CLICK TRÊN SVG, DRAW EGDE- DRAW SHORTEST PATH */
     handleMouseClick(e, floorId) {
         const clickTarget = e.target;
