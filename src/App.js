@@ -7,7 +7,7 @@ import LoadGraphButton from "./components/Menu/LoadGraphButton";
 import WayFindRadioButton from "./components/Menu/WayFindRadioButton";
 import DrawRadioButton from "./components/Menu/DrawRadioButton";
 import DeleteRadioButton from "./components/Menu/DeleteRadioButton";
-import { If, addVertexToGraphs, removeVertexFromGraphs, hideNodes, showNodes, hideEdges, showEdges } from "./utils";
+import { If, addVertexToGraphs, removeVertexFromGraphs, hideNodes, showNodes, hideEdges, showEdges, removeShortestPathEl } from "./utils";
 import LoadSvgButton from "./components/Menu/LoadSvgButton.jsx";
 import ListSVG from "./components/ListSVG";
 const Graph = require("node-dijkstra");
@@ -31,10 +31,17 @@ class App extends React.Component {
         };
     }
     /******************** CHỌN VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS ******************** */
+    changeVertex = (vertex1, vertex2) => {
+        this.setState({vertex1: vertex1, vertex2: vertex2});
+    }
     OnDrawingEgde = () => {
-        this.setState({ feature: "draw", vertex1: "", vertex2: "" });
         showNodes();
         showEdges();
+        if (document.getElementsByClassName("animation-path").length !== 0) {
+            const { vertex1, vertex2 } = this.state;
+            removeShortestPathEl(vertex1, vertex2);
+        };
+        this.setState({ feature: "draw", vertex1: "", vertex2: "" });
     };
     onChangeGraphs = (graphs) => {
         this.setState({ graphs: graphs });
@@ -129,6 +136,8 @@ class App extends React.Component {
                         addVertexToGraphs={this.addVertexToGraphs}
                         graphs={this.state.graphs}
                         feature={this.state.feature}
+                        vertex1={this.state.vertex1}
+                        vertex2={this.state.vertex2}
                     />
                     <DeleteRadioButton OnDeleteEgde={this.OnDeleteEgde} />
                     <WayFindRadioButton feature={this.state.feature} listIdOfMap={this.state.listIdOfMap} OnWayFinding={this.OnWayFinding} />
@@ -141,6 +150,7 @@ class App extends React.Component {
                         AdjustNumberOfMap={this.AdjustNumberOfMap}
                         addVertexToGraphs={this.addVertexToGraphs}
                         DeleteEgde={this.DeleteEgde}
+                        changeVertex={this.changeVertex}
                     />
 
                 </div>

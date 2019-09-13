@@ -9,6 +9,8 @@ export default class ListSVG extends Component {
             listIdOfMap: [],
             numberOfMap: 0,
             listURLpathOfSVG: [],
+            vertex1: "",
+            vertex2: ""
         }
     }
 
@@ -64,14 +66,13 @@ export default class ListSVG extends Component {
             divMenuOfMap.appendChild(space);
             await this.setState({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
         }
-
     }
     addClickEventForCircle = (floorId) => {
         let svg = document.getElementById(`node-${floorId}`);
         const vertices = svg.getElementsByTagName("circle");
         const ellipses = document.querySelectorAll("ellipse[id*='YAH']");
         console.log(ellipses);
-        
+
         // this.vertices = vertices;
         for (let i = 0; i < vertices.length; i++) {
             vertices[i].addEventListener("click", e => {
@@ -105,26 +106,6 @@ export default class ListSVG extends Component {
                 }
             }
         } else if (this.props.feature === "find") {
-            if (document.getElementsByClassName("animation-path").length !== 0) {
-                let noAnimation_Path = document.getElementsByClassName("noAnimation-path");
-                for (let i = 0; i < noAnimation_Path.length; i++) {
-                    noAnimation_Path[i].parentElement.removeChild(noAnimation_Path[i]);
-                }
-                let animated_Path = document.getElementsByClassName("animation-path");
-                for (let i = 0; i < animated_Path.length; i++) {
-                    // chưa xóa đường dẫn khi vẽ đường ngắn nhất trên nhiều map
-                    // do dính chung parentElement
-                    animated_Path[i].parentElement.removeChild(animated_Path[i]);
-                }
-                let first_vertex = document.getElementById(this.state.vertex1);
-                first_vertex.removeAttribute("class");
-                let final_vertex = document.getElementById(this.state.vertex2);
-                final_vertex.removeAttribute("class");
-                if (document.getElementById("pin-logo") !== null) {
-                    let pin_logo = document.getElementById("pin-logo");
-                    pin_logo.parentElement.removeChild(pin_logo);
-                }
-            }
             if (!this.isFindingPath) {
                 document
                     .getElementById("first-vertex")
@@ -144,6 +125,7 @@ export default class ListSVG extends Component {
                     .setAttribute("value", e.target.id);
                 this.setState({ vertex2: e.target.id });
                 // this.drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route);
+                this.props.changeVertex(this.state.vertex1, this.state.vertex2);
                 drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route)
                 this.isFindingPath = false;
             }

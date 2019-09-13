@@ -152,24 +152,43 @@ const hideNodes = () => {
     });
 }
 const showEdges = () => {
-    const edges = document.querySelector("[id^='node-pathline']");
-    const lines = edges.getElementsByTagName("line");
-    for (let i = 0; i < lines.length; i++) {
-        lines[i].setAttributeNS(null, "stroke", "red");
-        lines[i].setAttributeNS(null, "stroke-width", "3");
-        lines[i].setAttributeNS(null, "fill", "none");
-        lines[i].setAttributeNS(null, "stroke-dasharray", "5,5");
-        lines[i].setAttributeNS(null, "style", "cursor: pointer;");
-    }
+    const edges = document.querySelectorAll("[id^='node-pathline']");
+    edges.forEach(edge => {
+        const lines = edge.getElementsByTagName("line");
+        for (let i = 0; i < lines.length; i++) {
+            lines[i].setAttributeNS(null, "stroke", "red");
+            lines[i].setAttributeNS(null, "stroke-width", "3");
+            lines[i].setAttributeNS(null, "fill", "none");
+            lines[i].setAttributeNS(null, "stroke-dasharray", "5,5");
+            lines[i].setAttributeNS(null, "style", "cursor: pointer;");
+        }
+    })
 }
 const hideEdges = () => {
-    const edges = document.querySelector("[id^='node-pathline']");
-    const lines = edges.getElementsByTagName("line");
-    for (let i = 0; i < lines.length; i++) {
-        lines[i].setAttribute("fill", "transparent");
-        lines[i].setAttribute("stroke", "none");
-        lines[i].setAttribute("stroke-width", 0);
-        lines[i].setAttributeNS(null, "style", "cursor: normal;");
-    }
+    const edges = document.querySelectorAll("[id^='node-pathline']");
+    edges.forEach(edge => {
+        const lines = edge.getElementsByTagName("line");
+        for (let i = 0; i < lines.length; i++) {
+            lines[i].setAttribute("fill", "transparent");
+            lines[i].setAttribute("stroke", "none");
+            lines[i].setAttribute("stroke-width", 0);
+            lines[i].setAttributeNS(null, "style", "cursor: normal;");
+        }
+    });
 }
-export { If, drawEdge, handleSaveRelationship, deserializeDataToGraphs, hideNodes, showNodes, showEdges, hideEdges }
+const removeShortestPathEl = (idVertex1, idVertex2) => {
+    const noAnimation_Path = document.querySelectorAll(".noAnimation-path");
+    const animated_Path = document.querySelectorAll(".animation-path");
+    for (let i = 0, j = 0; i < noAnimation_Path.length, j < animated_Path.length; i++ , j++) {
+        noAnimation_Path[i].parentElement.removeChild(noAnimation_Path[i]);
+        animated_Path[j].parentElement.removeChild(animated_Path[j]);
+    }
+    let first_vertex = document.getElementById(idVertex1);
+    first_vertex.removeAttribute("class");
+    let final_vertex = document.getElementById(idVertex2);
+    final_vertex.removeAttribute("class");
+    let pin_logo = document.getElementById("pin-logo");
+    pin_logo.parentElement.removeChild(pin_logo);
+
+}
+export { If, drawEdge, handleSaveRelationship, deserializeDataToGraphs, hideNodes, showNodes, showEdges, hideEdges, removeShortestPathEl }
