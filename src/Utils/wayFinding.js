@@ -79,7 +79,7 @@ function drawShortestPath(vertex1, vertex2, route) {
                 X.push(document.getElementById(vtx).attributes.cx.value);
                 Y.push(document.getElementById(vtx).attributes.cy.value);
             };
-            let SVGnodes = document.getElementById(floor_id).lastChild;
+            let SVGnodes = document.getElementById(`node-pathline-${floor_id}`);
             draw(X, Y, SVGnodes);
         });
     }
@@ -95,7 +95,7 @@ function drawShortestPath(vertex1, vertex2, route) {
 
         }
         console.log(floor_id);
-        let SVGnodes = document.getElementById(`node-${floor_id}`);
+        let SVGnodes = document.getElementById(`node-pathline-${floor_id}`);
         console.log(SVGnodes);
         draw(X, Y, SVGnodes);
     }

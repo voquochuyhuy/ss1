@@ -98,7 +98,11 @@ class App extends React.Component {
             this.DeleteEgde(`${node}:${neighbor}`, node, neighbor);
         }
     }
-    
+    setStateAsync(state) {
+        return new Promise((resolve) => {
+          this.setState(state, resolve)
+        });
+    }
     getSvgContent = async (arrUrlSvg, startIndex) => {
         console.log(startIndex, "lastNumberOfMap-getSvgContent")
         this.setState({ startIndex: startIndex });

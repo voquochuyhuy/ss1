@@ -185,6 +185,11 @@ export default class ListSVG extends Component {
     componentWillReceiveProps(newProps) {
         this.setState({ listURLpathOfSVG: newProps.listURLpathOfSVG });
     }
+    setStateAsync(state) {
+        return new Promise((resolve) => {
+          this.setState(state, resolve)
+        });
+    }
     render() {
         const { listURLpathOfSVG } = this.props;
         return (
