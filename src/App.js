@@ -23,7 +23,6 @@ class App extends React.Component {
             graphs: {},
             feature: "",
             route: null,
-            listIdOfMap: [],
             svgId_FirstClick: "",
             svgContents: [],
             currentNumberOfMap: 0,
@@ -99,10 +98,7 @@ class App extends React.Component {
             this.DeleteEgde(`${node}:${neighbor}`, node, neighbor);
         }
     }
-    /*lưu ID của những map đã load */
-    SetlistIdForMap = (floorId) => {
-        this.setState({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
-    }
+    
     getSvgContent = async (arrUrlSvg, startIndex) => {
         console.log(startIndex, "lastNumberOfMap-getSvgContent")
         this.setState({ startIndex: startIndex });
@@ -133,12 +129,11 @@ class App extends React.Component {
                         vertex2={this.state.vertex2}
                     />
                     <DeleteRadioButton OnDeleteEgde={this.OnDeleteEgde} />
-                    <WayFindRadioButton feature={this.state.feature} listIdOfMap={this.state.listIdOfMap} OnWayFinding={this.OnWayFinding} />
+                    <WayFindRadioButton feature={this.state.feature}  OnWayFinding={this.OnWayFinding} />
                     <ListSVG
                         route={this.state.route}
                         feature={this.state.feature}
                         listURLpathOfSVG={this.state.listURLpathOfSVG}
-                        listIdOfMap={this.SetlistIdForMap}
                         startIndex={this.state.startIndex}
                         AdjustNumberOfMap={this.AdjustNumberOfMap}
                         addVertexToGraphs={this.addVertexToGraphs}
