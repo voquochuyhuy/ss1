@@ -1,1 +1,48 @@
-{"_NODE-4":{"L8_PATH_2_NODE":347},"L8_PATH_2_NODE":{"_NODE-4":347,"L8_PATH_3_NODE":292,"_NODE-2":189},"L8_PATH_3_NODE":{"L8_PATH_2_NODE":292,"L8_PATH_4_NODE":173,"L8_ELEVATOR_3_NODE":33,"L8_ESCALATOR_1_UP_NODE":67},"L8_PATH_4_NODE":{"L8_PATH_3_NODE":173,"L8_PATH_1_NODE":268},"L8_PATH_1_NODE":{"L8_PATH_4_NODE":268,"_NODE-3":64,"_NODE":42,"L8_ELEVATOR_1_NODE":373,"L8_ELEVATOR_2_NODE":530},"_NODE-3":{"L8_PATH_1_NODE":64},"_NODE":{"L8_PATH_1_NODE":42},"_NODE-2":{"L8_PATH_2_NODE":189},"L8_ELEVATOR_3_NODE":{"L8_PATH_3_NODE":33},"L8_ESCALATOR_1_UP_NODE":{"L8_PATH_3_NODE":67},"L8_ELEVATOR_1_NODE":{"L8_PATH_1_NODE":373},"L8_ELEVATOR_2_NODE":{"L8_PATH_1_NODE":530}}
+{
+    "_NODE-4": {
+        "L8_PATH_2_NODE": 347
+    },
+    "L8_PATH_2_NODE": {
+        "_NODE-4": 347,
+        "L8_PATH_3_NODE": 292,
+        "_NODE-2": 189
+    },
+    "L8_PATH_3_NODE": {
+        "L8_PATH_2_NODE": 292,
+        "L8_PATH_4_NODE": 173,
+        "L8_ELEVATOR_3_NODE": 33,
+        "L8_ESCALATOR_1_UP_NODE": 67
+    },
+    "L8_PATH_4_NODE": {
+        "L8_PATH_3_NODE": 173,
+        "L8_PATH_1_NODE": 268
+    },
+    "L8_PATH_1_NODE": {
+        "L8_PATH_4_NODE": 268,
+        "_NODE-3": 64,
+        "_NODE": 42,
+        "L8_ELEVATOR_1_NODE": 373,
+        "L8_ELEVATOR_2_NODE": 530
+    },
+    "_NODE-3": {
+        "L8_PATH_1_NODE": 64
+    },
+    "_NODE": {
+        "L8_PATH_1_NODE": 42
+    },
+    "_NODE-2": {
+        "L8_PATH_2_NODE": 189
+    },
+    "L8_ELEVATOR_3_NODE": {
+        "L8_PATH_3_NODE": 33
+    },
+    "L8_ESCALATOR_1_UP_NODE": {
+        "L8_PATH_3_NODE": 67
+    },
+    "L8_ELEVATOR_1_NODE": {
+        "L8_PATH_1_NODE": 373
+    },
+    "L8_ELEVATOR_2_NODE": {
+        "L8_PATH_1_NODE": 530
+    }
+}

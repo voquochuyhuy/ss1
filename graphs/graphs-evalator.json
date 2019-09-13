@@ -1,0 +1,70 @@
+{
+    "B1_ELEVATOR_2_NODE": {
+        "L1_ELEVATOR_2_NODE": 1
+    },
+    "L1_ELEVATOR_2_NODE": {
+        "B1_ELEVATOR_2_NODE": 1,
+        "L2_ELEVATOR_3_NODE": 1
+    },
+    "L2_ELEVATOR_3_NODE": {
+        "L1_ELEVATOR_2_NODE": 1,
+        "L3_ELEVATOR_3_NODE": 1
+    },
+    "L3_ELEVATOR_3_NODE": {
+        "L2_ELEVATOR_3_NODE": 1,
+        "L4_ELEVATOR_3_NODE": 1
+    },
+    "L4_ELEVATOR_3_NODE": {
+        "L3_ELEVATOR_3_NODE": 1,
+        "L5_ELEVATOR_3_NODE": 1
+    },
+    "L5_ELEVATOR_3_NODE": {
+        "L4_ELEVATOR_3_NODE": 1,
+        "L6_ELEVATOR_3_NODE": 1
+    },
+    "L6_ELEVATOR_3_NODE": {
+        "L5_ELEVATOR_3_NODE": 1,
+        "L7_ELEVATOR_3_NODE": 1
+    },
+    "L7_ELEVATOR_3_NODE": {
+        "L6_ELEVATOR_3_NODE": 1,
+        "L8_ELEVATOR_3_NODE": 1
+    },
+    "L8_ELEVATOR_3_NODE": {
+        "L7_ELEVATOR_3_NODE": 1
+    },
+    "B1_ELEVATOR_1_NODE": {
+        "L1_ELEVATOR_1_NODE": 1
+    },
+    "L1_ELEVATOR_1_NODE": {
+        "B1_ELEVATOR_1_NODE": 1,
+        "L2_ELEVATOR_1_NODE": 1
+    },
+    "L2_ELEVATOR_1_NODE": {
+        "L1_ELEVATOR_1_NODE": 1,
+        "L3_ELEVATOR_1_NODE": 1
+    },
+    "L3_ELEVATOR_1_NODE": {
+        "L2_ELEVATOR_1_NODE": 1,
+        "L4_ELEVATOR_1_NODE": 1
+    },
+    "L4_ELEVATOR_1_NODE": {
+        "L3_ELEVATOR_1_NODE": 1,
+        "L5_ELEVATOR_1_NODE": 1
+    },
+    "L5_ELEVATOR_1_NODE": {
+        "L4_ELEVATOR_1_NODE": 1,
+        "L6_ELEVATOR_1_NODE": 1
+    },
+    "L6_ELEVATOR_1_NODE": {
+        "L5_ELEVATOR_1_NODE": 1,
+        "L7_ELEVATOR_1_NODE": 1
+    },
+    "L7_ELEVATOR_1_NODE": {
+        "L6_ELEVATOR_1_NODE": 1,
+        "L8_ELEVATOR_1_NODE": 1
+    },
+    "L8_ELEVATOR_1_NODE": {
+        "L7_ELEVATOR_1_NODE": 1
+    }
+}
