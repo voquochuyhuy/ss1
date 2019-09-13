@@ -28,12 +28,12 @@ class App extends React.Component {
             svgContents: [],
             currentNumberOfMap: 0,
             listURLpathOfSVG: [],
-            isLoading:false
+            isLoading: false
         };
     }
     /******************** CHỌN VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS ******************** */
     changeVertex = (vertex1, vertex2) => {
-        this.setState({vertex1: vertex1, vertex2: vertex2});
+        this.setState({ vertex1: vertex1, vertex2: vertex2 });
     }
     OnDrawingEgde = () => {
         showNodes();
@@ -97,15 +97,6 @@ class App extends React.Component {
         const { node, neighbor } = removedObj;
         if ((_.has(graphs, [node, neighbor]) && _.has(graphs, [neighbor, node]))) {
             this.DeleteEgde(`${node}:${neighbor}`, node, neighbor);
-            delete graphs[node][neighbor];
-            delete graphs[neighbor][node];
-            if (_.isEmpty(graphs[node])) {
-                delete graphs[node];
-            }
-            if (_.isEmpty(graphs[neighbor])) {
-                delete graphs[neighbor];
-            }
-            this.setState({ graphs });
         }
     }
     /*lưu ID của những map đã load */
@@ -117,13 +108,13 @@ class App extends React.Component {
         this.setState({ startIndex: startIndex });
         for (let i = 0; i < arrUrlSvg.length; i++)
             await this.setState({ listURLpathOfSVG: [...this.state.listURLpathOfSVG, arrUrlSvg[i]] });
-        await this.setState({isLoading:true});
+        await this.setState({ isLoading: true });
     }
     AdjustNumberOfMap = (index) => {
         console.log(index);
         var cloneState = [...this.state.listURLpathOfSVG];
         cloneState.splice(index, 1);
-        this.setState({ listURLpathOfSVG: cloneState,isLoading:false });
+        this.setState({ listURLpathOfSVG: cloneState, isLoading: false });
     }
     render() {
         return (
