@@ -1,0 +1,86 @@
+{
+    "B1_ESCALATOR_1_DOWN_NODE": {
+        "L1_ESCALATOR_1_DOWN_NODE": 1
+    },
+    "L1_ESCALATOR_1_DOWN_NODE": {
+        "B1_ESCALATOR_1_DOWN_NODE": 1
+    },
+    "L1_ESCALATOR_1_UP_NODE": {
+        "L2_ESCALATOR_1_DOWN_NODE": 1
+    },
+    "L2_ESCALATOR_1_DOWN_NODE": {
+        "L1_ESCALATOR_1_UP_NODE": 1
+    },
+    "L1_ESCALATOR_2_UP_NODE": {
+        "L2_ESCALATOR_2_DOWN_NODE": 1
+    },
+    "L2_ESCALATOR_2_DOWN_NODE": {
+        "L1_ESCALATOR_2_UP_NODE": 1
+    },
+    "L2_ESCALATOR_1_UP_NODE": {
+        "L3_ESCALATOR_1_DOWN_NODE": 1
+    },
+    "L3_ESCALATOR_1_DOWN_NODE": {
+        "L2_ESCALATOR_1_UP_NODE": 1
+    },
+    "L2_ESCALATOR_2_UP_NODE": {
+        "L3_ESCALATOR_2_DOWN_NODE": 1
+    },
+    "L3_ESCALATOR_2_DOWN_NODE": {
+        "L2_ESCALATOR_2_UP_NODE": 1
+    },
+    "L3_ESCALATOR_1_UP_NODE": {
+        "L4_ESCALATOR_1_DOWN_NODE": 1
+    },
+    "L4_ESCALATOR_1_DOWN_NODE": {
+        "L3_ESCALATOR_1_UP_NODE": 1
+    },
+    "L3_ESCALATOR_2_UP_NODE": {
+        "L4_ESCALATOR_2_DOWN_NODE": 1
+    },
+    "L4_ESCALATOR_2_DOWN_NODE": {
+        "L3_ESCALATOR_2_UP_NODE": 1
+    },
+    "L4_ESCALATOR_1_UP_NODE": {
+        "L5_ESCALATOR_1_DOWN_NODE": 1
+    },
+    "L5_ESCALATOR_1_DOWN_NODE": {
+        "L4_ESCALATOR_1_UP_NODE": 1
+    },
+    "L4_ESCALATOR_2_UP_NODE": {
+        "L5_ESCALATOR_2_DOWN_NODE": 1
+    },
+    "L5_ESCALATOR_2_DOWN_NODE": {
+        "L4_ESCALATOR_2_UP_NODE": 1
+    },
+    "L5_ESCALATOR_1_UP_NODE": {
+        "L6_ESCALATOR_2_DOWN_NODE": 1
+    },
+    "L6_ESCALATOR_2_DOWN_NODE": {
+        "L5_ESCALATOR_1_UP_NODE": 1
+    },
+    "L5_ESCALATOR_2_UP_NODE": {
+        "L6_ESCALATOR_1_DOWN_NODE": 1
+    },
+    "L6_ESCALATOR_1_DOWN_NODE": {
+        "L5_ESCALATOR_2_UP_NODE": 1
+    },
+    "L6_ESCALATOR_2_UP_NODE": {
+        "L7_ESCALATOR_2_DOWN_NODE": 1
+    },
+    "L7_ESCALATOR_2_DOWN_NODE": {
+        "L6_ESCALATOR_2_UP_NODE": 1
+    },
+    "L6_ESCALATOR_1_UP_NODE": {
+        "L7_ESCALATOR_1_DOWN_NODE": 1
+    },
+    "L7_ESCALATOR_1_DOWN_NODE": {
+        "L6_ESCALATOR_1_UP_NODE": 1
+    },
+    "L7_ESCALATOR_2_UP_NODE": {
+        "L8_ESCALATOR_1_DOWN_NODE": 1
+    },
+    "L8_ESCALATOR_1_DOWN_NODE": {
+        "L7_ESCALATOR_2_UP_NODE": 1
+    }
+}

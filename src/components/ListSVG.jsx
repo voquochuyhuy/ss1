@@ -46,8 +46,7 @@ export default class ListSVG extends Component {
     addClickEventForCircle = (floorId) => {
         let svg = document.getElementById(`node-${floorId}`);
         const vertices = svg.getElementsByTagName("circle");
-        const ellipses = document.querySelectorAll("ellipse[id*='YAH']");
-        console.log(ellipses);
+        const circlesYAH = document.querySelectorAll("circle[id*='YAH']");
 
         // this.vertices = vertices;
         for (let i = 0; i < vertices.length; i++) {
@@ -56,13 +55,13 @@ export default class ListSVG extends Component {
             });
             vertices[i].setAttribute("style", "cursor: pointer;");
         }
-        for (let i = 0; i < ellipses.length; i++) {
-            if (ellipses[i].id) {
-                ellipses[i].addEventListener("click", e => {
+        for (let i = 0; i < circlesYAH.length; i++) {
+            if (circlesYAH[i].id) {
+                circlesYAH[i].addEventListener("click", e => {
                     this.handleMouseClick(e, floorId);
                 });
             }
-            ellipses[i].setAttribute("style", "cursor: pointer;");
+            circlesYAH[i].setAttribute("style", "cursor: pointer;");
         }
     };
     addMenuForMap = (floorId)=>{
