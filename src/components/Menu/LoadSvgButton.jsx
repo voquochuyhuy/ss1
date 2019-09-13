@@ -40,7 +40,11 @@ class LoadSvgButton extends Component {
     //     return promises
     // }
 
-
+    setStateAsync(state) {
+        return new Promise((resolve) => {
+          this.setState(state, resolve)
+        });
+    }
     onFilesChange = async (files) => {
         const arrUrlSvg = [];
         // const { numberOfMap, startIndex } = this.state;
@@ -57,8 +61,8 @@ class LoadSvgButton extends Component {
         }
         // let context = React.createContext(arrUrlSvg);
         
-        await this.setState({ startIndex: this.state.numberOfMap });
-        await this.setState({ numberOfMap: files.length });
+        this.setStateAsync({ startIndex: this.state.numberOfMap });
+        this.setStateAsync({ numberOfMap: files.length });
         return this.props.onLoadFinish(arrUrlSvg, this.state.startIndex);
     }
 

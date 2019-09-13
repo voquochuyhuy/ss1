@@ -40,7 +40,7 @@ export default class ListSVG extends Component {
 
             this.addMenuForMap(floorId);
 
-            await this.setState({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
+            await this.setStateAsync({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
         }
     }
     addClickEventForCircle = (floorId) => {

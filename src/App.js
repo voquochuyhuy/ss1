@@ -104,11 +104,10 @@ class App extends React.Component {
         });
     }
     getSvgContent = async (arrUrlSvg, startIndex) => {
-        console.log(startIndex, "lastNumberOfMap-getSvgContent")
         this.setState({ startIndex: startIndex });
         for (let i = 0; i < arrUrlSvg.length; i++)
-            await this.setState({ listURLpathOfSVG: [...this.state.listURLpathOfSVG, arrUrlSvg[i]] });
-        await this.setState({ isLoading: true });
+             this.setStateAsync({ listURLpathOfSVG: [...this.state.listURLpathOfSVG, arrUrlSvg[i]] });
+        this.setState({ isLoading: true });
     }
     AdjustNumberOfMap = (index) => {
         console.log(index);
