@@ -13,8 +13,8 @@ function ButtonFeature({ handleAddRelationship, handleSaveRelationship }) {
     }
     return (
         <div style={{ textAlign: 'right' }}>
-            <button style={styles} onClick={() => handleAddRelationship}>Add</button>
-            <button style={styles} onClick={() => handleSaveRelationship} >Save</button>
+            <button style={styles} onClick={() => handleAddRelationship()}>Add</button>
+            <button style={styles} onClick={() => handleSaveRelationship()} >Save</button>
         </div>
     )
 }
