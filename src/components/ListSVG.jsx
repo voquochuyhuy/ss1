@@ -2,6 +2,7 @@ import React, { Component } from 'react'
 import ReactSVG from 'react-inlinesvg';
 import _ from 'lodash';
 import { drawEdge, drawShortestPath } from "../Utils";
+import { isFulfilled } from 'q';
 export default class ListSVG extends Component {
     constructor(props) {
         super(props);
@@ -10,22 +11,28 @@ export default class ListSVG extends Component {
             numberOfMap: 0,
             listURLpathOfSVG: [],
             vertex1: "",
-            vertex2: ""
+            vertex2: "",
+            numDeleted:0
         }
     }
 
     handleSVG = async (src, hasCache) => {
         // const {numberOfMap} = this.state;
         // await this.setState({numberOfMap:this.state.numberOfMap + 1}) ;
-
+        if(this.props.isLoading === false)
+        {
+            return;
+        }
+            
         let listsvg = document.getElementsByTagName("svg");
-
-        if (listsvg.length < this.state.listURLpathOfSVG.length) {
+       
+        if (listsvg.length < this.props.listURLpathOfSVG.length) {
             return;
         }
 
         let index = this.props.startIndex;
-        for (let i = index; i < this.state.listURLpathOfSVG.length; i++) {
+      
+        for (let i = index - this.state.numDeleted; i < this.state.listURLpathOfSVG.length; i++) {
             let floorId = listsvg[i].getElementById("background").parentElement.attributes.id.value;
             listsvg[i].setAttribute("id", `svg-${floorId}`);
             let node_pathline = document.createElementNS("http://www.w3.org/2000/svg", "g");
@@ -134,30 +141,33 @@ export default class ListSVG extends Component {
     /*MENU CHO MAP KHI LOAD MAP LÊN */
     DeleteMap = (floorId) => {
         //remove HTMLElement
-        document.getElementById("list-svg").removeChild(document.getElementById(`svg-${floorId}`));
+        // document.getElementById("list-svg").removeChild(document.getElementById(`svg-${floorId}`));
         let radioElement = document.getElementById(`radio-${floorId}`);
         document.getElementsByClassName("App")[0].removeChild(radioElement.parentElement);
-        if (document.getElementsByTagName("svg").length === 0) {
-            let list_svg = document.getElementById("list-svg");
-            list_svg.parentElement.removeChild(list_svg);
-        }
+        // if (document.getElementsByTagName("svg").length === 0) {
+        //     let list_svg = document.getElementById("list-svg");
+        //     list_svg.parentElement.removeChild(list_svg);
+        // }
         //remove file
         let deleteFileIndex;
         const { listURLpathOfSVG, listIdOfMap } = this.state;
-        const tempArrayId = listIdOfMap;
-        const removed = _.remove(tempArrayId, id => id === floorId);
-        console.log('removed id : ', removed);
-        this.setState({ listIdOfMap: tempArrayId });
+        // const tempArrayId = listIdOfMap;
+        // const removed = _.remove(tempArrayId, id => id === floorId);
+        // console.log('removed id : ', removed);
+        // this.setState({ listIdOfMap: tempArrayId });
 
-        // for (let i = 0; i < listIdOfMap.length; i++) {
-        //     if (listIdOfMap[i] === floorId) {
-        //         deleteFileIndex = i;
-        //         break;
-        //     }
-        // }
-        // var cloneState = [...listIdOfMap];
-        // cloneState.splice(deleteFileIndex, 1);
-        // this.setState({ listIdOfMap: cloneState });
+        for (let i = 0; i < listIdOfMap.length; i++) {
+            if (listIdOfMap[i] === floorId) {
+                deleteFileIndex = i;
+                break;
+            }
+        }
+        console.log(deleteFileIndex);
+        var cloneState = [...listIdOfMap];
+        cloneState.splice(deleteFileIndex, 1);
+        this.setState({ listIdOfMap: cloneState });
+        this.setState({numDeleted : this.state.numDeleted + 1})
+        this.props.AdjustNumberOfMap(deleteFileIndex);
 
     }
     scrollMap = (floorId) => {

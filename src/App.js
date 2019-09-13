@@ -28,6 +28,7 @@ class App extends React.Component {
             svgContents: [],
             currentNumberOfMap: 0,
             listURLpathOfSVG: [],
+            isLoading:false
         };
     }
     /******************** CHỌN VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS ******************** */
@@ -116,12 +117,13 @@ class App extends React.Component {
         this.setState({ startIndex: startIndex });
         for (let i = 0; i < arrUrlSvg.length; i++)
             await this.setState({ listURLpathOfSVG: [...this.state.listURLpathOfSVG, arrUrlSvg[i]] });
+        await this.setState({isLoading:true});
     }
     AdjustNumberOfMap = (index) => {
         console.log(index);
         var cloneState = [...this.state.listURLpathOfSVG];
         cloneState.splice(index, 1);
-        this.setState({ listURLpathOfSVG: cloneState });
+        this.setState({ listURLpathOfSVG: cloneState,isLoading:false });
     }
     render() {
         return (
@@ -151,6 +153,7 @@ class App extends React.Component {
                         addVertexToGraphs={this.addVertexToGraphs}
                         DeleteEgde={this.DeleteEgde}
                         changeVertex={this.changeVertex}
+                        isLoading={this.state.isLoading}
                     />
 
                 </div>

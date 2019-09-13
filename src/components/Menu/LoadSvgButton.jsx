@@ -43,7 +43,7 @@ class LoadSvgButton extends Component {
 
     onFilesChange = async (files) => {
         const arrUrlSvg = [];
-        const { numberOfMap, startIndex } = this.state;
+        // const { numberOfMap, startIndex } = this.state;
         let tempFiles = _.uniqBy(files, file => file.name);
         // for (let i = numberOfMap; i < tempFiles.length; i++) {
         //     console.log('name : ', tempFiles[i].name);
@@ -51,13 +51,15 @@ class LoadSvgButton extends Component {
         // }
         // await this.setState({ startIndex: numberOfMap });
         // await this.setState({ numberOfMap: tempFiles.length });
-        for (let i = numberOfMap; i < files.length; i++) {
+        for (let i = this.state.numberOfMap; i < files.length; i++) {
             console.log('name : ', files[i].name);
             arrUrlSvg.push(files[i].preview.url);
         }
-        await this.setState({ startIndex: numberOfMap });
+        // let context = React.createContext(arrUrlSvg);
+        
+        await this.setState({ startIndex: this.state.numberOfMap });
         await this.setState({ numberOfMap: files.length });
-        return this.props.onLoadFinish(arrUrlSvg, startIndex);
+        return this.props.onLoadFinish(arrUrlSvg, this.state.startIndex);
     }
 
     onFilesError = () => {
