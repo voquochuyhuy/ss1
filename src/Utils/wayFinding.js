@@ -1,12 +1,26 @@
 import _ from 'lodash';
+const Graph = require('node-dijkstra');
 /**
  * @param {string} vertex1 vertex1 HTMLElement id
  * @param {string} vertex2 vertex2 HTMLElement id
  * @param {Graph} route route for Graph
+ * @param {Boolean} tryFindFlag nếu true, cố gắng tìm lại route khác 
  * @returns path : Array of path
  */
-function findShortestPath(vertex1, vertex2, route) {
+function findShortestPath(vertex1, vertex2, route, tryFindFlag) {
     if (!route) return null;
+    if (tryFindFlag) {
+        const tempRoute = route;
+        const keysArray = [...tempRoute.graph.keys()];
+        const floor = vertex1.substring(0, 2);
+        //nếu 2 node trong cùng 1 floor nhưng routing đến node ở floor khác (do graph) 
+        //thì xóa các node ở floor khác & routing lại
+        const removed = _.remove(keysArray, key => key.substring(0, 2) !== floor);
+        removed.forEach(key => {
+            tempRoute.removeNode(key);
+        })
+        return tempRoute.path(vertex1, vertex2);
+    }
     return route.path(vertex1, vertex2);
 };
 
@@ -17,14 +31,23 @@ function findShortestPath(vertex1, vertex2, route) {
  * @param {any} route 
  */
 function drawShortestPath(vertex1, vertex2, route) {
-    const pathArr = findShortestPath(vertex1, vertex2, route);
+    let pathArr = findShortestPath(vertex1, vertex2, route);
+    let step = _.groupBy(pathArr, (vertexId) => {
+        return vertexId.substring(0, 2);
+    });
+    console.log(step, _.size(step));
+    if (vertex1.substring(0, 2) === vertex2.substring(0, 2) && _.size(step) > 1) {
+        console.log("Warning: 2 vertex in floor but path out of bounds");
+        console.log("Trying to routing");
+        pathArr = findShortestPath(vertex1, vertex2, route, true);
+        step = _.groupBy(pathArr, (vertexId) => {
+            return vertexId.substring(0, 2);
+        });
+    }
     if (!pathArr) {
         alert("Not found shortest path, check model graphs");
         return;
     }
-    const step = _.groupBy(pathArr, (vertexId) => {
-        return vertexId.substring(0, 2);
-    });
     let first_vertex = document.getElementById(pathArr[0]);
     first_vertex.setAttributeNS(null, "class", "highlight-circle");
     let final_vertex = document.getElementById(pathArr[pathArr.length - 1]);
