@@ -2,6 +2,7 @@ import { If, drawEdge, handleSaveRelationship, deserializeDataToGraphs, showNode
 import { serializeGraphsToData } from './relationshipTable';
 import { addVertexToGraphs, removeVertexFromGraphs } from './graphs';
 import { drawShortestPath } from './wayFinding';
+import roundPathCorners from './rouding';
 export {
     If,
     drawEdge,
@@ -14,4 +15,5 @@ export {
     addVertexToGraphs,
     removeVertexFromGraphs,
     drawShortestPath,
+    roundPathCorners
 }
