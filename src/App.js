@@ -7,7 +7,7 @@ import LoadGraphButton from "./components/Menu/LoadGraphButton";
 import WayFindRadioButton from "./components/Menu/WayFindRadioButton";
 import DrawRadioButton from "./components/Menu/DrawRadioButton";
 import DeleteRadioButton from "./components/Menu/DeleteRadioButton";
-import { If, addVertexToGraphs, removeVertexFromGraphs, hideNodes, showNodes, hideEdges, showEdges, removeShortestPathEl } from "./Utils";
+import { If, addVertexToGraphs, removeVertexFromGraphs, showNodes, hideEdges, showEdges, removeShortestPathEl } from "./Utils";
 import LoadSvgButton from "./components/Menu/LoadSvgButton.jsx";
 import ListSVG from "./components/ListSVG";
 const Graph = require("node-dijkstra");
@@ -109,40 +109,43 @@ class App extends React.Component {
              this.setStateAsync({ listURLpathOfSVG: [...this.state.listURLpathOfSVG, arrUrlSvg[i]] });
         this.setState({ isLoading: true });
     }
-    AdjustNumberOfMap = (index) => {
-        console.log(index);
+    AdjustNumberOfMap =async (index) => {
+        
         var cloneState = [...this.state.listURLpathOfSVG];
         cloneState.splice(index, 1);
-        this.setState({ listURLpathOfSVG: cloneState, isLoading: false });
+        await this.setStateAsync({isLoading: false});
+        await this.setStateAsync({ listURLpathOfSVG: cloneState  });
+        
     }
     render() {
+        const {graphs,feature,vertex1,vertex2,listURLpathOfSVG,isLoading,route,startIndex} = this.state
         return (
             <div>
                 <div className="App">
                     <LoadSvgButton onLoadFinish={this.getSvgContent} />
                     <LoadGraphButton onFileGraphsChange={this.onFileGraphsChange}></LoadGraphButton>
-                    <SaveGraphButton data={this.state.graphs}></SaveGraphButton>
+                    <SaveGraphButton data={graphs}></SaveGraphButton>
                     <DrawRadioButton
                         OnDrawingEgde={this.OnDrawingEgde}
                         DeleteEgde={this.DeleteEgde}
                         addVertexToGraphs={this.addVertexToGraphs}
-                        graphs={this.state.graphs}
-                        feature={this.state.feature}
-                        vertex1={this.state.vertex1}
-                        vertex2={this.state.vertex2}
+                        graphs={graphs}
+                        feature={feature}
+                        vertex1={vertex1}
+                        vertex2={vertex2}
                     />
                     <DeleteRadioButton OnDeleteEgde={this.OnDeleteEgde} />
-                    <WayFindRadioButton feature={this.state.feature}  OnWayFinding={this.OnWayFinding} />
+                    <WayFindRadioButton feature={feature}  OnWayFinding={this.OnWayFinding} />
                     <ListSVG
-                        route={this.state.route}
-                        feature={this.state.feature}
-                        listURLpathOfSVG={this.state.listURLpathOfSVG}
-                        startIndex={this.state.startIndex}
+                        route={route}
+                        feature={feature}
+                        listURLpathOfSVG={listURLpathOfSVG}
+                        startIndex={startIndex}
                         AdjustNumberOfMap={this.AdjustNumberOfMap}
                         addVertexToGraphs={this.addVertexToGraphs}
                         DeleteEgde={this.DeleteEgde}
                         changeVertex={this.changeVertex}
-                        isLoading={this.state.isLoading}
+                        isLoading={isLoading}
                     />
 
                 </div>

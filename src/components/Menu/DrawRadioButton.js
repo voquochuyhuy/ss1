@@ -7,7 +7,6 @@ export default function DrawRadioButton(props) {
     }
     const drawEdgeFromGraphs = () => {
         const loadedGraphs = props.graphs;
-        console.log('drawEdgeFromGraphs called');
         const array = [];
         Object.keys(loadedGraphs).forEach(nodeId => {
             Object.keys(loadedGraphs[nodeId]).forEach(nodeNeighborId => {

@@ -1,8 +1,8 @@
 import React, { Component } from 'react'
 import ReactSVG from 'react-inlinesvg';
-import _ from 'lodash';
+// import _ from 'lodash';
 import { drawEdge, drawShortestPath, removeShortestPathEl } from "../Utils";
-import { isFulfilled } from 'q';
+// import { isFulfilled } from 'q';
 export default class ListSVG extends Component {
     constructor(props) {
         super(props);
@@ -14,26 +14,37 @@ export default class ListSVG extends Component {
             numDeleted:0
         }
     }
-
+    shouldComponentUpdate
     handleSVG = async (src, hasCache) => {
-        if(this.props.isLoading === false)
-        {
-            return;
-        }
-            
+        
+        let index = this.props.startIndex;
         let listsvg = document.getElementsByTagName("svg");
+        
         let notFinishLoad = listsvg.length < this.props.listURLpathOfSVG.length;
 
         if (notFinishLoad === true) {
             return;
         }
+        if(this.props.isLoading === false)
+        { 
+           
+            for (let i = index ; i < this.state.listURLpathOfSVG.length; i++) {
 
-        let index = this.props.startIndex;
-      
+                let floorId = listsvg[i].getElementById("background").parentElement.attributes.id.value;
+                let nodes = listsvg[i].getElementById("node");
+                if (nodes) {
+                    listsvg[i].setAttribute("id", `svg-${floorId}`);
+                    this.createNode_Pathline(listsvg[i],floorId);          
+                    this.addClickEventForCircle(floorId);
+                }
+                
+            }
+            return;
+        }
         for (let i = index - this.state.numDeleted; i < this.state.listURLpathOfSVG.length; i++) {
             let floorId = listsvg[i].getElementById("background").parentElement.attributes.id.value;
             listsvg[i].setAttribute("id", `svg-${floorId}`);
-
+            
             this.createNode_Pathline(listsvg[i],floorId);
             
             this.addClickEventForCircle(floorId);
@@ -86,14 +97,15 @@ export default class ListSVG extends Component {
         divMenuOfMap.appendChild(space);
     }
     createNode_Pathline = (svgElement,floorId)=>{
+       
         let node_pathline = document.createElementNS("http://www.w3.org/2000/svg", "g");
         node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
 
         let nodes = svgElement.getElementById("node");
-        if (!nodes) {
-            alert("No nodes found");
-            return;
-        }
+        // if (!nodes) {
+        //     alert("No nodes found");
+        //     return;
+        // }
         nodes.setAttribute("id", `node-${floorId}`);
         nodes.parentElement.appendChild(node_pathline);
         let node_pathline_clone = node_pathline.cloneNode(true);
@@ -157,7 +169,7 @@ export default class ListSVG extends Component {
         // }
         //remove file
         let deleteFileIndex;
-        const { listURLpathOfSVG, listIdOfMap } = this.state;
+        const {  listIdOfMap } = this.state;
         // const tempArrayId = listIdOfMap;
         // const removed = _.remove(tempArrayId, id => id === floorId);
         // console.log('removed id : ', removed);

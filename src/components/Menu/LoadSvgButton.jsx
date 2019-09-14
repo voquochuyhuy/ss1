@@ -1,5 +1,5 @@
 import React, { Component } from 'react'
-import _ from "lodash";
+// import _ from "lodash";
 import Files from 'react-files'
 class LoadSvgButton extends Component {
     constructor(props) {
@@ -46,24 +46,15 @@ class LoadSvgButton extends Component {
         });
     }
     onFilesChange = async (files) => {
+        // let {numberOfMap,startIndex} = this.state;
         const arrUrlSvg = [];
-        // const { numberOfMap, startIndex } = this.state;
-        let tempFiles = _.uniqBy(files, file => file.name);
-        // for (let i = numberOfMap; i < tempFiles.length; i++) {
-        //     console.log('name : ', tempFiles[i].name);
-        //     arrUrlSvg.push(tempFiles[i].preview.url);
-        // }
-        // await this.setState({ startIndex: numberOfMap });
-        // await this.setState({ numberOfMap: tempFiles.length });
         for (let i = this.state.numberOfMap; i < files.length; i++) {
-            console.log('name : ', files[i].name);
             arrUrlSvg.push(files[i].preview.url);
-        }
-        // let context = React.createContext(arrUrlSvg);
-        
-        this.setStateAsync({ startIndex: this.state.numberOfMap });
-        this.setStateAsync({ numberOfMap: files.length });
-        return this.props.onLoadFinish(arrUrlSvg, this.state.startIndex);
+        }   
+        await this.setStateAsync({ startIndex: this.state.numberOfMap });
+        await this.setStateAsync({ numberOfMap: files.length });
+
+        this.props.onLoadFinish(arrUrlSvg,this.state.startIndex);
     }
 
     onFilesError = () => {
