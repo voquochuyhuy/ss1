@@ -1,4 +1,5 @@
 import _ from 'lodash';
+import { roundPathCorners } from '../Utils';
 const Graph = require('node-dijkstra');
 /**
  * @param {string} vertex1 vertex1 HTMLElement id
@@ -69,7 +70,8 @@ function drawShortestPath(vertex1, vertex2, route) {
         for (let i = 1; i < X.length; i++) {
             M += `L ${X[i]} ${Y[i]} `;
         }
-        NoAnimatedPath.setAttributeNS(null, "d", `${M}`);
+        const roudingPath = roundPathCorners(M, 0.5, true);
+        NoAnimatedPath.setAttributeNS(null, "d", `${roudingPath}`);
         NoAnimatedPath.setAttributeNS(null, "stroke", "rgb(247, 199, 0)");
         NoAnimatedPath.setAttributeNS(null, "stroke-width", "3");
         NoAnimatedPath.setAttributeNS(null, "fill", "transparent");
@@ -81,10 +83,11 @@ function drawShortestPath(vertex1, vertex2, route) {
             "http://www.w3.org/2000/svg",
             "path"
         );
-        animatedPath.setAttributeNS(null, "d", `${M}`);
+        animatedPath.setAttributeNS(null, "d", `${roudingPath}`);
         animatedPath.setAttributeNS(null, "class", "animation-path");//
         animatedPath.setAttributeNS(null, "stroke-width", "3");
         animatedPath.setAttributeNS(null, "fill", "transparent");
+        animatedPath.setAttributeNS(null, "stroke-linejoin", "round");
         SVGnodes.appendChild(animatedPath);
         SVGnodes.appendChild(pinLogo);
     }
