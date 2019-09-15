@@ -80,6 +80,13 @@ const drawEdge = (vertex1, vertex2, floorId, DeleteEgde, addVertexToGraphs) => {
         });
         node_path.appendChild(edge);
     }
+    if (!addVertexToGraphs) {
+        const vtx1 = document.getElementById(vertex1);
+        const vtx2 = document.getElementById(vertex2);
+        if (vtx1 && vtx2)
+            draw(vtx1, vtx2);
+        return;
+    }
     if (typeof vertex1 !== "string") {
         const edgeExisted = addVertexToGraphs(vertex1, vertex2);
         edgeExisted ? alert('edge already existed') : draw(vertex1, vertex2);
