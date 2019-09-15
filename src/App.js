@@ -23,10 +23,8 @@ class App extends React.Component {
             graphs: {},
             feature: "",
             route: null,
-            svgId_FirstClick: "",
             svgContents: [],
-            currentNumberOfMap: 0,
-            listURLpathOfSVG: [],
+            listSvgArr: [],
             isLoading: false
         };
     }
@@ -106,19 +104,19 @@ class App extends React.Component {
     getSvgContent = async (arrUrlSvg, startIndex) => {
         this.setState({ startIndex: startIndex });
         for (let i = 0; i < arrUrlSvg.length; i++)
-             this.setStateAsync({ listURLpathOfSVG: [...this.state.listURLpathOfSVG, arrUrlSvg[i]] });
+             this.setStateAsync({ listSvgArr: [...this.state.listSvgArr, arrUrlSvg[i]] });
         this.setState({ isLoading: true });
     }
     AdjustNumberOfMap =async (index) => {
         
-        var cloneState = [...this.state.listURLpathOfSVG];
+        var cloneState = [...this.state.listSvgArr];
         cloneState.splice(index, 1);
         await this.setStateAsync({isLoading: false});
-        await this.setStateAsync({ listURLpathOfSVG: cloneState  });
+        await this.setStateAsync({ listSvgArr: cloneState  });
         
     }
     render() {
-        const {graphs,feature,vertex1,vertex2,listURLpathOfSVG,isLoading,route,startIndex} = this.state
+        const {graphs,feature,vertex1,vertex2,listSvgArr,isLoading,route,startIndex} = this.state
         return (
             <div>
                 <div className="App">
@@ -139,7 +137,7 @@ class App extends React.Component {
                     <ListSVG
                         route={route}
                         feature={feature}
-                        listURLpathOfSVG={listURLpathOfSVG}
+                        listSvgArr={listSvgArr}
                         startIndex={startIndex}
                         AdjustNumberOfMap={this.AdjustNumberOfMap}
                         addVertexToGraphs={this.addVertexToGraphs}

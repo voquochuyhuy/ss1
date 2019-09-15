@@ -8,7 +8,7 @@ export default class ListSVG extends Component {
         super(props);
         this.state = {
             listIdOfMap: [],
-            listURLpathOfSVG: [],
+            listSvgArrState: [],
             vertex1: "",
             vertex2: "",
             numDeleted: 0
@@ -19,15 +19,16 @@ export default class ListSVG extends Component {
 
         let index = this.props.startIndex;
         let listsvg = document.getElementsByTagName("svg");
-
-        let notFinishLoad = listsvg.length < this.props.listURLpathOfSVG.length;
+        
+        let notFinishLoad = listsvg.length < this.props.listSvgArr.length;
 
         if (notFinishLoad === true) {
             return;
         }
-        if (this.props.isLoading === false) {
-
-            for (let i = index; i < this.state.listURLpathOfSVG.length; i++) {
+        if(this.props.isLoading === false)
+        { 
+           
+            for (let i = index ; i < this.state.listSvgArrState.length; i++) {
 
                 let floorId = listsvg[i].getElementById("background").parentElement.attributes.id.value;
                 let nodes = listsvg[i].getElementById("node");
@@ -40,7 +41,7 @@ export default class ListSVG extends Component {
             }
             return;
         }
-        for (let i = index - this.state.numDeleted; i < this.state.listURLpathOfSVG.length; i++) {
+        for (let i = index - this.state.numDeleted; i < this.state.listSvgArrState.length; i++) {
             let floorId = listsvg[i].getElementById("background").parentElement.attributes.id.value;
             listsvg[i].setAttribute("id", `svg-${floorId}`);
 
@@ -191,7 +192,7 @@ export default class ListSVG extends Component {
         svg.scrollIntoView();
     }
     componentWillReceiveProps(newProps) {
-        this.setState({ listURLpathOfSVG: newProps.listURLpathOfSVG });
+        this.setState({ listSvgArrState: newProps.listSvgArr });
     }
     setStateAsync(state) {
         return new Promise((resolve) => {
@@ -199,10 +200,10 @@ export default class ListSVG extends Component {
         });
     }
     render() {
-        const { listURLpathOfSVG } = this.props;
+        const { listSvgArr } = this.props;
         return (
             <div id="list-svg">
-                {listURLpathOfSVG ? this.state.listURLpathOfSVG.map((value, i) => (
+                {listSvgArr ? this.state.listSvgArrState.map((value, i) => (
                     <ReactSVG
                         src={value}
                         onLoad={(src, hasCache) => this.handleSVG(src, hasCache)}
