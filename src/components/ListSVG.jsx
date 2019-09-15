@@ -19,23 +19,22 @@ export default class ListSVG extends Component {
 
         let index = this.props.startIndex;
         let listsvg = document.getElementsByTagName("svg");
-        
+
         let notFinishLoad = listsvg.length < this.props.listSvgArr.length;
 
         if (notFinishLoad === true) {
             return;
         }
-        if(this.props.isLoading === false)
-        { 
-           
-            for (let i = index ; i < this.state.listSvgArrState.length; i++) {
-
+        if (this.props.isLoading === false) {
+            for (let i = index; i < this.state.listSvgArrState.length; i++) {
                 let floorId = listsvg[i].getElementById("background").parentElement.attributes.id.value;
                 let nodes = listsvg[i].getElementById("node");
                 if (nodes) {
                     listsvg[i].setAttribute("id", `svg-${floorId}`);
                     this.createNode_Pathline(listsvg[i], floorId);
                     this.addClickEventForCircle(floorId);
+                    // this.addClickEventForCirclesYAH(floorId);
+
                 }
 
             }
@@ -44,6 +43,7 @@ export default class ListSVG extends Component {
         for (let i = index - this.state.numDeleted; i < this.state.listSvgArrState.length; i++) {
             let floorId = listsvg[i].getElementById("background").parentElement.attributes.id.value;
             listsvg[i].setAttribute("id", `svg-${floorId}`);
+            // this.addClickEventForCirclesYAH(floorId);
 
             this.createNode_Pathline(listsvg[i], floorId);
 
@@ -53,24 +53,30 @@ export default class ListSVG extends Component {
 
             await this.setStateAsync({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
         }
+        //add event listener for YAH nodes 
+        const circlesYAH = document.querySelectorAll("circle[id*='YAH']");
+        circlesYAH.forEach(circleNode => {
+            const floorId = circleNode.id.substring(0, 2);
+            this.addClickEventForCirclesYAH(circleNode, floorId);
+        });
+        console.log("circlesYAH", circlesYAH);
+    }
+    addClickEventForCirclesYAH = (YAHNode, floorId) => {
+        YAHNode.addEventListener("click", e => {
+            this.handleMouseClick(e, floorId);
+        });
+        YAHNode.setAttribute("style", "cursor: pointer;");
     }
     addClickEventForCircle = (floorId) => {
         let svg = document.getElementById(`node-${floorId}`);
         const vertices = svg.getElementsByTagName("circle");
-        const circlesYAH = document.querySelectorAll("circle[id*='YAH']");
-
         // this.vertices = vertices;
         for (let i = 0; i < vertices.length; i++) {
             vertices[i].addEventListener("click", e => {
+                console.log("add event listener for circle ");
                 this.handleMouseClick(e, floorId);
             });
             vertices[i].setAttribute("style", "cursor: pointer;");
-        }
-        for (let i = 0; i < circlesYAH.length; i++) {
-            circlesYAH[i].addEventListener("click", e => {
-                this.handleMouseClick(e, floorId);
-            });
-            circlesYAH[i].setAttribute("style", "cursor: pointer;");
         }
     };
     addMenuForMap = (floorId) => {
