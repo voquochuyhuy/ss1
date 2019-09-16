@@ -42,7 +42,7 @@ class App extends React.Component {
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
     };
     onChangeGraphs = (graphs) => {
-        this.setState({ graphs: graphs });
+        this.setState({ graphs: graphs, route: new Graph({ ...graphs }) });
     }
     addVertexToGraphs = (vertex1, vertex2) => {
         const edgeExisted = addVertexToGraphs(vertex1, vertex2, this.state.graphs, this.onChangeGraphs);
