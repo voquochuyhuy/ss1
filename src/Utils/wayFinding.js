@@ -38,10 +38,10 @@ function drawShortestPath(vertex1, vertex2, route) {
     let step = _.groupBy(pathArr, (vertexId) => {
         return vertexId.substring(0, 2);
     });
-    console.log(step, _.size(step));
+    // console.log(step, _.size(step));
     if (vertex1.substring(0, 2) === vertex2.substring(0, 2) && _.size(step) > 1) {
-        console.log("Warning: 2 vertex in floor but path out of bounds");
-        console.log("Trying to routing");
+        // console.log("Warning: 2 vertex in floor but path out of bounds");
+        // console.log("Trying to routing");
         pathArr = findShortestPath(vertex1, vertex2, route, true);
         step = _.groupBy(pathArr, (vertexId) => {
             return vertexId.substring(0, 2);
@@ -94,7 +94,7 @@ function drawShortestPath(vertex1, vertex2, route) {
         SVGnodes.appendChild(pinLogo);
     }
 
-    console.log(step, _.size(step));
+    // console.log(step, _.size(step));
     if (_.size(step) !== 1) {
         _.forEach(step, (verticesGroup) => {
             // console.log('verticesGroup : ', verticesGroup);
@@ -122,9 +122,9 @@ function drawShortestPath(vertex1, vertex2, route) {
             Y.push(document.getElementById(vtx).attributes.cy.value);
 
         }
-        console.log(floor_id);
+        
         let SVGnodes = document.getElementById(`node-pathline-${floor_id}`);
-        console.log(SVGnodes);
+        
         draw(X, Y, SVGnodes);
     }
     return pathArr;

@@ -59,7 +59,7 @@ export default class ListSVG extends Component {
             const floorId = circleNode.id.substring(0, 2);
             this.addClickEventForCirclesYAH(circleNode, floorId);
         });
-        console.log("circlesYAH", circlesYAH);
+        // console.log("circlesYAH", circlesYAH);
     }
     addClickEventForCirclesYAH = (YAHNode, floorId) => {
         YAHNode.addEventListener("click", e => {
@@ -73,7 +73,7 @@ export default class ListSVG extends Component {
         // this.vertices = vertices;
         for (let i = 0; i < vertices.length; i++) {
             vertices[i].addEventListener("click", e => {
-                console.log("add event listener for circle ");
+                // console.log("add event listener for circle ");
                 this.handleMouseClick(e, floorId);
             });
             vertices[i].setAttribute("style", "cursor: pointer;");
@@ -134,16 +134,21 @@ export default class ListSVG extends Component {
             }
         } else if (this.props.feature === "find") {
             if (document.getElementsByClassName("animation-path").length !== 0) {
-                console.log(this.state.vertex1,this.state.vertex2);
+                
                 if(this.state.vertex1 === "" || this.state.vertex2 === "")
                 {
-                    console.log(this.props.vertex1,this.props.vertex2);
+                    console.log("find");
                     removeShortestPathEl(this.props.vertex1, this.props.vertex2);
                 }    
-                else removeShortestPathEl(this.state.vertex1, this.state.vertex2);
+                else 
+                {
+                    console.log("click");
+                    removeShortestPathEl(this.state.vertex1, this.state.vertex2);
+                }
+                
             }
             if (!this.isFindingPath) {
-                console.log(e.target.id);
+                // console.log(e.target.id);
                 document
                     .getElementById("first-vertex")
                     .setAttribute("value", e.target.id);
@@ -151,7 +156,7 @@ export default class ListSVG extends Component {
                 this.setState({ vertex1: e.target.id });
                 this.isFindingPath = true;
             } else {
-                console.log(e.target.id);
+                // console.log(e.target.id);
                 if (e.target.id === this.state.vertex1) {
                     alert("Vertex cannot connect it self");
                     this.setState({ vertex1: "", vertex2: "" });
@@ -165,7 +170,7 @@ export default class ListSVG extends Component {
                 // this.drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route);
                 this.props.changeVertex(this.state.vertex1, this.state.vertex2);
                 let pathArrData = drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route);
-                console.log(pathArrData);
+                // console.log(pathArrData);
                 this.props.getPathArr(pathArrData)
                 this.isFindingPath = false;
             }

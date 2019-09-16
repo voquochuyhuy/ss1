@@ -191,10 +191,13 @@ const removeShortestPathEl = (idVertex1, idVertex2) => {
         noAnimation_Path[i].parentElement.removeChild(noAnimation_Path[i]);
         animated_Path[j].parentElement.removeChild(animated_Path[j]);
     }
-    let first_vertex = document.getElementById(idVertex1);
-    first_vertex.removeAttribute("class");
-    let final_vertex = document.getElementById(idVertex2);
-    final_vertex.removeAttribute("class");
+    let highLightEls = document.getElementsByClassName("highlight-circle");
+    for(let i = 0;i<highLightEls.length;i++)
+        highLightEls[i].removeAttribute("class");
+    // let first_vertex = document.getElementById(idVertex1);
+    // first_vertex.removeAttribute("class");
+    // let final_vertex = document.getElementById(idVertex2);
+    // final_vertex.removeAttribute("class");
     let pin_logo = document.getElementById("pin-logo");
     pin_logo.parentElement.removeChild(pin_logo);
 

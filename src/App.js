@@ -184,7 +184,7 @@ class App extends React.Component {
                 </div>
                 <div id="relationship-table">
                     <If
-                        condition={this.state.feature === 'draw'}
+                        condition={feature === 'draw' || feature === "find"}
                         component={RelationshipTable}
                         props={{
                             removeRelationship: (removedObj) => this.onRemoveFromChild(removedObj),
