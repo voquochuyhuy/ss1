@@ -11,71 +11,75 @@ export default class ListSVG extends Component {
             listSvgArrState: [],
             vertex1: "",
             vertex2: "",
-            numDeleted:0
+            numDeleted: 0
         }
     }
     shouldComponentUpdate
     handleSVG = async (src, hasCache) => {
-        
+
         let index = this.props.startIndex;
         let listsvg = document.getElementsByTagName("svg");
-        
+
         let notFinishLoad = listsvg.length < this.props.listSvgArr.length;
 
         if (notFinishLoad === true) {
             return;
         }
-        if(this.props.isLoading === false)
-        { 
-           
-            for (let i = index ; i < this.state.listSvgArrState.length; i++) {
-
+        if (this.props.isLoading === false) {
+            for (let i = index; i < this.state.listSvgArrState.length; i++) {
                 let floorId = listsvg[i].getElementById("background").parentElement.attributes.id.value;
                 let nodes = listsvg[i].getElementById("node");
                 if (nodes) {
                     listsvg[i].setAttribute("id", `svg-${floorId}`);
-                    this.createNode_Pathline(listsvg[i],floorId);          
+                    this.createNode_Pathline(listsvg[i], floorId);
                     this.addClickEventForCircle(floorId);
+                    // this.addClickEventForCirclesYAH(floorId);
+
                 }
-                
+
             }
             return;
         }
         for (let i = index - this.state.numDeleted; i < this.state.listSvgArrState.length; i++) {
             let floorId = listsvg[i].getElementById("background").parentElement.attributes.id.value;
             listsvg[i].setAttribute("id", `svg-${floorId}`);
-            
-            this.createNode_Pathline(listsvg[i],floorId);
-            
+            // this.addClickEventForCirclesYAH(floorId);
+
+            this.createNode_Pathline(listsvg[i], floorId);
+
             this.addClickEventForCircle(floorId);
 
             this.addMenuForMap(floorId);
 
             await this.setStateAsync({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
         }
+        //add event listener for YAH nodes 
+        const circlesYAH = document.querySelectorAll("circle[id*='YAH']");
+        circlesYAH.forEach(circleNode => {
+            const floorId = circleNode.id.substring(0, 2);
+            this.addClickEventForCirclesYAH(circleNode, floorId);
+        });
+        console.log("circlesYAH", circlesYAH);
+    }
+    addClickEventForCirclesYAH = (YAHNode, floorId) => {
+        YAHNode.addEventListener("click", e => {
+            this.handleMouseClick(e, floorId);
+        });
+        YAHNode.setAttribute("style", "cursor: pointer;");
     }
     addClickEventForCircle = (floorId) => {
         let svg = document.getElementById(`node-${floorId}`);
         const vertices = svg.getElementsByTagName("circle");
-        const circlesYAH = document.querySelectorAll("circle[id*='YAH']");
-
         // this.vertices = vertices;
         for (let i = 0; i < vertices.length; i++) {
             vertices[i].addEventListener("click", e => {
+                console.log("add event listener for circle ");
                 this.handleMouseClick(e, floorId);
             });
             vertices[i].setAttribute("style", "cursor: pointer;");
         }
-        for (let i = 0; i < circlesYAH.length; i++) {
-            if (circlesYAH[i].id) {
-                circlesYAH[i].addEventListener("click", e => {
-                    this.handleMouseClick(e, floorId);
-                });
-            }
-            circlesYAH[i].setAttribute("style", "cursor: pointer;");
-        }
     };
-    addMenuForMap = (floorId)=>{
+    addMenuForMap = (floorId) => {
         let divMenuOfMap = document.createElement("div");
         divMenuOfMap.setAttribute("class", "menuOfMap");
         document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
@@ -96,8 +100,8 @@ export default class ListSVG extends Component {
         divMenuOfMap.appendChild(button);
         divMenuOfMap.appendChild(space);
     }
-    createNode_Pathline = (svgElement,floorId)=>{
-       
+    createNode_Pathline = (svgElement, floorId) => {
+
         let node_pathline = document.createElementNS("http://www.w3.org/2000/svg", "g");
         node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
 
@@ -117,7 +121,7 @@ export default class ListSVG extends Component {
     handleMouseClick(e, floorId) {
         const clickTarget = e.target;
         if (this.props.feature === "draw") {
-            if (clickTarget.nodeName === "circle" || clickTarget.nodeName === "ellipse") {
+            if (clickTarget.nodeName === "circle") {
                 if (!this.isDrawingEdge) {
                     this.setState({ edgeVertex1: clickTarget });
                     this.isDrawingEdge = true;
@@ -169,7 +173,7 @@ export default class ListSVG extends Component {
         // }
         //remove file
         let deleteFileIndex;
-        const {  listIdOfMap } = this.state;
+        const { listIdOfMap } = this.state;
         // const tempArrayId = listIdOfMap;
         // const removed = _.remove(tempArrayId, id => id === floorId);
         // console.log('removed id : ', removed);
@@ -185,7 +189,7 @@ export default class ListSVG extends Component {
         var cloneState = [...listIdOfMap];
         cloneState.splice(deleteFileIndex, 1);
         this.setState({ listIdOfMap: cloneState });
-        this.setState({numDeleted : this.state.numDeleted + 1})
+        this.setState({ numDeleted: this.state.numDeleted + 1 })
         this.props.AdjustNumberOfMap(deleteFileIndex);
 
     }
@@ -198,7 +202,7 @@ export default class ListSVG extends Component {
     }
     setStateAsync(state) {
         return new Promise((resolve) => {
-          this.setState(state, resolve)
+            this.setState(state, resolve)
         });
     }
     render() {

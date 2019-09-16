@@ -50,8 +50,12 @@ class App extends React.Component {
     }
     /******************** CHỌN XÓA CẠNH - XÓA ĐỈNH CỦA CẠNH VỪA XÓA TRONG GRAPHS ******************** */
     OnDeleteEgde = () => {
-        this.setState({ feature: "delete" });
         showEdges();
+        if (document.getElementsByClassName("animation-path").length !== 0) {
+            const { vertex1, vertex2 } = this.state;
+            removeShortestPathEl(vertex1, vertex2);
+        };
+        this.setState({ feature: "delete" });
     };
     DeleteEgde = (edge, vertex1Id, vertex2Id) => {
         if (this.state.feature === "delete" && typeof edge !== "string") {
@@ -98,25 +102,25 @@ class App extends React.Component {
     }
     setStateAsync(state) {
         return new Promise((resolve) => {
-          this.setState(state, resolve)
+            this.setState(state, resolve)
         });
     }
     getSvgContent = async (arrUrlSvg, startIndex) => {
         this.setState({ startIndex: startIndex });
         for (let i = 0; i < arrUrlSvg.length; i++)
-             this.setStateAsync({ listSvgArr: [...this.state.listSvgArr, arrUrlSvg[i]] });
+            this.setStateAsync({ listSvgArr: [...this.state.listSvgArr, arrUrlSvg[i]] });
         this.setState({ isLoading: true });
     }
-    AdjustNumberOfMap =async (index) => {
-        
+    AdjustNumberOfMap = async (index) => {
+
         var cloneState = [...this.state.listSvgArr];
         cloneState.splice(index, 1);
-        await this.setStateAsync({isLoading: false});
-        await this.setStateAsync({ listSvgArr: cloneState  });
-        
+        await this.setStateAsync({ isLoading: false });
+        await this.setStateAsync({ listSvgArr: cloneState });
+
     }
     render() {
-        const {graphs,feature,vertex1,vertex2,listSvgArr,isLoading,route,startIndex} = this.state
+        const { graphs, feature, vertex1, vertex2, listSvgArr, isLoading, route, startIndex } = this.state
         return (
             <div>
                 <div className="App">
@@ -132,8 +136,12 @@ class App extends React.Component {
                         vertex1={vertex1}
                         vertex2={vertex2}
                     />
-                    <DeleteRadioButton OnDeleteEgde={this.OnDeleteEgde} />
-                    <WayFindRadioButton feature={feature}  OnWayFinding={this.OnWayFinding} />
+                    <DeleteRadioButton
+                        OnDeleteEgde={this.OnDeleteEgde}
+                        DeleteEgde={this.DeleteEgde}
+                        graphs={this.state.graphs}
+                    />
+                    <WayFindRadioButton feature={feature} OnWayFinding={this.OnWayFinding} />
                     <ListSVG
                         route={route}
                         feature={feature}
