@@ -6,6 +6,8 @@ export default function DeleteRadioButton(props) {
         props.OnDeleteEgde()
     }
     const drawEdgeFromGraphs = () => {
+        if(props.alreadyHaveEdge === true)
+            return;
         const loadedGraphs = props.graphs;
         const array = [];
         Object.keys(loadedGraphs).forEach(nodeId => {
@@ -19,6 +21,7 @@ export default function DeleteRadioButton(props) {
             if (item.node.substring(0, 2) === item.neighbor.substring(0, 2))
                 drawEdge(item.node, item.neighbor, item.node.substring(0, 2), props.DeleteEgde);
         })
+        props.isDrawedEdge();
     }
     return (
         <>

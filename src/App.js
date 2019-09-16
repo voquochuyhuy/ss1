@@ -25,7 +25,8 @@ class App extends React.Component {
             route: null,
             svgContents: [],
             listSvgArr: [],
-            isLoading: false
+            isLoading: false,
+            alreadyHaveEdge:false
         };
     }
     /******************** CHỌN VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS ******************** */
@@ -41,6 +42,11 @@ class App extends React.Component {
         };
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
     };
+    isDrawedEdge = ()=>{
+        let isLoadedGraph = this.state.graphs
+        if(isLoadedGraph !== {})
+            this.setState({alreadyHaveEdge : true});
+    }
     onChangeGraphs = (graphs) => {
         this.setState({ graphs: graphs, route: new Graph({ ...graphs }) });
     }
@@ -120,7 +126,7 @@ class App extends React.Component {
 
     }
     render() {
-        const { graphs, feature, vertex1, vertex2, listSvgArr, isLoading, route, startIndex } = this.state
+        const { graphs, feature, vertex1, vertex2, listSvgArr, isLoading, route, startIndex,alreadyHaveEdge } = this.state
         return (
             <div>
                 <div className="App">
@@ -135,11 +141,14 @@ class App extends React.Component {
                         feature={feature}
                         vertex1={vertex1}
                         vertex2={vertex2}
+                        isDrawedEdge = {this.isDrawedEdge}
                     />
                     <DeleteRadioButton
+                        alreadyHaveEdge = {alreadyHaveEdge}
                         OnDeleteEgde={this.OnDeleteEgde}
                         DeleteEgde={this.DeleteEgde}
                         graphs={this.state.graphs}
+                        isDrawedEdge = {this.isDrawedEdge}
                     />
                     <WayFindRadioButton feature={feature} OnWayFinding={this.OnWayFinding} />
                     <ListSVG
