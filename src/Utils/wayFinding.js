@@ -32,7 +32,9 @@ function findShortestPath(vertex1, vertex2, route, tryFindFlag) {
  * @param {any} route 
  */
 function drawShortestPath(vertex1, vertex2, route) {
+    
     let pathArr = findShortestPath(vertex1, vertex2, route);
+    
     let step = _.groupBy(pathArr, (vertexId) => {
         return vertexId.substring(0, 2);
     });
@@ -47,7 +49,7 @@ function drawShortestPath(vertex1, vertex2, route) {
     }
     if (!pathArr) {
         alert("Not found shortest path, check model graphs");
-        return;
+        return ;
     }
     let first_vertex = document.getElementById(pathArr[0]);
     first_vertex.setAttributeNS(null, "class", "highlight-circle");
@@ -125,6 +127,7 @@ function drawShortestPath(vertex1, vertex2, route) {
         console.log(SVGnodes);
         draw(X, Y, SVGnodes);
     }
+    return pathArr;
 };
 
 export { drawShortestPath }

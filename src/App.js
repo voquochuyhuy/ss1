@@ -26,12 +26,14 @@ class App extends React.Component {
             svgContents: [],
             listSvgArr: [],
             isLoading: false,
-            alreadyHaveEdge:false
+            alreadyHaveEdge:false,
+            pathArr :{}
         };
     }
     /******************** CHỌN VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS ******************** */
-    changeVertex = (vertex1, vertex2) => {
-        this.setState({ vertex1: vertex1, vertex2: vertex2 });
+    changeVertex = async (vertex1, vertex2) => {
+       await this.setStateAsync({ vertex1: vertex1, vertex2: vertex2 });
+
     }
     OnDrawingEgde = () => {
         showNodes();
@@ -61,7 +63,8 @@ class App extends React.Component {
             const { vertex1, vertex2 } = this.state;
             removeShortestPathEl(vertex1, vertex2);
         };
-        this.setState({ feature: "delete" });
+        this.setState({ feature: "delete",pathArr:{} });
+        
     };
     DeleteEgde = (edge, vertex1Id, vertex2Id) => {
         if (this.state.feature === "delete" && typeof edge !== "string") {
@@ -83,6 +86,7 @@ class App extends React.Component {
         this.setState({ feature: "find", vertex1: "", vertex2: "" });
         showNodes(true);
         hideEdges();
+        
     };
 
     /**********************START wayFiding***********************/
@@ -118,15 +122,19 @@ class App extends React.Component {
         this.setState({ isLoading: true });
     }
     AdjustNumberOfMap = async (index) => {
-
         var cloneState = [...this.state.listSvgArr];
         cloneState.splice(index, 1);
         await this.setStateAsync({ isLoading: false });
         await this.setStateAsync({ listSvgArr: cloneState });
-
     }
+    getPathArr = (data)=>{
+        if(data === undefined)
+            return;
+        else this.setState({pathArr:data})
+    }
+    
     render() {
-        const { graphs, feature, vertex1, vertex2, listSvgArr, isLoading, route, startIndex,alreadyHaveEdge } = this.state
+        const { graphs, feature, vertex1, vertex2, listSvgArr, isLoading, route, startIndex,alreadyHaveEdge,pathArr } = this.state
         return (
             <div>
                 <div className="App">
@@ -150,7 +158,14 @@ class App extends React.Component {
                         graphs={this.state.graphs}
                         isDrawedEdge = {this.isDrawedEdge}
                     />
-                    <WayFindRadioButton feature={feature} OnWayFinding={this.OnWayFinding} />
+                    <WayFindRadioButton 
+                        feature={feature} 
+                        OnWayFinding={this.OnWayFinding} 
+                        pathArr={pathArr} route={route} 
+                        changeVertex={this.changeVertex} 
+                        vertex1={vertex1} 
+                        vertex2={vertex2} 
+                    />
                     <ListSVG
                         route={route}
                         feature={feature}
@@ -161,6 +176,9 @@ class App extends React.Component {
                         DeleteEgde={this.DeleteEgde}
                         changeVertex={this.changeVertex}
                         isLoading={isLoading}
+                        getPathArr={this.getPathArr}
+                        vertex1 = {vertex1}
+                        vertex2 = {vertex2}
                     />
 
                 </div>

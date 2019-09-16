@@ -134,9 +134,16 @@ export default class ListSVG extends Component {
             }
         } else if (this.props.feature === "find") {
             if (document.getElementsByClassName("animation-path").length !== 0) {
-                removeShortestPathEl(this.state.vertex1, this.state.vertex2);
+                console.log(this.state.vertex1,this.state.vertex2);
+                if(this.state.vertex1 === "" || this.state.vertex2 === "")
+                {
+                    console.log(this.props.vertex1,this.props.vertex2);
+                    removeShortestPathEl(this.props.vertex1, this.props.vertex2);
+                }    
+                else removeShortestPathEl(this.state.vertex1, this.state.vertex2);
             }
             if (!this.isFindingPath) {
+                console.log(e.target.id);
                 document
                     .getElementById("first-vertex")
                     .setAttribute("value", e.target.id);
@@ -144,6 +151,7 @@ export default class ListSVG extends Component {
                 this.setState({ vertex1: e.target.id });
                 this.isFindingPath = true;
             } else {
+                console.log(e.target.id);
                 if (e.target.id === this.state.vertex1) {
                     alert("Vertex cannot connect it self");
                     this.setState({ vertex1: "", vertex2: "" });
@@ -156,7 +164,9 @@ export default class ListSVG extends Component {
                 this.setState({ vertex2: e.target.id });
                 // this.drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route);
                 this.props.changeVertex(this.state.vertex1, this.state.vertex2);
-                drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route)
+                let pathArrData = drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route);
+                console.log(pathArrData);
+                this.props.getPathArr(pathArrData)
                 this.isFindingPath = false;
             }
         }
@@ -196,6 +206,7 @@ export default class ListSVG extends Component {
     scrollMap = (floorId) => {
         let svg = document.getElementById(`svg-${floorId}`);
         svg.scrollIntoView();
+        
     }
     componentWillReceiveProps(newProps) {
         this.setState({ listSvgArrState: newProps.listSvgArr });

@@ -184,6 +184,7 @@ const hideEdges = () => {
     });
 }
 const removeShortestPathEl = (idVertex1, idVertex2) => {
+    
     const noAnimation_Path = document.querySelectorAll(".noAnimation-path");
     const animated_Path = document.querySelectorAll(".animation-path");
     for (let i = 0, j = 0; i < noAnimation_Path.length, j < animated_Path.length; i++ , j++) {
