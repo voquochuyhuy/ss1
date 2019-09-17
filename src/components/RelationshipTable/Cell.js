@@ -14,14 +14,16 @@ export const Cell = ({ node, neighbor, property, propertyToEdit, canEdit, onBlur
             // anim.setAttribute("stroke-width",3)
         if(node !== undefined)
         {
-            console.log("node");
-            let svgEl = document.getElementById(node.id);
+            // console.log("node");
+            let svgEl = document.getElementById(node.id);    
             if(!svgEl)
             {
                 alert(`Not found node on maps`);
                 return;
             }
-            // svgEl.scrollIntoView();   
+            let svgId = node.id.substring(0,2);
+            let svgRoot = document.getElementById(`svg-${svgId}`);
+            svgRoot.scrollIntoView();   
             svgEl.setAttribute("stroke-width",3);
             svgEl.setAttribute("stroke","red"); 
             svgEl.appendChild(anim);
@@ -42,7 +44,9 @@ export const Cell = ({ node, neighbor, property, propertyToEdit, canEdit, onBlur
                 alert(`Not found node on maps`);
                 return;
             }
-            // svgEl.scrollIntoView();
+            let svgId = neighbor.id.substring(0,2);
+            let svgRoot = document.getElementById(`svg-${svgId}`);
+            svgRoot.scrollIntoView();
             // console.log(svgEl);   
             svgEl.setAttribute("stroke-width",3);
             svgEl.setAttribute("stroke","red");
