@@ -43,12 +43,12 @@ const VertextureComponent = (props) => {
       });
     return (
         <div>
-            <input type="text" id="first-vertex" onChange={e => {
+            <input type="text" id="first-vertex" onInput={e => {
                 setInputVertex1(e.target.value);
     
             }}/>
             <span>  </span>
-            <input type="text" id="second-vertex" onChange={e => {
+            <input type="text" id="second-vertex" onInput={e => {
                 setInputVertex2(e.target.value);
                 
             }}/>

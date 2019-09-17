@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 import ReactSVG from 'react-inlinesvg';
+
 // import _ from 'lodash';
 import { drawEdge, drawShortestPath, removeShortestPathEl } from "../Utils";
 // import { isFulfilled } from 'q';
@@ -147,10 +148,8 @@ export default class ListSVG extends Component {
                 }
                 
             }
-            if (!this.isFindingPath) {
-                
-                document.getElementById("first-vertex").setAttribute("value", e.target.id);
-                console.log(document.getElementById("first-vertex").getAttribute("value"));
+            if (!this.isFindingPath) {              
+                document.getElementById("first-vertex").value = new String(e.target.id);    
                 this.setState({ vertex1: e.target.id });
                 this.isFindingPath = true;
             } else {
@@ -161,8 +160,8 @@ export default class ListSVG extends Component {
                     this.isFindingPath = false;
                     return;
                 }
-                console.log(e.target.id);
-                document.getElementById("second-vertex").setAttribute("value", e.target.id);
+                
+                document.getElementById("second-vertex").value = new String(e.target.id);
                 this.setState({ vertex2: e.target.id });
                 this.props.changeVertex(this.state.vertex1, this.state.vertex2);
                 let pathArrData = drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route);
@@ -212,9 +211,7 @@ export default class ListSVG extends Component {
     componentWillReceiveProps(newProps) {
         this.setState({ listSvgArrState: newProps.listSvgArr });
     }
-    // componentDidUpdate(){
-    //     this.setState({ listSvgArrState: this.props.listSvgArr });
-    // }
+    
     setStateAsync(state) {
         return new Promise((resolve) => {
             this.setState(state, resolve)

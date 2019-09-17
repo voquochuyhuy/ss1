@@ -192,12 +192,12 @@ const removeShortestPathEl = (idVertex1, idVertex2) => {
         animated_Path[j].parentElement.removeChild(animated_Path[j]);
     }
     let highLightEls = document.getElementsByClassName("highlight-circle");
-    console.log(highLightEls,highLightEls.length);
+    
     for(let i = 0;i<highLightEls.length;i++)
     {
         highLightEls[i].removeAttribute("class");
         i--;
-        // console.log(i,highLightEls[i]);
+        
     }
         
     // let first_vertex = document.getElementById(idVertex1);

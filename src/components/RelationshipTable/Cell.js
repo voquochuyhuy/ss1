@@ -15,7 +15,13 @@ export const Cell = ({ node, neighbor, property, propertyToEdit, canEdit, onBlur
         if(node !== undefined)
         {
             console.log("node");
-            let svgEl = document.getElementById(node.id);   
+            let svgEl = document.getElementById(node.id);
+            if(!svgEl)
+            {
+                alert(`Not found node on maps`);
+                return;
+            }
+            // svgEl.scrollIntoView();   
             svgEl.setAttribute("stroke-width",3);
             svgEl.setAttribute("stroke","red"); 
             svgEl.appendChild(anim);
@@ -29,15 +35,15 @@ export const Cell = ({ node, neighbor, property, propertyToEdit, canEdit, onBlur
         }
         if(neighbor !== undefined)
         {
-            console.log("neighbor",neighbor);
-            
+            // console.log("neighbor",neighbor);       
             let svgEl = document.getElementById(neighbor.id);
-            console.log(svgEl);
             if(!svgEl)
             {
                 alert(`Not found node on maps`);
                 return;
             }
+            // svgEl.scrollIntoView();
+            // console.log(svgEl);   
             svgEl.setAttribute("stroke-width",3);
             svgEl.setAttribute("stroke","red");
             svgEl.appendChild(anim);
