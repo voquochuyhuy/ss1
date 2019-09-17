@@ -26,13 +26,13 @@ class App extends React.Component {
             svgContents: [],
             listSvgArr: [],
             isLoading: false,
-            alreadyHaveEdge:false,
-            pathArr :{}
+            alreadyHaveEdge: false,
+            pathArr: {}
         };
     }
     /******************** CHỌN VẼ CẠNH - THÊM ĐỈNH CỦA CẠNH VỪA VẼ VÀO GRAPHS ******************** */
     changeVertex = async (vertex1, vertex2) => {
-       await this.setStateAsync({ vertex1: vertex1, vertex2: vertex2 });
+        await this.setStateAsync({ vertex1: vertex1, vertex2: vertex2 });
 
     }
     OnDrawingEgde = () => {
@@ -44,10 +44,10 @@ class App extends React.Component {
         };
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
     };
-    isDrawedEdge = ()=>{
+    isDrawedEdge = () => {
         let isLoadedGraph = this.state.graphs
-        if(isLoadedGraph !== {})
-            this.setState({alreadyHaveEdge : true});
+        if (isLoadedGraph !== {})
+            this.setState({ alreadyHaveEdge: true });
     }
     onChangeGraphs = (graphs) => {
         this.setState({ graphs: graphs, route: new Graph({ ...graphs }) });
@@ -63,8 +63,8 @@ class App extends React.Component {
             const { vertex1, vertex2 } = this.state;
             removeShortestPathEl(vertex1, vertex2);
         };
-        this.setState({ feature: "delete",pathArr:{} });
-        
+        this.setState({ feature: "delete", pathArr: {} });
+
     };
     DeleteEgde = (edge, vertex1Id, vertex2Id) => {
         if (this.state.feature === "delete" && typeof edge !== "string") {
@@ -86,7 +86,7 @@ class App extends React.Component {
         this.setState({ feature: "find", vertex1: "", vertex2: "" });
         showNodes(true);
         hideEdges();
-        
+
     };
 
     /**********************START wayFiding***********************/
@@ -127,14 +127,14 @@ class App extends React.Component {
         await this.setStateAsync({ isLoading: false });
         await this.setStateAsync({ listSvgArr: cloneState });
     }
-    getPathArr = (data)=>{
-        if(data === undefined)
+    getPathArr = (data) => {
+        if (data === undefined)
             return;
-        else this.setState({pathArr:data})
+        else this.setState({ pathArr: data })
     }
-    
+
     render() {
-        const { graphs, feature, vertex1, vertex2, listSvgArr, isLoading, route, startIndex,alreadyHaveEdge,pathArr } = this.state
+        const { graphs, feature, vertex1, vertex2, listSvgArr, isLoading, route, startIndex, alreadyHaveEdge, pathArr } = this.state
         return (
             <div>
                 <div className="App">
@@ -149,22 +149,22 @@ class App extends React.Component {
                         feature={feature}
                         vertex1={vertex1}
                         vertex2={vertex2}
-                        isDrawedEdge = {this.isDrawedEdge}
+                        isDrawedEdge={this.isDrawedEdge}
                     />
                     <DeleteRadioButton
-                        alreadyHaveEdge = {alreadyHaveEdge}
+                        alreadyHaveEdge={alreadyHaveEdge}
                         OnDeleteEgde={this.OnDeleteEgde}
                         DeleteEgde={this.DeleteEgde}
                         graphs={this.state.graphs}
-                        isDrawedEdge = {this.isDrawedEdge}
+                        isDrawedEdge={this.isDrawedEdge}
                     />
-                    <WayFindRadioButton 
-                        feature={feature} 
-                        OnWayFinding={this.OnWayFinding} 
-                        pathArr={pathArr} route={route} 
-                        changeVertex={this.changeVertex} 
-                        vertex1={vertex1} 
-                        vertex2={vertex2} 
+                    <WayFindRadioButton
+                        feature={feature}
+                        OnWayFinding={this.OnWayFinding}
+                        pathArr={pathArr} route={route}
+                        changeVertex={this.changeVertex}
+                        vertex1={vertex1}
+                        vertex2={vertex2}
                     />
                     <ListSVG
                         route={route}
@@ -177,8 +177,8 @@ class App extends React.Component {
                         changeVertex={this.changeVertex}
                         isLoading={isLoading}
                         getPathArr={this.getPathArr}
-                        vertex1 = {vertex1}
-                        vertex2 = {vertex2}
+                        vertex1={vertex1}
+                        vertex2={vertex2}
                     />
 
                 </div>
@@ -188,7 +188,8 @@ class App extends React.Component {
                         component={RelationshipTable}
                         props={{
                             removeRelationship: (removedObj) => this.onRemoveFromChild(removedObj),
-                            graphs: this.state.graphs
+                            graphs: this.state.graphs,
+                            onChangeGraphs: (graphs) => this.onChangeGraphs(graphs)
                         }}
                     />
                 </div>

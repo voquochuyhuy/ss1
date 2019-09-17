@@ -2,7 +2,7 @@ import React from 'react';
 import ReactTable from 'react-table';
 import _ from 'lodash';
 import equals from 'deep-equal';
-import { handleSaveRelationship, serializeGraphsToData } from "../../Utils";
+import { handleSaveRelationship, serializeGraphsToData, deserializeDataToGraphs } from "../../Utils";
 import COLUMNS from './Columns';
 import 'react-table/react-table.css';
 
@@ -90,7 +90,9 @@ class RelationshipTable extends React.Component {
         alert("This feature will be available in next version");
     }
     onChangeData = (data) => {
-        this.setState({ data });
+        const graphs = deserializeDataToGraphs(data);
+        this.setState({ data, graphs });
+        this.props.onChangeGraphs(graphs);
         // this.props.onChangeData();
     }
     getColumns = () => {
