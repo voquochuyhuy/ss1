@@ -4,24 +4,28 @@ import { timeout } from 'q';
 export const Cell = ({ node, neighbor, property, propertyToEdit, canEdit, onBlur }) => {
     const highLightEl = () => {
         var anim = document.createElementNS("http://www.w3.org/2000/svg", "animate")
-        anim.setAttribute("begin", "indefinite")
-        anim.setAttribute("from", 10)
-        anim.setAttribute("to", 20)
-        anim.setAttribute("fill", "freeze")
-        anim.setAttribute("dur", "1s")
-        anim.setAttribute("repeatCount", "indefinite")
-        anim.setAttribute("attributeName", "r")
-        // anim.setAttribute("stroke-width",3)
-        if (node !== undefined) {
-            console.log("node");
-            let svgEl = document.getElementById(node.id);
-            if (!svgEl) {
+            anim.setAttribute("begin", "indefinite")
+            anim.setAttribute("from", 10)
+            anim.setAttribute("to", 20)
+            anim.setAttribute("fill", "freeze")
+            anim.setAttribute("dur", "1s")
+            anim.setAttribute("repeatCount", "indefinite")
+            anim.setAttribute("attributeName", "r")
+            // anim.setAttribute("stroke-width",3)
+        if(node !== undefined)
+        {
+            // console.log("node");
+            let svgEl = document.getElementById(node.id);    
+            if(!svgEl)
+            {
                 alert(`Not found node on maps`);
                 return;
             }
-            // svgEl.scrollIntoView();   
-            svgEl.setAttribute("stroke-width", 3);
-            svgEl.setAttribute("stroke", "red");
+            let svgId = node.id.substring(0,2);
+            let svgRoot = document.getElementById(`svg-${svgId}`);
+            svgRoot.scrollIntoView();   
+            svgEl.setAttribute("stroke-width",3);
+            svgEl.setAttribute("stroke","red"); 
             svgEl.appendChild(anim);
             anim.beginElement();
             setTimeout(function () {
@@ -38,7 +42,9 @@ export const Cell = ({ node, neighbor, property, propertyToEdit, canEdit, onBlur
                 alert(`Not found node neighbor on maps`);
                 return;
             }
-            // svgEl.scrollIntoView();
+            let svgId = neighbor.id.substring(0,2);
+            let svgRoot = document.getElementById(`svg-${svgId}`);
+            svgRoot.scrollIntoView();
             // console.log(svgEl);   
             svgEl.setAttribute("stroke-width", 3);
             svgEl.setAttribute("stroke", "red");

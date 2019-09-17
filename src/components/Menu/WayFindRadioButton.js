@@ -18,7 +18,7 @@ const VertextureComponent = (props) => {
         }
         // console.log("VertextureComponent");
         // removeShortestPathEl(props.vertex1,props.vertex2);  
-
+        console.log(vertex1,vertex2,"vertẽx");
         let pathArr = drawShortestPath(vertex1,vertex2,props.route);
         if(pathArr === undefined || null)
             return ;
@@ -43,13 +43,16 @@ const VertextureComponent = (props) => {
       });
     return (
         <div>
-            <input type="text" id="first-vertex" onInput={e => {
+            <input type="text" id="first-vertex" onChange={e => {
+                
                 setInputVertex1(e.target.value);
     
             }}/>
             <span>  </span>
-            <input type="text" id="second-vertex" onInput={e => {
+            <input type="text" id="second-vertex" onChange={e => {
+                
                 setInputVertex2(e.target.value);
+                console.log(vertex2,e.target.value);
                 
             }}/>
             <span>  </span>
