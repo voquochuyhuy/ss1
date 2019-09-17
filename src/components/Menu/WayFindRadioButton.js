@@ -5,19 +5,19 @@ const VertextureComponent = (props) => {
     
     const _drawShorestPath = ()=>{
        
-        // if(oldVertex1 !== "" && oldVertex2 !== "")
-        // {
-        //     // console.log("oldVertex1");
-        //     removeShortestPathEl(oldVertex1,oldVertex2);
-        // }
+        if(oldVertex1 !== "" && oldVertex2 !== "")
+        {
+            // console.log("oldVertex1");
+            removeShortestPathEl(oldVertex1,oldVertex2);
+        }
             
-        // else if(props.vertex1!== "" && props.vertex2 !== "")   
-        // {
-        //     // console.log("props.vertex1");
-        //     removeShortestPathEl(props.vertex1,props.vertex2);
-        // }
-
-        removeShortestPathEl(props.vertex1,props.vertex2);  
+        else if(props.vertex1!== "" && props.vertex2 !== "")   
+        {
+            // console.log("props.vertex1");
+            removeShortestPathEl(props.vertex1,props.vertex2);
+        }
+        // console.log("VertextureComponent");
+        // removeShortestPathEl(props.vertex1,props.vertex2);  
 
         let pathArr = drawShortestPath(vertex1,vertex2,props.route);
         if(pathArr === undefined || null)
@@ -33,8 +33,8 @@ const VertextureComponent = (props) => {
     }
     const [vertex1, setInputVertex1] = useState(''); 
     const [vertex2, setInputVertex2] = useState(''); 
-    // const [oldVertex1, setOldVertex1] = useState(''); 
-    // const [oldVertex2, setOldVertex2] = useState(''); 
+    const [oldVertex1, setOldVertex1] = useState(''); 
+    const [oldVertex2, setOldVertex2] = useState(''); 
    
     if(props.pathArr === undefined || null)
         return;

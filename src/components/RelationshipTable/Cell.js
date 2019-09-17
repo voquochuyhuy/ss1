@@ -15,17 +15,24 @@ export const Cell = ({ node, neighbor, property, propertyToEdit, canEdit, onBlur
         if(node !== undefined)
         {
             console.log("node");
-            let svgEl = document.getElementById(node.id);    
+            let svgEl = document.getElementById(node.id);   
+            svgEl.setAttribute("stroke-width",3);
+            svgEl.setAttribute("stroke","red"); 
             svgEl.appendChild(anim);
             anim.beginElement();
-            setTimeout(function() { anim.parentElement.removeChild(anim); }, 2000);
+            setTimeout(function() { 
+                anim.parentElement.removeChild(anim); 
+                svgEl.setAttribute("stroke-width",0);
+                svgEl.setAttribute("stroke","none");
+            }, 2000);
           
         }
         if(neighbor !== undefined)
         {
-            // console.log("neighbor",neighbor);
+            console.log("neighbor",neighbor);
             
             let svgEl = document.getElementById(neighbor.id);
+            console.log(svgEl);
             if(!svgEl)
             {
                 alert(`Not found node on maps`);
@@ -38,8 +45,8 @@ export const Cell = ({ node, neighbor, property, propertyToEdit, canEdit, onBlur
             setTimeout(function() 
             { 
                 anim.parentElement.removeChild(anim);
-                svgEl.removeAttribute("stroke-width");
-                svgEl.removeAttribute("stroke");
+                svgEl.setAttribute("stroke-width",0);
+                svgEl.setAttribute("stroke","none");
             }, 2000);
 
         }

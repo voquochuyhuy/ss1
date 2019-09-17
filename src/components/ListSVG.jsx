@@ -14,7 +14,7 @@ export default class ListSVG extends Component {
             numDeleted: 0
         }
     }
-    shouldComponentUpdate
+    
     handleSVG = async (src, hasCache) => {
 
         let index = this.props.startIndex;
@@ -140,7 +140,7 @@ export default class ListSVG extends Component {
                     console.log("find");
                     removeShortestPathEl(this.props.vertex1, this.props.vertex2);
                 }    
-                else 
+                else if(this.state.vertex1 !== "" && this.state.vertex2 !== "")
                 {
                     console.log("click");
                     removeShortestPathEl(this.state.vertex1, this.state.vertex2);
@@ -148,29 +148,25 @@ export default class ListSVG extends Component {
                 
             }
             if (!this.isFindingPath) {
-                // console.log(e.target.id);
-                document
-                    .getElementById("first-vertex")
-                    .setAttribute("value", e.target.id);
-
+                
+                document.getElementById("first-vertex").setAttribute("value", e.target.id);
+                console.log(document.getElementById("first-vertex").getAttribute("value"));
                 this.setState({ vertex1: e.target.id });
                 this.isFindingPath = true;
             } else {
-                // console.log(e.target.id);
+                
                 if (e.target.id === this.state.vertex1) {
                     alert("Vertex cannot connect it self");
                     this.setState({ vertex1: "", vertex2: "" });
                     this.isFindingPath = false;
                     return;
                 }
-                document
-                    .getElementById("second-vertex")
-                    .setAttribute("value", e.target.id);
+                console.log(e.target.id);
+                document.getElementById("second-vertex").setAttribute("value", e.target.id);
                 this.setState({ vertex2: e.target.id });
-                // this.drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route);
                 this.props.changeVertex(this.state.vertex1, this.state.vertex2);
                 let pathArrData = drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route);
-                // console.log(pathArrData);
+                // console.log("pathArrData");
                 this.props.getPathArr(pathArrData)
                 this.isFindingPath = false;
             }
@@ -216,6 +212,9 @@ export default class ListSVG extends Component {
     componentWillReceiveProps(newProps) {
         this.setState({ listSvgArrState: newProps.listSvgArr });
     }
+    // componentDidUpdate(){
+    //     this.setState({ listSvgArrState: this.props.listSvgArr });
+    // }
     setStateAsync(state) {
         return new Promise((resolve) => {
             this.setState(state, resolve)
