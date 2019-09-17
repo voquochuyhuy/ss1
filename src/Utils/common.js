@@ -196,7 +196,8 @@ const removeShortestPathEl = (idVertex1, idVertex2) => {
     for(let i = 0;i<highLightEls.length;i++)
     {
         highLightEls[i].removeAttribute("class");
-        console.log(i);
+        i--;
+        // console.log(i,highLightEls[i]);
     }
         
     // let first_vertex = document.getElementById(idVertex1);
