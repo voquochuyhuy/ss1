@@ -106,10 +106,10 @@ export default class ListSVG extends Component {
         node_pathline.setAttributeNS(null, "id", `node-pathline-${floorId}`);
 
         let nodes = svgElement.getElementById("node");
-        // if (!nodes) {
-        //     alert("No nodes found");
-        //     return;
-        // }
+        if (!nodes) {
+            alert("No nodes found");
+            return;
+        }
         nodes.setAttribute("id", `node-${floorId}`);
         nodes.parentElement.appendChild(node_pathline);
         let node_pathline_clone = node_pathline.cloneNode(true);
