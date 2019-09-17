@@ -54,6 +54,9 @@ class RelationshipTable extends React.Component {
         this.setState({ graphs: graphs, data: graphArr });
     }
     static getDerivedStateFromProps(nextProps, currentState) {
+        console.log("getDerivedStateFromProps : nextProps ", nextProps);
+        console.log("getDerivedStateFromProps : currentState ", currentState);
+
         if (!equals(nextProps.graphs, currentState.graphs)) {
             const { graphs } = nextProps;
             const graphsArray = serializeGraphsToData(graphs);
@@ -88,6 +91,7 @@ class RelationshipTable extends React.Component {
     }
     onChangeData = (data) => {
         this.setState({ data });
+        // this.props.onChangeData();
     }
     getColumns = () => {
         const columns = [
