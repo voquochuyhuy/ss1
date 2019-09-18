@@ -15,7 +15,7 @@ export default class ListSVG extends Component {
             numDeleted: 0
         }
     }
-    
+
     handleSVG = async (src, hasCache) => {
 
         let index = this.props.startIndex;
@@ -49,6 +49,7 @@ export default class ListSVG extends Component {
             this.createNode_Pathline(listsvg[i], floorId);
 
             this.addClickEventForCircle(floorId);
+            this.addEventMouse();
 
             this.addMenuForMap(floorId);
 
@@ -70,6 +71,7 @@ export default class ListSVG extends Component {
     }
     addClickEventForCircle = (floorId) => {
         let svg = document.getElementById(`node-${floorId}`);
+        // svg.style = styles;
         const vertices = svg.getElementsByTagName("circle");
         // this.vertices = vertices;
         for (let i = 0; i < vertices.length; i++) {
@@ -78,8 +80,30 @@ export default class ListSVG extends Component {
                 this.handleMouseClick(e, floorId);
             });
             vertices[i].setAttribute("style", "cursor: pointer;");
+            vertices[i].setAttribute("class", "tooltip");
+            const info = document.createElement("span");
+            info.setAttribute("class", "tooltiptext");
+            info.innerHTML = vertices[i].id;
+            vertices[i].append(info);
         }
     };
+    addEventMouse = () => {
+        const nodes = document.querySelectorAll("circle");
+        nodes.forEach(node => {
+            node.addEventListener("mouseover", (e) => this.showNodeInfo(e.target.firstElementChild));
+            node.addEventListener("mouseout", e => this.hideNodeInfo(e.target.firstElementChild));
+        });
+    }
+    showNodeInfo = (node) => {
+        console.log("showNodeInfo : ", node);
+
+        node.setAttribute("visibility", "visible");
+    }
+    hideNodeInfo = (node) => {
+        console.log("hideNodeInfo : ", node);
+
+        node.setAttribute("visibility", "hidden");
+    }
     addMenuForMap = (floorId) => {
         let divMenuOfMap = document.createElement("div");
         divMenuOfMap.setAttribute("class", "menuOfMap");
@@ -135,32 +159,30 @@ export default class ListSVG extends Component {
             }
         } else if (this.props.feature === "find") {
             if (document.getElementsByClassName("animation-path").length !== 0) {
-                
-                if(this.state.vertex1 === "" || this.state.vertex2 === "")
-                {
+
+                if (this.state.vertex1 === "" || this.state.vertex2 === "") {
                     console.log("find");
                     removeShortestPathEl(this.props.vertex1, this.props.vertex2);
-                }    
-                else if(this.state.vertex1 !== "" && this.state.vertex2 !== "")
-                {
+                }
+                else if (this.state.vertex1 !== "" && this.state.vertex2 !== "") {
                     console.log("click");
                     removeShortestPathEl(this.state.vertex1, this.state.vertex2);
                 }
-                
+
             }
-            if (!this.isFindingPath) {              
-                document.getElementById("first-vertex").value = new String(e.target.id);    
+            if (!this.isFindingPath) {
+                document.getElementById("first-vertex").value = new String(e.target.id);
                 this.setState({ vertex1: e.target.id });
                 this.isFindingPath = true;
             } else {
-                
+
                 if (e.target.id === this.state.vertex1) {
                     alert("Vertex cannot connect it self");
                     this.setState({ vertex1: "", vertex2: "" });
                     this.isFindingPath = false;
                     return;
                 }
-                
+
                 document.getElementById("second-vertex").value = new String(e.target.id);
                 this.setState({ vertex2: e.target.id });
                 this.props.changeVertex(this.state.vertex1, this.state.vertex2);
@@ -206,12 +228,12 @@ export default class ListSVG extends Component {
     scrollMap = (floorId) => {
         let svg = document.getElementById(`svg-${floorId}`);
         svg.scrollIntoView();
-        
+
     }
     componentWillReceiveProps(newProps) {
         this.setState({ listSvgArrState: newProps.listSvgArr });
     }
-    
+
     setStateAsync(state) {
         return new Promise((resolve) => {
             this.setState(state, resolve)

@@ -142,6 +142,7 @@ class App extends React.Component {
                     <LoadGraphButton onFileGraphsChange={this.onFileGraphsChange}></LoadGraphButton>
                     <SaveGraphButton data={graphs}></SaveGraphButton>
                     <DrawRadioButton
+                        alreadyHaveEdge={alreadyHaveEdge}
                         OnDrawingEgde={this.OnDrawingEgde}
                         DeleteEgde={this.DeleteEgde}
                         addVertexToGraphs={this.addVertexToGraphs}
