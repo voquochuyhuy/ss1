@@ -1,4 +1,8 @@
-import { If, drawEdge, handleSaveRelationship, deserializeDataToGraphs, showNodes, hideNodes, showEdges, hideEdges, removeShortestPathEl } from './common'
+import {
+    If, drawEdge, handleSaveRelationship, deserializeDataToGraphs,
+    showNodes, hideNodes, showEdges, hideEdges, removeShortestPathEl,
+    highLightNodeEl
+} from './common'
 import { serializeGraphsToData } from './relationshipTable';
 import { addVertexToGraphs, removeVertexFromGraphs } from './graphs';
 import { drawShortestPath } from './wayFinding';
@@ -11,6 +15,7 @@ export {
     showNodes, hideNodes,
     showEdges, hideEdges,
     removeShortestPathEl,
+    highLightNodeEl,
     serializeGraphsToData,
     addVertexToGraphs,
     removeVertexFromGraphs,
