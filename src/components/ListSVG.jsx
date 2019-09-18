@@ -49,7 +49,7 @@ export default class ListSVG extends Component {
             this.createNode_Pathline(listsvg[i], floorId);
 
             this.addClickEventForCircle(floorId);
-            this.addEventMouse();
+            // this.addEventMouse();
 
             this.addMenuForMap(floorId);
 
@@ -95,14 +95,14 @@ export default class ListSVG extends Component {
         });
     }
     showNodeInfo = (node) => {
-        console.log("showNodeInfo : ", node);
+        // console.log("showNodeInfo : ", node);
 
-        node.setAttribute("visibility", "visible");
+        // node.setAttribute("visibility", "visible");
     }
     hideNodeInfo = (node) => {
-        console.log("hideNodeInfo : ", node);
+        // console.log("hideNodeInfo : ", node);
 
-        node.setAttribute("visibility", "hidden");
+        // node.setAttribute("visibility", "hidden");
     }
     addMenuForMap = (floorId) => {
         let divMenuOfMap = document.createElement("div");
@@ -161,11 +161,11 @@ export default class ListSVG extends Component {
             if (document.getElementsByClassName("animation-path").length !== 0) {
 
                 if (this.state.vertex1 === "" || this.state.vertex2 === "") {
-                    console.log("find");
+                    // console.log("find");
                     removeShortestPathEl(this.props.vertex1, this.props.vertex2);
                 }
                 else if (this.state.vertex1 !== "" && this.state.vertex2 !== "") {
-                    console.log("click");
+                    // console.log("click");
                     removeShortestPathEl(this.state.vertex1, this.state.vertex2);
                 }
 
@@ -217,7 +217,7 @@ export default class ListSVG extends Component {
                 break;
             }
         }
-        console.log(deleteFileIndex);
+        // console.log(deleteFileIndex);
         var cloneState = [...listIdOfMap];
         cloneState.splice(deleteFileIndex, 1);
         this.setState({ listIdOfMap: cloneState });

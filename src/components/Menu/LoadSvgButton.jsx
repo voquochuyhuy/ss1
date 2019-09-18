@@ -1,6 +1,6 @@
-import React, { Component } from 'react'
+import React, { Component } from 'react';
 // import _ from "lodash";
-import Files from 'react-files'
+import Files from 'react-files';
 class LoadSvgButton extends Component {
     constructor(props) {
         super(props);

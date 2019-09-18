@@ -21,17 +21,17 @@ function addVertexToGraphs(vertex1, vertex2, graphs, onChangeGraphs) {
     //check idVertex1 is existed in graphs
     if (graphs[idVertex1]) {
         if (graphs[idVertex2] && graphs[idVertex2][idVertex1]) {
-            console.log("ton tai v1, v2 va v1 co v2 => trung nhau");
+            // console.log("ton tai v1, v2 va v1 co v2 => trung nhau");
             edgeExisted = true;
             return edgeExisted;
         } else if (graphs[idVertex2] && !graphs[idVertex2][idVertex1]) {
-            console.log("ton tai v1, v2 nhung v1 chua co v2");
+            // console.log("ton tai v1, v2 nhung v1 chua co v2");
             graphs[idVertex2] = { ...graphs[idVertex2], [idVertex1]: cost };
             graphs[idVertex1] = { ...graphs[idVertex1], [idVertex2]: cost };
             // this.setState({ graphs });//
             onChangeGraphs({ ...graphs });
         } else if (!graphs[idVertex2]) {
-            console.log("ton tai v1 va ko ton tai v2");
+            // console.log("ton tai v1 va ko ton tai v2");
             graphs[idVertex1] = { ...graphs[idVertex1], [idVertex2]: cost };
             const graph = {
                 [idVertex2]: {
@@ -56,7 +56,7 @@ function addVertexToGraphs(vertex1, vertex2, graphs, onChangeGraphs) {
         return edgeExisted;
     } else {
         //v1 chua co nhung v2 da co
-        console.log("v1 chua co nhung v2 da co ");
+        // console.log("v1 chua co nhung v2 da co ");
         if (graphs[idVertex2]) {
             graphs[idVertex2] = { ...graphs[idVertex2], [idVertex1]: cost };
             //them v1 vao graphs
@@ -69,7 +69,7 @@ function addVertexToGraphs(vertex1, vertex2, graphs, onChangeGraphs) {
             onChangeGraphs({ ...graphs, ...graph });
         } else {
             //ca 2 cung chua co
-            console.log("ca 2 cung chua co");
+            // console.log("ca 2 cung chua co");
             const graph = {
                 [idVertex1]: {
                     [idVertex2]: cost

@@ -108,6 +108,7 @@ function drawShortestPath(vertex1, vertex2, route) {
                 Y.push(document.getElementById(vtx).attributes.cy.value);
             };
             let SVGnodes = document.getElementById(`node-pathline-${floor_id}`);
+            // console.log(SVGnodes);
             draw(X, Y, SVGnodes);
         });
     }
@@ -124,7 +125,7 @@ function drawShortestPath(vertex1, vertex2, route) {
         }
         
         let SVGnodes = document.getElementById(`node-pathline-${floor_id}`);
-        
+        // console.log(SVGnodes);
         draw(X, Y, SVGnodes);
     }
     return pathArr;

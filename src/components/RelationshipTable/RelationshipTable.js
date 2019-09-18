@@ -54,8 +54,8 @@ class RelationshipTable extends React.Component {
         this.setState({ graphs: graphs, data: graphArr });
     }
     static getDerivedStateFromProps(nextProps, currentState) {
-        console.log("getDerivedStateFromProps : nextProps ", nextProps);
-        console.log("getDerivedStateFromProps : currentState ", currentState);
+        // console.log("getDerivedStateFromProps : nextProps ", nextProps);
+        // console.log("getDerivedStateFromProps : currentState ", currentState);
 
         if (!equals(nextProps.graphs, currentState.graphs)) {
             const { graphs } = nextProps;
@@ -73,10 +73,10 @@ class RelationshipTable extends React.Component {
             //tìm node để xóa neighbor & tìm neighbor để xóa node 
             if (item.node === node || item.node.id === neighbor.id) {
                 const nodeRemoved = _.remove(item.neighbors, nb => nb === neighbor || nb.id === node.id);
-                console.log('removed node and neighbor: ', nodeRemoved);
+                // console.log('removed node and neighbor: ', nodeRemoved);
                 if (_.isEmpty(item.neighbors)) {
                     const itemRemoved = _.remove(data, nodeNoNeighbor => nodeNoNeighbor.node.id === item.node.id);
-                    console.log('item removed: ', itemRemoved);
+                    // console.log('item removed: ', itemRemoved);
                 }
                 if (!nodeRemoved[0]) {
                     alert("Not found neighbor of node has id : " + node.id);
