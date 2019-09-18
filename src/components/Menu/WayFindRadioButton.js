@@ -59,7 +59,7 @@ const VertextureComponent = (props) => {
             <button onClick={_drawShorestPath}>Find</button> <br/>
             <p>List of path</p>
             {
-               props !== {} ? <p id ="node-pathline-list">{result.join("=>")}</p> : null
+               props !== {} ? <p id ="node-pathline-list" style={{whiteSpace:"nowrap",overflow:"auto",}}>{result.join("=>")}</p> : null
             }
         </div>)
 }
