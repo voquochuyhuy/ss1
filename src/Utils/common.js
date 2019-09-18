@@ -183,8 +183,39 @@ const hideEdges = () => {
         }
     });
 }
+const highLightNodeEl = (nodeId) => {
+    var anim = document.createElementNS("http://www.w3.org/2000/svg", "animate")
+    anim.setAttribute("begin", "indefinite")
+    anim.setAttribute("from", 10)
+    anim.setAttribute("to", 20)
+    anim.setAttribute("fill", "freeze")
+    anim.setAttribute("dur", "1s")
+    anim.setAttribute("repeatCount", "indefinite")
+    anim.setAttribute("attributeName", "r")
+    // anim.setAttribute("stroke-width",3)
+    if (nodeId !== undefined) {
+        // console.log("node");
+        let svgEl = document.getElementById(nodeId);
+        if (!svgEl) {
+            alert(`Not found node on maps`);
+            return;
+        }
+        let svgId = nodeId.substring(0, 2);
+        let svgRoot = document.getElementById(`svg-${svgId}`);
+        svgRoot.scrollIntoView();
+        svgEl.setAttribute("stroke-width", 3);
+        svgEl.setAttribute("stroke", "red");
+        svgEl.appendChild(anim);
+        anim.beginElement();
+        setTimeout(function () {
+            anim.parentElement.removeChild(anim);
+            svgEl.setAttribute("stroke-width", 0);
+            svgEl.setAttribute("stroke", "none");
+        }, 2500);
+    }
+}
 const removeShortestPathEl = (idVertex1, idVertex2) => {
-    
+
     const noAnimation_Path = document.querySelectorAll(".noAnimation-path");
     const animated_Path = document.querySelectorAll(".animation-path");
     for (let i = 0, j = 0; i < noAnimation_Path.length, j < animated_Path.length; i++ , j++) {
@@ -192,14 +223,13 @@ const removeShortestPathEl = (idVertex1, idVertex2) => {
         animated_Path[j].parentElement.removeChild(animated_Path[j]);
     }
     let highLightEls = document.getElementsByClassName("highlight-circle");
-    
-    for(let i = 0;i<highLightEls.length;i++)
-    {
+
+    for (let i = 0; i < highLightEls.length; i++) {
         highLightEls[i].removeAttribute("class");
         i--;
-        
+
     }
-        
+
     // let first_vertex = document.getElementById(idVertex1);
     // first_vertex.removeAttribute("class");
     // let final_vertex = document.getElementById(idVertex2);
@@ -208,4 +238,9 @@ const removeShortestPathEl = (idVertex1, idVertex2) => {
     pin_logo.parentElement.removeChild(pin_logo);
 
 }
-export { If, drawEdge, handleSaveRelationship, deserializeDataToGraphs, hideNodes, showNodes, showEdges, hideEdges, removeShortestPathEl }
+export {
+    If, drawEdge, handleSaveRelationship,
+    deserializeDataToGraphs, hideNodes, showNodes,
+    showEdges, hideEdges, removeShortestPathEl,
+    highLightNodeEl
+}
