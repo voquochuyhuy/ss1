@@ -49,7 +49,7 @@ export default class ListSVG extends Component {
             this.createNode_Pathline(listsvg[i], floorId);
 
             this.addClickEventForCircle(floorId);
-            // this.addEventMouse();
+            this.addEventMouse();
 
             this.addMenuForMap(floorId);
 
@@ -79,29 +79,39 @@ export default class ListSVG extends Component {
                 // console.log("add event listener for circle ");
                 this.handleMouseClick(e, floorId);
             });
-            vertices[i].setAttribute("style", "cursor: pointer;");
-            vertices[i].setAttribute("class", "tooltip");
-            const info = document.createElement("span");
-            info.setAttribute("class", "tooltiptext");
-            info.innerHTML = vertices[i].id;
-            vertices[i].append(info);
+            // vertices[i].setAttribute("style", "cursor: pointer;");
+            // vertices[i].setAttribute("class", "tooltip");
+            // const info = document.createElement("span");
+            // info.setAttribute("class", "tooltiptext");
+            // info.innerHTML = vertices[i].id;
+            // vertices[i].append(info);
         }
     };
     addEventMouse = () => {
         const nodes = document.querySelectorAll("circle");
         nodes.forEach(node => {
-            node.addEventListener("mouseover", (e) => this.showNodeInfo(e.target.firstElementChild));
-            node.addEventListener("mouseout", e => this.hideNodeInfo(e.target.firstElementChild));
+            node.addEventListener("mouseover", (e) => this.showNodeInfo(e.target));
+            node.addEventListener("mouseout", e => this.hideNodeInfo(e.target));
         });
     }
     showNodeInfo = (node) => {
         // console.log("showNodeInfo : ", node);
-
-        // node.setAttribute("visibility", "visible");
+        // console.log(node);
+        let tooltip = document.createElementNS("http://www.w3.org/2000/svg","text");
+        tooltip.setAttributeNS(null,"x",node.attributes.cx.value - 40);
+        tooltip.setAttributeNS(null,"y",node.attributes.cy.value - 15);
+        tooltip.setAttributeNS(null,"fill","red");
+        // console.log(tooltip);
+        tooltip.innerHTML = node.id
+        node.parentElement.appendChild(tooltip);
+        
     }
     hideNodeInfo = (node) => {
+        let nodeEl = document.getElementById(node.id);
+        // console.log(nodeEl);
+        nodeEl.parentElement.removeChild(nodeEl.parentElement.lastChild);
         // console.log("hideNodeInfo : ", node);
-
+        
         // node.setAttribute("visibility", "hidden");
     }
     addMenuForMap = (floorId) => {
