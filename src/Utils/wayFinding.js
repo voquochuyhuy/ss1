@@ -11,7 +11,7 @@ const Graph = require('node-dijkstra');
 function findShortestPath(vertex1, vertex2, route, tryFindFlag) {
     if (!route) return null;
     if (tryFindFlag) {
-        const tempRoute = route;
+        const tempRoute = _.cloneDeep(route);
         const keysArray = [...tempRoute.graph.keys()];
         const floor = vertex1.substring(0, 2);
         //nếu 2 node trong cùng 1 floor nhưng routing đến node ở floor khác (do graph) 
@@ -30,18 +30,14 @@ function findShortestPath(vertex1, vertex2, route, tryFindFlag) {
  * @param {string} vertex1 
  * @param {string} vertex2 
  * @param {any} route 
+ * @return pathArr
  */
 function drawShortestPath(vertex1, vertex2, route) {
-    
     let pathArr = findShortestPath(vertex1, vertex2, route);
-    
     let step = _.groupBy(pathArr, (vertexId) => {
         return vertexId.substring(0, 2);
     });
-    // console.log(step, _.size(step));
     if (vertex1.substring(0, 2) === vertex2.substring(0, 2) && _.size(step) > 1) {
-        // console.log("Warning: 2 vertex in floor but path out of bounds");
-        // console.log("Trying to routing");
         pathArr = findShortestPath(vertex1, vertex2, route, true);
         step = _.groupBy(pathArr, (vertexId) => {
             return vertexId.substring(0, 2);
@@ -49,7 +45,7 @@ function drawShortestPath(vertex1, vertex2, route) {
     }
     if (!pathArr) {
         alert("Not found shortest path, check model graphs");
-        return ;
+        return;
     }
     let first_vertex = document.getElementById(pathArr[0]);
     first_vertex.setAttributeNS(null, "class", "highlight-circle");
@@ -93,11 +89,8 @@ function drawShortestPath(vertex1, vertex2, route) {
         SVGnodes.appendChild(animatedPath);
         SVGnodes.appendChild(pinLogo);
     }
-
-    // console.log(step, _.size(step));
     if (_.size(step) !== 1) {
         _.forEach(step, (verticesGroup) => {
-            // console.log('verticesGroup : ', verticesGroup);
             let floor_id = verticesGroup[0].substring(0, 2);
             let X = [];
             let Y = [];
@@ -108,7 +101,6 @@ function drawShortestPath(vertex1, vertex2, route) {
                 Y.push(document.getElementById(vtx).attributes.cy.value);
             };
             let SVGnodes = document.getElementById(`node-pathline-${floor_id}`);
-            // console.log(SVGnodes);
             draw(X, Y, SVGnodes);
         });
     }
@@ -123,12 +115,9 @@ function drawShortestPath(vertex1, vertex2, route) {
             Y.push(document.getElementById(vtx).attributes.cy.value);
 
         }
-        
         let SVGnodes = document.getElementById(`node-pathline-${floor_id}`);
-        // console.log(SVGnodes);
         draw(X, Y, SVGnodes);
     }
     return pathArr;
 };
-
 export { drawShortestPath }
