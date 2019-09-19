@@ -45,8 +45,9 @@ class App extends React.Component {
         this.setState({ feature: "draw", vertex1: "", vertex2: "" });
     };
     isDrawedEdge = () => {
-        let isLoadedGraph = this.state.graphs
-        if (isLoadedGraph !== {})
+        let isLoadedGraph = this.state.graphs;
+        const line = document.querySelector("[id*='node-pathline']");        
+        if (isLoadedGraph !== {} && line && line.childNodes.length > 0)
             this.setState({ alreadyHaveEdge: true });
     }
     onChangeGraphs = (graphs) => {
