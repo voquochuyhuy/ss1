@@ -129,8 +129,7 @@ class App extends React.Component {
         await this.setStateAsync({ listSvgArr: cloneState });
     }
     getPathArr = (data) => {
-        if (data === undefined)
-            return;
+        if (!data) return;
         else this.setState({ pathArr: data })
     }
 
