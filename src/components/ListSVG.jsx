@@ -27,7 +27,7 @@ export default class ListSVG extends Component {
             return;
         }
         if (this.props.isLoading === false) {
-            for (let i = index; i < this.state.listSvgArrState.length; i++) {
+            for (let i = 0; i < this.state.listSvgArrState.length; i++) {
                 let floorId = listsvg[i].getElementById("background").parentElement.attributes.id.value;
                 let nodes = listsvg[i].getElementById("node");
                 if (nodes) {
@@ -168,6 +168,7 @@ export default class ListSVG extends Component {
                 }
             }
         } else if (this.props.feature === "find") {
+            
             if (document.getElementsByClassName("animation-path").length !== 0) {
 
                 if (this.state.vertex1 === "" || this.state.vertex2 === "") {
@@ -180,13 +181,30 @@ export default class ListSVG extends Component {
                 }
 
             }
+            
             if (!this.isFindingPath) {
+                
+                
                 document.getElementById("first-vertex").value = e.target.id;
                 this.setState({ vertex1: e.target.id });
                 this.isFindingPath = true;
             } else {
-
+                
                 if (e.target.id === this.state.vertex1) {
+                    for(let i = 0;i<this.state.listIdOfMap.length - 1;i++)
+                    { 
+                        for(let j=1;j<this.state.listIdOfMap.length ;j++)
+                        {
+                    
+                            if(this.state.listIdOfMap[i] ===this.state.listIdOfMap[j] ){
+                                alert(`You loaded ${this.state.listIdOfMap[i]} more than 1 , pls detele to continue`);
+                                return;
+                            }
+                        }
+                        
+                    }
+                    // console.log(e.target.id);
+                    // console.log(this.state.vertex1);
                     alert("Vertex cannot connect it self");
                     this.setState({ vertex1: "", vertex2: "" });
                     this.isFindingPath = false;
@@ -249,6 +267,7 @@ export default class ListSVG extends Component {
             this.setState(state, resolve)
         });
     }
+    
     render() {
         const { listSvgArr } = this.props;
         return (
