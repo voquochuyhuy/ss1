@@ -1,6 +1,16 @@
 import React from 'react'
 import { If, drawShortestPath, removeShortestPathEl } from "../../Utils";
 import { useState } from 'react';
+
+const PathStep = ({ step, index }) => {
+    console.log("step:", step.join("=>").toString());
+
+    return (
+        <p id="node-pathline-list" style={{ whiteSpace: "nowrap", overflow: "auto", }}>
+            {`Step ${index} : ${step.join("=>").toString()}`}
+        </p>
+    )
+}
 const VertextureComponent = (props) => {
 
     const _drawShorestPath = () => {
@@ -31,14 +41,16 @@ const VertextureComponent = (props) => {
     }
     const [vertex1, setInputVertex1] = useState('');
     const [vertex2, setInputVertex2] = useState('');
-    const [oldVertex1, setOldVertex1] = useState('');
-    const [oldVertex2, setOldVertex2] = useState('');
+    const [oldVertex1] = useState('');
+    const [oldVertex2] = useState('');
 
     if (props.pathArr === undefined || null)
         return;
     var result = Object.keys(props.pathArr).map(function (key) {
         return [props.pathArr[key]];
     });
+    console.log("result:", result);
+
     return (
         <div>
             <input type="text" id="first-vertex" onChange={e => {
@@ -57,7 +69,10 @@ const VertextureComponent = (props) => {
             <button onClick={_drawShorestPath}>Find</button> <br />
             <p>List of path</p>
             {
-                props !== {} ? <p id="node-pathline-list" style={{ whiteSpace: "nowrap", overflow: "auto", }}>{result.join("=>")}</p> : null
+                // props !== {} ? <p id="node-pathline-list" style={{ whiteSpace: "nowrap", overflow: "auto", }}>{result.join("=>")}</p> : null
+                props !== {} ? result.map((step, index) => {
+                    return <PathStep key={index} step={step} index={index + 1} />
+                }) : null
             }
         </div>)
 }

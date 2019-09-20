@@ -10,7 +10,7 @@ const Node = {
     Header: 'Node',
     id: 'node-root',
     accessor: d => d.node.id,
-    Cell: props => <Cell node={props.original.node} property='id' />,
+    Cell: props => <Cell key={'node-' + props.original.node.id} node={props.original.node} property='id' />,
     filterMethod: (filter, rows) => matchSorter(rows, filter.value, { keys: ["node-root"] }),
     filterAll: true
 };
@@ -19,7 +19,7 @@ const Type = {
     accessor: 'node.type',
     id: 'node-type',
     width: 150,
-    Cell: props => <Cell node={props.original.node} property='type' />,
+    Cell: props => <Cell key={'node-type' + props.original.node.id} node={props.original.node} property='type' />,
     filterMethod: (filter, rows) => matchSorter(rows, filter.value, { keys: ["node-type"] }),
     filterAll: true
 };
@@ -31,7 +31,7 @@ const Neighbors = (data, onChangeData) => {
         Cell: props => {
             const { node, neighbors } = props.original;
             return neighbors.map(neighbor => {
-                return <CellEditable data={data} node={node} neighbor={neighbor} propertyToEdit='id' onChangeData={onChangeData} />
+                return <CellEditable key={'neighbor-' + neighbor.id} data={data} node={node} neighbor={neighbor} propertyToEdit='id' onChangeData={onChangeData} />
             })
         },
         filterMethod: (filter, rows) =>
@@ -47,7 +47,7 @@ const NeighborsType = (data, onChangeData) => {
         Cell: props => {
             const { node, neighbors } = props.original;
             return neighbors.map(neighbor => {
-                return <CellEditable data={data} node={node} neighbor={neighbor} propertyToEdit='type' onChangeData={onChangeData} />
+                return <CellEditable key={`neighbor-type-${neighbor.id}`} data={data} node={node} neighbor={neighbor} propertyToEdit='type' onChangeData={onChangeData} />
             })
         },
         filterMethod: (filter, rows) =>
@@ -56,7 +56,7 @@ const NeighborsType = (data, onChangeData) => {
         width: 150,
     }
 };
-const Cost = ( data, onChangeData ) => {
+const Cost = (data, onChangeData) => {
     return {
         id: 'cost',
         Header: 'Cost',
@@ -65,7 +65,7 @@ const Cost = ( data, onChangeData ) => {
         Cell: props => {
             const { node, neighbors } = props.original;
             return neighbors.map(neighbor => {
-                return <CellEditable data={data} node={node} neighbor={neighbor} propertyToEdit='cost' onChangeData={onChangeData} />
+                return <CellEditable key={'cost-' + neighbor.id} data={data} node={node} neighbor={neighbor} propertyToEdit='cost' onChangeData={onChangeData} />
             })
         },
         filterMethod: (filter, rows) =>
@@ -80,7 +80,7 @@ const Action = (handleRemoveNeighbor) => {
         Cell: props => {
             const { node, neighbors } = props.original;
             return neighbors.map(neighbor => {
-                return <div>
+                return <div key={neighbor.id}>
                     <button style={styles} onClick={() => handleRemoveNeighbor(node, neighbor)}>Remove</button>
                 </div>
             })

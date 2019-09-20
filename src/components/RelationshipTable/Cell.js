@@ -1,11 +1,11 @@
 import React from 'react';
-import { timeout } from 'q';
 import { highLightNodeEl } from '../../Utils';
 // import {attr,animate} from "svg.js";
 export const Cell = ({ node, neighbor, property, propertyToEdit, canEdit, onBlur }) => {
     if (typeof canEdit !== "boolean") canEdit = false;
     return (
         <div
+            key={`${neighbor}-${property}`}
             style={{ backgroundColor: "#fafafa", margin: 5, borderRadius: '2px' }}
             contentEditable={canEdit}
             suppressContentEditableWarning={canEdit}
