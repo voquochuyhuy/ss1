@@ -17,7 +17,7 @@ export default class ListSVG extends Component {
     }
 
     handleSVG = async (src, hasCache) => {
-
+        
         let index = this.props.startIndex;
         let listsvg = document.getElementsByTagName("svg");
 
@@ -55,6 +55,7 @@ export default class ListSVG extends Component {
 
             await this.setStateAsync({ listIdOfMap: [...this.state.listIdOfMap, floorId] });
         }
+
         //add event listener for YAH nodes 
         const circlesYAH = document.querySelectorAll("circle[id*='YAH']");
         circlesYAH.forEach(circleNode => {
@@ -168,7 +169,7 @@ export default class ListSVG extends Component {
                 }
             }
         } else if (this.props.feature === "find") {
-            
+
             if (document.getElementsByClassName("animation-path").length !== 0) {
 
                 if (this.state.vertex1 === "" || this.state.vertex2 === "") {
@@ -182,30 +183,14 @@ export default class ListSVG extends Component {
 
             }
             
-            if (!this.isFindingPath) {
-                
-                
+            if (!this.isFindingPath) {     
                 document.getElementById("first-vertex").value = e.target.id;
                 this.setState({ vertex1: e.target.id });
                 this.isFindingPath = true;
             } else {
-                
+
                 if (e.target.id === this.state.vertex1) {
-                    for(let i = 0;i<this.state.listIdOfMap.length - 1;i++)
-                    { 
-                        for(let j=1;j<this.state.listIdOfMap.length ;j++)
-                        {
-                    
-                            if(this.state.listIdOfMap[i] ===this.state.listIdOfMap[j] ){
-                                alert(`You loaded ${this.state.listIdOfMap[i]} more than 1 , pls detele to continue`);
-                                return;
-                            }
-                        }
-                        
-                    }
-                    // console.log(e.target.id);
-                    // console.log(this.state.vertex1);
-                    alert("Vertex cannot connect it self");
+                    alert("Vertex cannot connect it self or loaded this map more than one time");
                     this.setState({ vertex1: "", vertex2: "" });
                     this.isFindingPath = false;
                     return;
@@ -261,7 +246,7 @@ export default class ListSVG extends Component {
     UNSAFE_componentWillReceiveProps(newProps) {
         this.setState({ listSvgArrState: newProps.listSvgArr });
     }
-
+    
     setStateAsync(state) {
         return new Promise((resolve) => {
             this.setState(state, resolve)
