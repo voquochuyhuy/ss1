@@ -254,6 +254,8 @@ export default class ListSVG extends Component {
     }
     
     render() {
+        console.log("listsvg");
+        
         const { listSvgArr } = this.props;
         return (
             <div id="list-svg">
