@@ -75,7 +75,7 @@ class RelationshipTable extends React.Component {
                 const nodeRemoved = _.remove(item.neighbors, nb => nb === neighbor || nb.id === node.id);
                 // console.log('removed node and neighbor: ', nodeRemoved);
                 if (_.isEmpty(item.neighbors)) {
-                    const itemRemoved = _.remove(data, nodeNoNeighbor => nodeNoNeighbor.node.id === item.node.id);
+                    _.remove(data, nodeNoNeighbor => nodeNoNeighbor.node.id === item.node.id);
                     // console.log('item removed: ', itemRemoved);
                 }
                 if (!nodeRemoved[0]) {

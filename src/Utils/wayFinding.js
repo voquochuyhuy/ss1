@@ -1,6 +1,5 @@
 import _ from 'lodash';
 import { roundPathCorners } from '../Utils';
-const Graph = require('node-dijkstra');
 /**
  * @param {string} vertex1 vertex1 HTMLElement id
  * @param {string} vertex2 vertex2 HTMLElement id
@@ -118,6 +117,6 @@ function drawShortestPath(vertex1, vertex2, route) {
         let SVGnodes = document.getElementById(`node-pathline-${floor_id}`);
         draw(X, Y, SVGnodes);
     }
-    return pathArr;
+    return step;
 };
 export { drawShortestPath }

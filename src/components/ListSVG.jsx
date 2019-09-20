@@ -97,21 +97,21 @@ export default class ListSVG extends Component {
     showNodeInfo = (node) => {
         // console.log("showNodeInfo : ", node);
         // console.log(node);
-        let tooltip = document.createElementNS("http://www.w3.org/2000/svg","text");
-        tooltip.setAttributeNS(null,"x",node.attributes.cx.value - 40);
-        tooltip.setAttributeNS(null,"y",node.attributes.cy.value - 15);
-        tooltip.setAttributeNS(null,"fill","red");
+        let tooltip = document.createElementNS("http://www.w3.org/2000/svg", "text");
+        tooltip.setAttributeNS(null, "x", node.attributes.cx.value - 40);
+        tooltip.setAttributeNS(null, "y", node.attributes.cy.value - 15);
+        tooltip.setAttributeNS(null, "fill", "black");
         // console.log(tooltip);
         tooltip.innerHTML = node.id
         node.parentElement.appendChild(tooltip);
-        
+
     }
     hideNodeInfo = (node) => {
         let nodeEl = document.getElementById(node.id);
         // console.log(nodeEl);
         nodeEl.parentElement.removeChild(nodeEl.parentElement.lastChild);
         // console.log("hideNodeInfo : ", node);
-        
+
         // node.setAttribute("visibility", "hidden");
     }
     addMenuForMap = (floorId) => {
@@ -181,7 +181,7 @@ export default class ListSVG extends Component {
 
             }
             if (!this.isFindingPath) {
-                document.getElementById("first-vertex").value = new String(e.target.id);
+                document.getElementById("first-vertex").value = e.target.id;
                 this.setState({ vertex1: e.target.id });
                 this.isFindingPath = true;
             } else {
@@ -193,7 +193,7 @@ export default class ListSVG extends Component {
                     return;
                 }
 
-                document.getElementById("second-vertex").value = new String(e.target.id);
+                document.getElementById("second-vertex").value = e.target.id;
                 this.setState({ vertex2: e.target.id });
                 this.props.changeVertex(this.state.vertex1, this.state.vertex2);
                 let pathArrData = drawShortestPath(this.state.vertex1, this.state.vertex2, this.props.route);
@@ -240,7 +240,7 @@ export default class ListSVG extends Component {
         svg.scrollIntoView();
 
     }
-    componentWillReceiveProps(newProps) {
+    UNSAFE_componentWillReceiveProps(newProps) {
         this.setState({ listSvgArrState: newProps.listSvgArr });
     }
 
@@ -255,6 +255,7 @@ export default class ListSVG extends Component {
             <div id="list-svg">
                 {listSvgArr ? this.state.listSvgArrState.map((value, i) => (
                     <ReactSVG
+                        key={`svg-${i}`}
                         src={value}
                         onLoad={(src, hasCache) => this.handleSVG(src, hasCache)}
                         preProcessor={code => code}

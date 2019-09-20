@@ -218,9 +218,11 @@ const removeShortestPathEl = (idVertex1, idVertex2) => {
 
     const noAnimation_Path = document.querySelectorAll(".noAnimation-path");
     const animated_Path = document.querySelectorAll(".animation-path");
-    for (let i = 0, j = 0; i < noAnimation_Path.length, j < animated_Path.length; i++ , j++) {
+    for (let i = 0; i < noAnimation_Path.length; i++) {
         noAnimation_Path[i].parentElement.removeChild(noAnimation_Path[i]);
-        animated_Path[j].parentElement.removeChild(animated_Path[j]);
+    }
+    for (let i = 0; i < animated_Path.length; i++) {
+        animated_Path[i].parentElement.removeChild(animated_Path[i]);
     }
     let highLightEls = document.getElementsByClassName("highlight-circle");
 
