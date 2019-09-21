@@ -14,19 +14,25 @@ const PathStep = ({ step, index }) => {
 const VertextureComponent = (props) => {
 
     const _drawShorestPath = () => {
-
+        console.log(oldVertex1,oldVertex2);
+        console.log(props.vertex1,props.vertex2);
         if (oldVertex1 !== "" && oldVertex2 !== "") {
-            // console.log("oldVertex1");
+            console.log("here");
             removeShortestPathEl(oldVertex1, oldVertex2);
         }
 
         else if (props.vertex1 !== "" && props.vertex2 !== "") {
-            // console.log("props.vertex1");
+            
             removeShortestPathEl(props.vertex1, props.vertex2);
+            props.resetVertex();
         }
         // console.log("VertextureComponent");
         // removeShortestPathEl(props.vertex1,props.vertex2);  
         console.log(vertex1, vertex2, "vertẽx");
+        if(vertex1.length === 0 && vertex2.length === 0)
+        {
+            console.log("can not get vertexid");
+        }
         let pathArr = drawShortestPath(vertex1, vertex2, props.route);
         if (pathArr === undefined || null)
             return;
@@ -95,11 +101,11 @@ export default class WayFindRadioButton  extends React.Component {
    }
    render (){
     const condition = this.props.feature === 'find';
-    const { pathArr, route, changeVertex, vertex2, vertex1 } = this.props;
+    const { pathArr, route, changeVertex, vertex2, vertex1,resetVertex } = this.props;
     return (
         <>
             <input type="radio" id="way-Finding" onChange={this.OnWayFinding} name="chooseFeature" />Way Finding <br />
-            <If condition={condition} component={VertextureComponent} props={{ pathArr: pathArr, route: route, changeVertex: changeVertex, vertex1: vertex1, vertex2: vertex2 }} />
+            <If condition={condition} component={VertextureComponent} props={{ pathArr: pathArr, route: route, changeVertex: changeVertex, vertex1: vertex1, vertex2: vertex2,resetVertex:resetVertex }} />
 
         </>
     )

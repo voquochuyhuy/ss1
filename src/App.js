@@ -133,7 +133,10 @@ class App extends React.Component {
         if (!data) return;
         else this.setState({ pathArr: data })
     }
-
+    resetVertex = ()=>{
+        console.log("vaicac");
+        this.setState({vertex1 : "",vertex2:""});
+    }
     render() {
         const { graphs, feature, vertex1, vertex2, listSvgArr, isLoading, route, startIndex, alreadyHaveEdge, pathArr } = this.state
         return (
@@ -165,6 +168,7 @@ class App extends React.Component {
                         OnWayFinding={this.OnWayFinding}
                         pathArr={pathArr} route={route}
                         changeVertex={this.changeVertex}
+                        resetVertex={this.resetVertex}
                         vertex1={vertex1}
                         vertex2={vertex2}
                     />

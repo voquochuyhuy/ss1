@@ -4,7 +4,9 @@ import CellEditable from './CellEditable';
 import matchSorter from 'match-sorter';
 const styles = {
     backgroundColor: '#dadada',
-    borderRadius: '2px'
+    // borderRadius: '2px',
+    marginTop : 5,
+    marginBottom : 1
 }
 const Node = {
     Header: 'Node',
@@ -80,7 +82,7 @@ const Action = (handleRemoveNeighbor) => {
         Cell: props => {
             const { node, neighbors } = props.original;
             return neighbors.map(neighbor => {
-                return <div key={neighbor.id}>
+                return <div  key={neighbor.id}>
                     <button style={styles} onClick={() => handleRemoveNeighbor(node, neighbor)}>Remove</button>
                 </div>
             })
