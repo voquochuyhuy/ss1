@@ -3,7 +3,7 @@ import { If, drawShortestPath, removeShortestPathEl } from "../../Utils";
 import { useState } from 'react';
 
 const PathStep = ({ step, index }) => {
-    console.log("step:", step.join("=>").toString());
+    // console.log("step:", step.join("=>").toString());
 
     return (
         <p id="node-pathline-list" style={{ whiteSpace: "nowrap", overflow: "auto", }}>
@@ -49,7 +49,7 @@ const VertextureComponent = (props) => {
     var result = Object.keys(props.pathArr).map(function (key) {
         return [props.pathArr[key]];
     });
-    console.log("result:", result);
+    // console.log("result:", result);
 
     return (
         <div>
@@ -76,28 +76,31 @@ const VertextureComponent = (props) => {
             }
         </div>)
 }
-export default class WayFindRadioButton extends React.Component {
-    constructor(props) {
+export default class WayFindRadioButton  extends React.Component {
+    constructor(props){
         super(props);
-        this.state = {
-            idVertex1: "",
-            idVertex2: ""
-        }
+        this.OnWayFinding = this.OnWayFinding.bind(this)
     }
-    OnWayFinding = () => {
+     OnWayFinding = () => {
+        console.log("OnWayFinding");
         this.props.OnWayFinding();
 
     };
-    render() {
-        const condition = this.props.feature === 'find';
-        const { pathArr, route, changeVertex, vertex2, vertex1 } = this.props;
-        return (
-            <>
-                <input type="radio" id="way-Finding" onChange={() => { this.OnWayFinding() }} name="chooseFeature" />Way Finding <br />
-                <If condition={condition} component={VertextureComponent} props={{ pathArr: pathArr, route: route, changeVertex: changeVertex, vertex1: vertex1, vertex2: vertex2 }} />
+   shouldComponentUpdate(nextProps, nextState){
+    return this.props.feature !== nextProps.feature;
+   }
+   render (){
+    const condition = this.props.feature === 'find';
+    const { pathArr, route, changeVertex, vertex2, vertex1 } = this.props;
+    return (
+        <>
+            <input type="radio" id="way-Finding" onChange={this.OnWayFinding} name="chooseFeature" />Way Finding <br />
+            <If condition={condition} component={VertextureComponent} props={{ pathArr: pathArr, route: route, changeVertex: changeVertex, vertex1: vertex1, vertex2: vertex2 }} />
 
-            </>
-        )
-    }
+        </>
+    )
+   }
+   
+    
 
 }

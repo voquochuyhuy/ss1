@@ -243,8 +243,8 @@ export default class ListSVG extends Component {
         svg.scrollIntoView();
 
     }
-    UNSAFE_componentWillReceiveProps(newProps) {
-        this.setState({ listSvgArrState: newProps.listSvgArr });
+    async UNSAFE_componentWillReceiveProps(newProps) {
+      await  this.setStateAsync({ listSvgArrState: newProps.listSvgArr });
     }
     
     setStateAsync(state) {
@@ -252,7 +252,10 @@ export default class ListSVG extends Component {
             this.setState(state, resolve)
         });
     }
-    
+    shouldComponentUpdate(nextProps, nextState){
+
+        return this.state.listSvgArrState !== nextState.listSvgArrState
+    }
     render() {
         console.log("listsvg");
         

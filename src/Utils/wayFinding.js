@@ -32,6 +32,7 @@ function findShortestPath(vertex1, vertex2, route, tryFindFlag) {
  * @return pathArr
  */
 function drawShortestPath(vertex1, vertex2, route) {
+    console.log("drawShortestPath");
     let pathArr = findShortestPath(vertex1, vertex2, route);
     let step = _.groupBy(pathArr, (vertexId) => {
         return vertexId.substring(0, 2);

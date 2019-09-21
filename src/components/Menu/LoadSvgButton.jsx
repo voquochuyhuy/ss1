@@ -60,7 +60,12 @@ class LoadSvgButton extends Component {
     onFilesError = () => {
 
     }
+    shouldComponentUpdate(nextState){
+        
+        return false;
+    }
     render() {
+        console.log("LoadSvgButton");
         return <Files
             className='files-dropzone'
             onChange={this.onFilesChange}

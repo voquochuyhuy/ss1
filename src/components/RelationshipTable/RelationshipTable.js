@@ -118,7 +118,11 @@ class RelationshipTable extends React.Component {
         ];
         return columns;
     }
+    shouldComponentUpdate(nextProps, nextState){
+         return this.state.graphs != nextState.graphs;
+    }
     render() {
+        console.log("RelationshipTable");
         return <div>
             <ButtonFeature
                 handleSaveRelationship={() => handleSaveRelationship(this.state.data, "data")}
