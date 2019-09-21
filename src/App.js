@@ -117,6 +117,7 @@ class App extends React.Component {
         });
     }
     getSvgContent = async (arrUrlSvg, startIndex) => {
+        console.log("getSvgContent");
         this.setState({ startIndex: startIndex });
         for (let i = 0; i < arrUrlSvg.length; i++)
             this.setStateAsync({ listSvgArr: [...this.state.listSvgArr, arrUrlSvg[i]] });

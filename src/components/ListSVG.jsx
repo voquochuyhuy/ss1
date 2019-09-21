@@ -252,10 +252,16 @@ export default class ListSVG extends Component {
         svg.scrollIntoView();
 
     }
-    async UNSAFE_componentWillReceiveProps(newProps) {
-        await this.setStateAsync({ listSvgArrState: newProps.listSvgArr });
-    }
-
+    // async UNSAFE_componentWillReceiveProps(newProps) {
+    //   await  this.setStateAsync({ listSvgArrState: newProps.listSvgArr });
+    // }
+    static getDerivedStateFromProps(nextProps, prevState) {
+        // if (nextProps.date === prevState.date) {
+        //   return null
+        // }
+    
+        return { listSvgArrState: nextProps.listSvgArr }
+      }
     setStateAsync(state) {
         return new Promise((resolve) => {
             this.setState(state, resolve)
