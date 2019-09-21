@@ -87,7 +87,9 @@ export default class WayFindRadioButton  extends React.Component {
 
     };
    shouldComponentUpdate(nextProps, nextState){
-    return this.props.feature !== nextProps.feature;
+       if(this.props.pathArr !== nextProps.pathArr) 
+            return true;
+        return this.props.feature !== nextProps.feature  
    }
    render (){
     const condition = this.props.feature === 'find';
