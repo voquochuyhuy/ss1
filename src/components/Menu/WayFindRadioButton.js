@@ -67,11 +67,13 @@ const VertextureComponent = (props) => {
             }} />
             <span>  </span>
             <button onClick={_drawShorestPath}>Find</button> <br />
-            <p>List of path</p>
+            
             {
                 // props !== {} ? <p id="node-pathline-list" style={{ whiteSpace: "nowrap", overflow: "auto", }}>{result.join("=>")}</p> : null
                 props !== {} ? result.map((step, index) => {
-                    return <PathStep key={index} step={step} index={index + 1} />
+                    return  <><p>List of path</p>
+                    <PathStep key={index} step={step} index={index + 1} /></>
+                    
                 }) : null
             }
         </div>)

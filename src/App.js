@@ -137,7 +137,7 @@ class App extends React.Component {
     render() {
         const { graphs, feature, vertex1, vertex2, listSvgArr, isLoading, route, startIndex, alreadyHaveEdge, pathArr } = this.state
         return (
-            <div>
+            <div style={{textAlign:"center"}}>
                 <div className="App">
                     <LoadSvgButton onLoadFinish={this.getSvgContent} />
                     <LoadGraphButton onFileGraphsChange={this.onFileGraphsChange}></LoadGraphButton>
@@ -168,33 +168,30 @@ class App extends React.Component {
                         vertex1={vertex1}
                         vertex2={vertex2}
                     />
-                    <ListSVG
-                        route={route}
-                        feature={feature}
-                        listSvgArr={listSvgArr}
-                        startIndex={startIndex}
-                        AdjustNumberOfMap={this.AdjustNumberOfMap}
-                        addVertexToGraphs={this.addVertexToGraphs}
-                        DeleteEgde={this.DeleteEgde}
-                        changeVertex={this.changeVertex}
-                        isLoading={isLoading}
-                        getPathArr={this.getPathArr}
-                        vertex1={vertex1}
-                        vertex2={vertex2}
-                    />
+    
 
                 </div>
                 <div id="relationship-table">
-                    <If
-                        condition={feature === 'draw' || feature === "find"}
-                        component={RelationshipTable}
-                        props={{
-                            removeRelationship: (removedObj) => this.onRemoveFromChild(removedObj),
-                            graphs: this.state.graphs,
-                            onChangeGraphs: (graphs) => this.onChangeGraphs(graphs)
-                        }}
+                    <RelationshipTable
+                        removeRelationship= {(removedObj) => this.onRemoveFromChild(removedObj)}
+                        graphs={this.state.graphs} 
+                        onChangeGraphs={(graphs) => this.onChangeGraphs(graphs)}        
                     />
                 </div>
+                <ListSVG
+                    route={route}
+                    feature={feature}
+                    listSvgArr={listSvgArr}
+                    startIndex={startIndex}
+                    AdjustNumberOfMap={this.AdjustNumberOfMap}
+                    addVertexToGraphs={this.addVertexToGraphs}
+                    DeleteEgde={this.DeleteEgde}
+                    changeVertex={this.changeVertex}
+                    isLoading={isLoading}
+                    getPathArr={this.getPathArr}
+                    vertex1={vertex1}
+                    vertex2={vertex2}
+                />
             </div>
         );
     }

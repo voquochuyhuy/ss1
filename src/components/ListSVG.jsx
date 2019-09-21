@@ -127,7 +127,7 @@ export default class ListSVG extends Component {
     addMenuForMap = (floorId) => {
         let divMenuOfMap = document.createElement("div");
         divMenuOfMap.setAttribute("class", "menuOfMap");
-        document.getElementsByClassName("App")[0].appendChild(divMenuOfMap);
+        document.getElementsByClassName("App")[0].parentElement.appendChild(divMenuOfMap);
         let radio = document.createElement("input");
         radio.setAttribute("type", "radio");
         radio.setAttribute("name", "radioGroup");
