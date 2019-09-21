@@ -1,7 +1,7 @@
 import React from 'react'
 
-export default function LoadGraph (props) {
-    const  handleLoadGraphsClick = async () => {
+export default function LoadGraph(props) {
+    const handleLoadGraphsClick = async () => {
         const fileInput = await renderGraphsLoader();
         await fileInput.addEventListener("change", e => {
             if (fileInput.files[0].name.match(/\.(txt|json)$/)) {
@@ -11,16 +11,16 @@ export default function LoadGraph (props) {
             }
         });
     }
-    const renderGraphsLoader = ()=>{
-        const el =  document.createElement("div");
+    const renderGraphsLoader = () => {
+        const el = document.createElement("div");
         el.innerHTML = "<input type='file'/>";
-        const fileInput =  el.firstChild;
+        const fileInput = el.firstChild;
         fileInput.click();
         return fileInput;
     }
-        return (    
-                  
-            <button onClick={handleLoadGraphsClick}>Load Graphs File</button>       
-        )
-  
+    return (
+
+        <button onClick={handleLoadGraphsClick}>Load Graphs File</button>
+    )
+
 }

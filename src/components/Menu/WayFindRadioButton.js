@@ -2,6 +2,7 @@ import React from 'react'
 import { If, drawShortestPath, removeShortestPathEl } from "../../Utils";
 import { useState } from 'react';
 
+
 const PathStep = ({ step, index }) => {
     // console.log("step:", step.join("=>").toString());
 
@@ -84,18 +85,18 @@ const VertextureComponent = (props) => {
             }
         </div>)
 }
-export default class WayFindRadioButton  extends React.Component {
-    constructor(props){
+class WayFindRadioButton extends React.Component {
+    constructor(props) {
         super(props);
         this.OnWayFinding = this.OnWayFinding.bind(this)
     }
-     OnWayFinding = () => {
+    OnWayFinding = () => {
         console.log("OnWayFinding");
         this.props.OnWayFinding();
 
     };
-   shouldComponentUpdate(nextProps, nextState){
-       if(this.props.pathArr !== nextProps.pathArr) 
+    shouldComponentUpdate(nextProps, nextState) {
+        if (this.props.pathArr !== nextProps.pathArr)
             return true;
         return this.props.feature !== nextProps.feature  
    }
@@ -111,6 +112,7 @@ export default class WayFindRadioButton  extends React.Component {
     )
    }
    
-    
 
+    
 }
+export default WayFindRadioButton;
