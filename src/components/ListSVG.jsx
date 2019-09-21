@@ -2,7 +2,7 @@ import React, { Component } from 'react'
 import ReactSVG from 'react-inlinesvg';
 
 // import _ from 'lodash';
-import { drawEdge, drawShortestPath, removeShortestPathEl } from "../Utils";
+import { drawEdge, drawShortestPath, removeShortestPathEl, highLightNodeEl } from "../Utils";
 // import { isFulfilled } from 'q';
 export default class ListSVG extends Component {
     constructor(props) {
@@ -17,7 +17,7 @@ export default class ListSVG extends Component {
     }
 
     handleSVG = async (src, hasCache) => {
-        
+
         let index = this.props.startIndex;
         let listsvg = document.getElementsByTagName("svg");
 
@@ -91,8 +91,17 @@ export default class ListSVG extends Component {
     addEventMouse = () => {
         const nodes = document.querySelectorAll("circle");
         nodes.forEach(node => {
-            node.addEventListener("mouseover", (e) => this.showNodeInfo(e.target));
-            node.addEventListener("mouseout", e => this.hideNodeInfo(e.target));
+            node.addEventListener("mouseover", e => {
+                if (!e.target.id.includes("PATH")) {
+                    this.showNodeInfo(e.target);
+                    highLightNodeEl(e.target.id, 500, false);
+                }
+
+            });
+            node.addEventListener("mouseout", e => {
+                if (!e.target.id.includes("PATH"))
+                    this.hideNodeInfo(e.target);
+            });
         });
     }
     showNodeInfo = (node) => {
@@ -182,8 +191,8 @@ export default class ListSVG extends Component {
                 }
 
             }
-            
-            if (!this.isFindingPath) {     
+
+            if (!this.isFindingPath) {
                 document.getElementById("first-vertex").value = e.target.id;
                 this.setState({ vertex1: e.target.id });
                 this.isFindingPath = true;
@@ -244,21 +253,21 @@ export default class ListSVG extends Component {
 
     }
     async UNSAFE_componentWillReceiveProps(newProps) {
-      await  this.setStateAsync({ listSvgArrState: newProps.listSvgArr });
+        await this.setStateAsync({ listSvgArrState: newProps.listSvgArr });
     }
-    
+
     setStateAsync(state) {
         return new Promise((resolve) => {
             this.setState(state, resolve)
         });
     }
-    shouldComponentUpdate(nextProps, nextState){
+    shouldComponentUpdate(nextProps, nextState) {
 
         return this.state.listSvgArrState !== nextState.listSvgArrState
     }
     render() {
         console.log("listsvg");
-        
+
         const { listSvgArr } = this.props;
         return (
             <div id="list-svg">

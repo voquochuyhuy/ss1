@@ -183,7 +183,7 @@ const hideEdges = () => {
         }
     });
 }
-const highLightNodeEl = (nodeId) => {
+const highLightNodeEl = (nodeId, time, flagScrolling) => {
     var anim = document.createElementNS("http://www.w3.org/2000/svg", "animate")
     anim.setAttribute("begin", "indefinite")
     anim.setAttribute("from", 10)
@@ -202,7 +202,8 @@ const highLightNodeEl = (nodeId) => {
         }
         let svgId = nodeId.substring(0, 2);
         let svgRoot = document.getElementById(`svg-${svgId}`);
-        svgRoot.scrollIntoView();
+        if (flagScrolling)
+            svgRoot.scrollIntoView();
         svgEl.setAttribute("stroke-width", 3);
         svgEl.setAttribute("stroke", "red");
         svgEl.appendChild(anim);
@@ -211,7 +212,7 @@ const highLightNodeEl = (nodeId) => {
             anim.parentElement.removeChild(anim);
             svgEl.setAttribute("stroke-width", 0);
             svgEl.setAttribute("stroke", "none");
-        }, 2500);
+        }, time);
     }
 }
 const removeShortestPathEl = (idVertex1, idVertex2) => {
