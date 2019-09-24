@@ -94,7 +94,7 @@ export default class ListSVG extends Component {
             node.addEventListener("mouseover", e => {
                 if (!e.target.id.includes("PATH")) {
                     this.showNodeInfo(e.target);
-                    highLightNodeEl(e.target.id, 500, false);
+                    // highLightNodeEl(e.target.id, 500, false);
                 }
 
             });
@@ -220,7 +220,7 @@ export default class ListSVG extends Component {
         //remove HTMLElement
         // document.getElementById("list-svg").removeChild(document.getElementById(`svg-${floorId}`));
         let radioElement = document.getElementById(`radio-${floorId}`);
-        document.getElementsByClassName("App")[0].removeChild(radioElement.parentElement);
+        document.getElementsByClassName("App")[0].parentElement.removeChild(radioElement.parentElement);
         // if (document.getElementsByTagName("svg").length === 0) {
         //     let list_svg = document.getElementById("list-svg");
         //     list_svg.parentElement.removeChild(list_svg);
@@ -249,7 +249,7 @@ export default class ListSVG extends Component {
     }
     scrollMap = (floorId) => {
         let svg = document.getElementById(`svg-${floorId}`);
-        svg.scrollIntoView();
+        svg.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
 
     }
     // async UNSAFE_componentWillReceiveProps(newProps) {

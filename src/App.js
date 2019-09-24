@@ -133,9 +133,8 @@ class App extends React.Component {
         if (!data) return;
         else this.setState({ pathArr: data })
     }
-    resetVertex = ()=>{
-        console.log("vaicac");
-        this.setState({vertex1 : "",vertex2:""});
+    resetVertex = async ()=>{
+        await this.setStateAsync({vertex1 : "",vertex2:""});
     }
     render() {
         const { graphs, feature, vertex1, vertex2, listSvgArr, isLoading, route, startIndex, alreadyHaveEdge, pathArr } = this.state

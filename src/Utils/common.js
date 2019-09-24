@@ -203,7 +203,10 @@ const highLightNodeEl = (nodeId, time, flagScrolling) => {
         let svgId = nodeId.substring(0, 2);
         let svgRoot = document.getElementById(`svg-${svgId}`);
         if (flagScrolling)
-            svgRoot.scrollIntoView();
+        {    
+            svgRoot.scrollIntoView({ behavior: 'smooth', block: 'nearest', inline: 'start' });
+        }
+            
         svgEl.setAttribute("stroke-width", 3);
         svgEl.setAttribute("stroke", "red");
         svgEl.appendChild(anim);

@@ -15,26 +15,27 @@ const PathStep = ({ step, index }) => {
 const VertextureComponent = (props) => {
 
     const _drawShorestPath = () => {
-        console.log(oldVertex1,oldVertex2);
-        console.log(props.vertex1,props.vertex2);
-        if (oldVertex1 !== "" && oldVertex2 !== "") {
-            console.log("here");
-            removeShortestPathEl(oldVertex1, oldVertex2);
-        }
-
-        else if (props.vertex1 !== "" && props.vertex2 !== "") {
-            
-            removeShortestPathEl(props.vertex1, props.vertex2);
-            props.resetVertex();
-        }
-        // console.log("VertextureComponent");
-        // removeShortestPathEl(props.vertex1,props.vertex2);  
-        console.log(vertex1, vertex2, "vertẽx");
-        if(vertex1.length === 0 && vertex2.length === 0)
+        let shortestPath = document.getElementsByClassName("noAnimation-path");
+        let isExist = shortestPath.length;
+        if(isExist === 1)
         {
-            console.log("can not get vertexid");
+            if(props.vertex1 !== "" && props.vertex2 !== "")
+            {
+                removeShortestPathEl(props.vertex1,props.vertex2);
+                props.resetVertex();
+            }  
+            else if(oldVertex1 !== "" && oldVertex2 !== "")
+                removeShortestPathEl(oldVertex1,oldVertex2);
         }
-        let pathArr = drawShortestPath(vertex1, vertex2, props.route);
+       
+        let vertexInput1 = document.getElementById("first-vertex").value;
+        let vertexInput2 = document.getElementById("second-vertex").value;
+        if(vertexInput1.length === 0 && vertexInput2.length === 0)
+        {
+           alert(`Can not find shortest path`);
+           return;
+        }
+        let pathArr = drawShortestPath(vertexInput1, vertexInput2, props.route);       
         if (pathArr === undefined || null)
             return;
         var result = Object.keys(pathArr).map(function (key) {
@@ -42,21 +43,20 @@ const VertextureComponent = (props) => {
         });
         let pElement = document.getElementById("node-pathline-list")
         pElement.innerText = result.toString();
-        // setOldVertex1(vertex1);
-        // setOldVertex2(vertex2);
-        props.changeVertex(vertex1, vertex2);
+       
+        setOldVertex1(vertexInput1);
+        setOldVertex2(vertexInput2);
     }
     const [vertex1, setInputVertex1] = useState('');
     const [vertex2, setInputVertex2] = useState('');
-    const [oldVertex1] = useState('');
-    const [oldVertex2] = useState('');
+    const [oldVertex1,setOldVertex1] = useState('');
+    const [oldVertex2,setOldVertex2] = useState('');
 
     if (props.pathArr === undefined || null)
         return;
     var result = Object.keys(props.pathArr).map(function (key) {
         return [props.pathArr[key]];
     });
-    // console.log("result:", result);
 
     return (
         <div>
@@ -69,7 +69,6 @@ const VertextureComponent = (props) => {
             <input type="text" id="second-vertex" onChange={e => {
 
                 setInputVertex2(e.target.value);
-                console.log(vertex2, e.target.value);
 
             }} />
             <span>  </span>
