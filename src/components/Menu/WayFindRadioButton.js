@@ -8,7 +8,7 @@ const PathStep = ({ step, index }) => {
 
     return (
         <p id="node-pathline-list" style={{ whiteSpace: "nowrap", overflow: "auto", }}>
-            {`Step ${index} : ${step.join("=>").toString()}`}
+            {`Step ${index} : ${step[0].join("=>").toString()}`}
         </p>
     )
 }
@@ -76,7 +76,7 @@ const VertextureComponent = (props) => {
             
             {
                 // props !== {} ? <p id="node-pathline-list" style={{ whiteSpace: "nowrap", overflow: "auto", }}>{result.join("=>")}</p> : null
-                props !== {} ? result.map((step, index) => {
+                props.pathArr !== {} ? result.map((step, index) => {
                     return  <><p>List of path</p>
                     <PathStep key={index} step={step} index={index + 1} /></>
                     

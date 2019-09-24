@@ -42,7 +42,7 @@ class App extends React.Component {
             const { vertex1, vertex2 } = this.state;
             removeShortestPathEl(vertex1, vertex2);
         };
-        this.setState({ feature: "draw", vertex1: "", vertex2: "" });
+        this.setState({ feature: "draw", vertex1: "", vertex2: "",pathArr:{} });
     };
     isDrawedEdge = () => {
         let isLoadedGraph = this.state.graphs;
