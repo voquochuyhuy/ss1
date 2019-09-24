@@ -46,15 +46,15 @@ class CellEditable extends Component {
         return (<button style={{ float: 'right' }} onClick={() => this.handleButtonAdd(data, node, onChangeData)} >+</button>)
     }
     render() {
-        console.log(this.props);
-        const { data, node, neighbor, propertyToEdit, onChangeData ,key} = this.props;
+        // console.log(this.props.neighbor,this.props.node,this.props.length);
+        const { data, node, neighbor, propertyToEdit, onChangeData  } = this.props;
         return (
             <div>
-                <If
+                {/* <If
                     condition={propertyToEdit === "id"}
                     component={this.ButtonAddRelations}
                     props={{ data: data, onChangeData: onChangeData, node: node }}
-                />
+                /> */}
                 <CellEdit data={data} node={node} neighbor={neighbor} propertyToEdit={propertyToEdit} onChangeData={onChangeData} />
             </div>
         )
