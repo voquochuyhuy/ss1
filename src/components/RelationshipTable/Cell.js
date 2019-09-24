@@ -15,7 +15,8 @@ export const Cell = ({ node, neighbor, property, propertyToEdit, canEdit, onBlur
             }}
             onClick={(e) => {
                 if (e.target.innerHTML.includes("_")) {
-                    highLightNodeEl(e.target.innerHTML, 2500, true);
+                    if(!document.getElementById("checkbox-editmode").checked)
+                        highLightNodeEl(e.target.innerHTML, 2500, true);
                 }
             }}
         />

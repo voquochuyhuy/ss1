@@ -35,6 +35,7 @@ const Neighbors = (data, onChangeData) => {
             return neighbors.map(neighbor => {
                 return <CellEditable key={'neighbor-' + neighbor.id} data={data} node={node} neighbor={neighbor} propertyToEdit='id' onChangeData={onChangeData} />
             })
+            
         },
         filterMethod: (filter, rows) =>
             matchSorter(rows, filter.value, { keys: ["neighbors"] }),

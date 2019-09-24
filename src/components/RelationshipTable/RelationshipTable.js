@@ -6,14 +6,15 @@ import { handleSaveRelationship, serializeGraphsToData, deserializeDataToGraphs 
 import COLUMNS from './Columns';
 import 'react-table/react-table.css';
 
-function ButtonFeature({ handleAddRelationship, handleSaveRelationship }) {
+function ButtonFeature({ handleEditRelationship, handleSaveRelationship }) {
     const styles = {
         backgroundColor: '#dadada',
         borderRadius: '2px'
     }
     return (
         <div style={{ textAlign: 'right' }}>
-            <button style={styles} onClick={() => handleAddRelationship()}>Add</button>
+            <input type="checkbox" id="checkbox-editmode" /> Edit mode
+            
             <button style={styles} onClick={() => handleSaveRelationship()} >Save</button>
         </div>
     )
@@ -45,7 +46,8 @@ class RelationshipTable extends React.Component {
             */
             removed: [],
             count: 0,
-            graphs: {}
+            graphs: {},
+            isEditing : false
         };
     }
     componentDidMount() {
@@ -86,7 +88,7 @@ class RelationshipTable extends React.Component {
             }
         });
     };
-    handleAddRelationship = () => {
+    handleEditRelationship = () => {
         alert("This feature will be available in next version");
     }
     onChangeData = (data) => {
@@ -126,7 +128,7 @@ class RelationshipTable extends React.Component {
         return <div>
             <ButtonFeature
                 handleSaveRelationship={() => handleSaveRelationship(this.state.data, "data")}
-                handleAddRelationship={() => this.handleAddRelationship()}
+                handleEditRelationship={() => this.handleEditRelationship()}
             />
             <ReactTable
                 filterable

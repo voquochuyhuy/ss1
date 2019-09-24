@@ -184,6 +184,7 @@ const hideEdges = () => {
     });
 }
 const highLightNodeEl = (nodeId, time, flagScrolling) => {
+    
     var anim = document.createElementNS("http://www.w3.org/2000/svg", "animate")
     anim.setAttribute("begin", "indefinite")
     anim.setAttribute("from", 10)

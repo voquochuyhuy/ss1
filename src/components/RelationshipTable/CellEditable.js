@@ -46,8 +46,8 @@ class CellEditable extends Component {
         return (<button style={{ float: 'right' }} onClick={() => this.handleButtonAdd(data, node, onChangeData)} >+</button>)
     }
     render() {
-        // console.log(this.props);
-        const { data, node, neighbor, propertyToEdit, onChangeData } = this.props;
+        console.log(this.props);
+        const { data, node, neighbor, propertyToEdit, onChangeData ,key} = this.props;
         return (
             <div>
                 <If
