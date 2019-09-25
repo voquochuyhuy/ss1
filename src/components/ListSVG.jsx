@@ -178,7 +178,6 @@ export default class ListSVG extends Component {
                 }
             }
         } else if (this.props.feature === "find") {
-
             if (document.getElementsByClassName("animation-path").length !== 0) {
 
                 if (this.state.vertex1 === "" || this.state.vertex2 === "") {

@@ -170,6 +170,7 @@ class App extends React.Component {
                         resetVertex={this.resetVertex}
                         vertex1={vertex1}
                         vertex2={vertex2}
+                        getPathArr={this.getPathArr}
                     />
     
 

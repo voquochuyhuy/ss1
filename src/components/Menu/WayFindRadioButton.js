@@ -7,9 +7,9 @@ const PathStep = ({ step, index }) => {
     // console.log("step:", step.join("=>").toString());
 
     return (
-        <p id="node-pathline-list" style={{ whiteSpace: "nowrap", overflow: "auto", }}>
-            {`Step ${index} : ${step[0].join("=>").toString()}`}
-        </p>
+        
+            `Step ${index} : ${step[0].join("=>").toString()}`
+ 
     )
 }
 const VertextureComponent = (props) => {
@@ -38,12 +38,7 @@ const VertextureComponent = (props) => {
         let pathArr = drawShortestPath(vertexInput1, vertexInput2, props.route);       
         if (pathArr === undefined || null)
             return;
-        var result = Object.keys(pathArr).map(function (key) {
-            return [pathArr[key]];
-        });
-        let pElement = document.getElementById("node-pathline-list")
-        pElement.innerText = result.toString();
-       
+        props.getPathArr(pathArr);
         setOldVertex1(vertexInput1);
         setOldVertex2(vertexInput2);
     }
@@ -73,15 +68,19 @@ const VertextureComponent = (props) => {
             }} />
             <span>  </span>
             <button onClick={_drawShorestPath}>Find</button> <br />
-            
+            <div id="node-pathline-list" style={{ whiteSpace: "nowrap", overflow: "auto" }}>   
             {
                 // props !== {} ? <p id="node-pathline-list" style={{ whiteSpace: "nowrap", overflow: "auto", }}>{result.join("=>")}</p> : null
                 props.pathArr !== {} ? result.map((step, index) => {
-                    return  <><p>List of path</p>
-                    <PathStep key={index} step={step} index={index + 1} /></>
-                    
+                    return  <>
+                    <p>
+                    <PathStep key={index} step={step} index={index + 1} />
+                    </p>
+                    <br/>
+                    </>  
                 }) : null
             }
+            </div>
         </div>)
 }
 class WayFindRadioButton extends React.Component {
@@ -101,11 +100,21 @@ class WayFindRadioButton extends React.Component {
    }
    render (){
     const condition = this.props.feature === 'find';
-    const { pathArr, route, changeVertex, vertex2, vertex1,resetVertex } = this.props;
+    const { pathArr, route, changeVertex, vertex2, vertex1,getPathArr,resetVertex } = this.props;
     return (
         <>
             <input type="radio" id="way-Finding" onChange={this.OnWayFinding} name="chooseFeature" />Way Finding <br />
-            <If condition={condition} component={VertextureComponent} props={{ pathArr: pathArr, route: route, changeVertex: changeVertex, vertex1: vertex1, vertex2: vertex2,resetVertex:resetVertex }} />
+            <If condition={condition} 
+            component={VertextureComponent} 
+            props={{ 
+                pathArr: pathArr, 
+                route: route, 
+                changeVertex: changeVertex, 
+                vertex1: vertex1, 
+                vertex2: vertex2,
+                getPathArr:getPathArr,
+                resetVertex:resetVertex
+            }} />
 
         </>
     )
